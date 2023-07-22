@@ -1,41 +1,39 @@
 import React from "react";
-import yelpCamp from "../assets/portfolio/yelpCamp.png"
-import food from '../assets/portfolio/food.png'
-import news from '../assets/portfolio/news.png'
-import note from '../assets/portfolio/note.png'
-import movie from '../assets/portfolio/movie.png'
-import tic from '../assets/portfolio/tictactoe.png'
+import yelpCamp from "../assets/portfolio/yelpCamp.png";
+import food from "../assets/portfolio/food.png";
+import news from "../assets/portfolio/news.png";
+import note from "../assets/portfolio/note.png";
+import movie from "../assets/portfolio/movie.png";
+import tic from "../assets/portfolio/tictactoe.png";
 // import todo from '../assets/portfolio/todo.png'
 
-
-
 const Portfolio = () => {
-   const portfolios = [
-     {
-       id: 1,
-       src: yelpCamp,
-     },
-     {
-       id: 2,
-       src: news,
-     },
-     {
-       id: 3,
-       src: movie,
-     },
-     {
-       id: 4,
-       src: tic,
-     },
-     {
-       id: 5,
-       src: note,
-     },
-     {
-       id: 6,
-       src: food,
-     },
-   ];
+  const portfolios = [
+    {
+      id: 1,
+      src: yelpCamp,
+    },
+    {
+      id: 2,
+      src: news,
+    },
+    {
+      id: 3,
+      src: movie,
+    },
+    {
+      id: 4,
+      src: tic,
+    },
+    {
+      id: 5,
+      src: note,
+    },
+    {
+      id: 6,
+      src: food,
+    },
+  ];
 
   return (
     <div

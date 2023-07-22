@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 import html from "../assets/html.png";
 import css from "../assets/css.png";
 import javascript from "../assets/javascript.png";
@@ -11,8 +11,6 @@ import c from "../assets/cl.svg";
 import git from "../assets/git.svg";
 import mongo from "../assets/mongo.png";
 import bootstrap from "../assets/bootstrap.svg";
-
-
 
 const Experience = () => {
   const techs = [
@@ -90,13 +88,6 @@ const Experience = () => {
     },
   ];
 
-
-
-
-
-
-
-
   return (
     <div
       name="experience"
@@ -124,6 +115,6 @@ const Experience = () => {
       </div>
     </div>
   );
-}
+};
 
-export default Experience
+export default Experience;
