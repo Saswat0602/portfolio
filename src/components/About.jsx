@@ -13,23 +13,21 @@ const About = () => {
           </p>
         </div>
         <p className="text-xl mt-20">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores
-          qui fugit numquam! Cum vitae temporibus molestiae dicta illum
-          laboriosam similique at mollitia nihil iusto repellat numquam eos illo
-          perspiciatis a unde minima commodi id cupiditate laborum iste, beatae
-          maiores. Voluptatum quisquam dignissimos tempore asperiores sit
-          ratione officiis officia alias vitae.
+          I am currently pursuing an MCA degree at United School of Business
+          Management in Bhubaneswar. With a BSc degree from GopaBandhu Choudhary
+          College,Jajpur , <br /> I have honed my skills in C, Java, and web
+          technologies such as HTML, CSS, and JavaScript, React and Backend
+          Technology like Nodejs,ExpressJs ,MongoDB as well as tools like Git
+          and Github.
         </p>
 
         <br />
 
         <p className="text-xl">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores
-          qui fugit numquam! Cum vitae temporibus molestiae dicta illum
-          laboriosam similique at mollitia nihil iusto repellat numquam eos illo
-          perspiciatis a unde minima commodi id cupiditate laborum iste, beatae
-          maiores. Voluptatum quisquam dignissimos tempore asperiores sit
-          ratione officiis officia alias vitae.
+          I have eagerness to learn something new every day and I love to share
+          my knowledge. <br /> I am eager to contribute my skills and knowledge
+          to a dynamic and challenging environment where I can continue to learn
+          and grow as a software developer.
         </p>
       </div>
     </div>
