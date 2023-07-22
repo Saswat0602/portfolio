@@ -6,13 +6,13 @@ import { BsFillPersonLinesFill } from "react-icons/bs";
 const Footer = () => {
 
   return (
-    <>
+    
       <div
         className="bg-gradient-to-b from-gray-800 to-black w-full h-full text-white"
       >
-        <footer className="footer text-center p-5 mt-3">
-          <div className="top">
-            <div className="f-content footer__social">
+        <footer className=" text-center p-5 mt-3">
+          <div className="">
+            <div className="flex justify-between sm:">
               <a
                 href="https://github.com/Saswat0602"
                 target="_blank"
@@ -21,14 +21,14 @@ const Footer = () => {
                 <FaGithub size={30} />
               </a>
               <a
-                href="mailto:saswatranjan0602@gmail.com"
+                href="https://www.linkedin.com/in/saswat0602"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <FaLinkedin size={30} />
               </a>
               <a
-                href="https://www.linkedin.com/in/saswat0602"
+                href="mailto:saswatranjan0602@gmail.com"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -40,13 +40,13 @@ const Footer = () => {
               </a>
             </div>
           </div>
-          <div className="footer__copyright">
+          <div className="">
             <small> &copy; </small> <span>{new Date().getFullYear()}</span> made
             with &hearts; by <em>Saswat Ranjan</em>{" "}
           </div>{" "}
         </footer>
       </div>
-    </>
+    
   );
 };
 
