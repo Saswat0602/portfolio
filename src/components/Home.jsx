@@ -16,7 +16,7 @@ const Home = () => {
             MERN /FRONTEND Developer
             </h2>
             <p className="text-gray-500 py-4 max-w-md">
-              Hi, I'm Saswat Ranjan. A passionate Front-end React Developer & MERN stack based
+              Hi, I'm Saswat Ranjan. A passionate Front-end React Developer & MERN stack Developer based
               in Bhubaneswar, 📍
             </p>
             <div>

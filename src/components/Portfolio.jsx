@@ -12,26 +12,39 @@ const Portfolio = () => {
     {
       id: 1,
       src: yelpCamp,
+      name: "Yelp-Camp",
+      href : "https://github.com/Saswat0602/YELP-CAMP-PROJECT.git"
+    
     },
     {
       id: 2,
       src: news,
+      name: "News-App",
+      href: "https://github.com/Saswat0602/news-app.git",
     },
     {
       id: 3,
       src: movie,
+      name: "Movie-App",
+      href: "https://github.com/Saswat0602/movieSearch.git",
     },
     {
       id: 4,
       src: tic,
+      name: "Tic-Tac-Toe",
+      href: "https://github.com/Saswat0602/tic-tac-toe.git",
     },
     {
       id: 5,
       src: note,
+      name: "Note-Taker",
+      href: "https://github.com/Saswat0602/notebook.git",
     },
     {
       id: 6,
       src: food,
+      name: "Food-Oredering-App",
+      href: "https://github.com/Saswat0602/food-website.gethub.io.git",
     },
   ];
 
@@ -49,20 +62,23 @@ const Portfolio = () => {
         </div>
 
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8 px-12 sm:px-0">
-          {portfolios.map(({ id, src }) => (
+          {portfolios.map(({ id, src, name, href }) => (
             <div key={id} className=" shadow-md shadow-gray-600 rounded-lg">
+              <h2>{name}</h2>
               <img
                 src={src}
                 alt=""
                 className="rounded-md duration-200 hover:scale-105"
               />
               <div className="flex items-center justify-center">
-                <button className=" w-1/2 px-6 py-3 m-4 duration-200 hover:scale-105">
-                  Demo
-                </button>
-                <button className="px-6 py-3 w-1/2 m-4 duration-200 hover:scale-105">
+                <a 
+                  href={href}
+                  className="px-12 py-3 w-1/2 m-4 duration-200 hover:scale-105"
+                  target="_blank" // This will open the link in a new tab
+                  rel="noopener noreferrer" // Recommended for security reasons
+                >
                   Code
-                </button>
+                </a>
               </div>
             </div>
           ))}
