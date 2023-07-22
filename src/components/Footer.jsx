@@ -6,8 +6,8 @@ import { BsFillPersonLinesFill } from "react-icons/bs";
 const Footer = () => {
 
   return (
-    <div className="bg-gradient-to-b from-gray-800 to-black w-full h-full text-white">
-      <footer className=" text-center p-5 mt-3">
+    <div className="w-full  bg-gradient-to-b from-gray-800 to-black p-4 text-white">
+      <div className=" text-center mx-auto px-5 mt-2">
         <div className="">
           <div className="flex justify-between sm:">
             <a
@@ -37,12 +37,18 @@ const Footer = () => {
             </a>
           </div>
         </div>
-        <div className="">
-      <p>Don't wish for it! Work for it!</p>
+        <div className="mt-5">
+          <p>Don't wish for it! Work for it!</p>
           <small> &copy; </small> <span>{new Date().getFullYear()}</span> made
-          with &hearts; by <em>Saswat Ranjan</em>{" "}
+          with &hearts; by{" "}
+          <a
+            className="text-bold text-2xl text-blue-500 font-signature"
+            href="mailto:saswatranjan0602@gmail.com"
+          >
+            Saswat Ranjan
+          </a>{" "}
         </div>{" "}
-      </footer>
+      </div>
     </div>
   );
 };
