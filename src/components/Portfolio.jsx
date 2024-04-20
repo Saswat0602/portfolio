@@ -74,8 +74,8 @@ const Portfolio = () => {
                 <a 
                   href={href}
                   className="px-12 py-3 w-1/2 m-4 duration-200 hover:scale-105"
-                  target="_blank" // This will open the link in a new tab
-                  rel="noopener noreferrer" // Recommended for security reasons
+                  target="_blank" 
+                  rel="noopener noreferrer" 
                 >
                   Code
                 </a>
