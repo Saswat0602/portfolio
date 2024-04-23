@@ -1,10 +1,10 @@
 import React from "react";
 import yelpCamp from "../assets/portfolio/yelpCamp.png";
 import food from "../assets/portfolio/food.png";
-import news from "../assets/portfolio/news.png";
 import note from "../assets/portfolio/note.png";
 import movie from "../assets/portfolio/movie.png";
-import tic from "../assets/portfolio/tictactoe.png";
+import spotify from "../assets/portfolio/spotify.png";
+import zoom from "../assets/portfolio/zoom.png";
 // import todo from '../assets/portfolio/todo.png'
 
 const Portfolio = () => {
@@ -18,9 +18,9 @@ const Portfolio = () => {
     },
     {
       id: 2,
-      src: news,
-      name: "News-App",
-      href: "https://github.com/Saswat0602/news-app.git",
+      src: spotify,
+      name: "Spotify-Music-App",
+      href: "https://github.com/Saswat0602/spotify-clone",
     },
     {
       id: 3,
@@ -30,9 +30,9 @@ const Portfolio = () => {
     },
     {
       id: 4,
-      src: tic,
-      name: "Tic-Tac-Toe",
-      href: "https://github.com/Saswat0602/tic-tac-toe.git",
+      src: zoom,
+      name: "Zoom-Clone-App",
+      href: "https://github.com/Saswat0602/zoom-clone",
     },
     {
       id: 5,

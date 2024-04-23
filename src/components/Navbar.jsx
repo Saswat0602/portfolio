@@ -38,7 +38,7 @@ const Navbar = () => {
           <Navlinks
             key={id}
             link={link}
-            className="px-4 cursor-pointer capitalize font-medium text-gray-500 hover:scale-105 duration-200"
+            className="px-4 cursor-pointer capitalize font-medium text-gray-500 hover:scale-105 duration-200 hover:underline"
           />
         ))}
       </ul>
