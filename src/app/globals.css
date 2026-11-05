@@ -1,108 +1,560 @@
 @import "tailwindcss";
 @import "../components/loaders/SpotlightLoader.css";
 
-:root {
-  /* ===== Base Backgrounds ===== */
-  --color-bg: #0a0a0a;
-  --color-bg-elevated: #121212;
-  --color-bg-elevated-2: #1a1a1a;
-  --color-bg-hover: #1f1f1f;
-  --color-bg-overlay: rgba(0, 0, 0, 0.7);
+/* Support data-theme="dark" and .dark for dark: variant */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *, .dark, .dark *));
 
-  /* ===== Text ===== */
-  --color-text-primary: #f5f5f5;
-  --color-text-secondary: #a3a3a3;
-  --color-text-tertiary: #6b6b6b;
-  --color-text-disabled: #4d4d4d;
-  --color-text-inverse: #0a0a0a;
+/* ==========================================================================
+   DUAL-AESTHETIC DESIGN ARCHITECTURE
+   Direction A: Systematic Blueprint Grid (Dark & Light)
+   Direction B: Editorial Engineering Craft (Dark & Light)
+   ========================================================================== */
 
-  /* ===== Accent (Blue) ===== */
-  --color-accent: #3b82f6;
-  --color-accent-hover: #60a5fa;
-  --color-accent-active: #2563eb;
-  --color-accent-muted: #1e3a5f;
-  --color-accent-subtle: rgba(59, 130, 246, 0.1);
+/* 1. Systematic Blueprint Grid (Dark Mode — Default :root) */
+:root,
+html[data-aesthetic="blueprint"][data-theme="dark"],
+html[data-aesthetic="blueprint"] {
+  /* Surfaces */
+  --color-bg: #060b13;
+  --color-surface: #0c1524;
+  --color-surface-elevated: #111d30;
+  --color-surface-hover: #172740;
+  --color-overlay: rgba(6, 11, 19, 0.88);
 
-  /* ===== Borders ===== */
-  --color-border: #262626;
-  --color-border-strong: #3f3f3f;
-  --color-border-focus: var(--color-accent);
+  /* Text */
+  --color-text-primary: #f0f6fc;
+  --color-text-secondary: #94a3b8;
+  --color-text-muted: #64748b;
+  --color-text-disabled: #475569;
+  --color-text-inverse: #060b13;
 
-  /* ===== Status Colors ===== */
-  --color-success: #22c55e;
-  --color-success-muted: rgba(34, 197, 94, 0.1);
+  /* Accent (Electric Cyan / Precision Sapphire) */
+  --color-accent: #38bdf8;
+  --color-accent-hover: #7dd3fc;
+  --color-accent-active: #0284c7;
+  --color-accent-subtle: rgba(56, 189, 248, 0.12);
+  --color-accent-subtler: rgba(56, 189, 248, 0.06);
+  --color-accent-glow: rgba(56, 189, 248, 0.28);
+
+  /* Hairlines & Structural Borders */
+  --color-border: rgba(56, 189, 248, 0.16);
+  --color-border-strong: rgba(56, 189, 248, 0.32);
+  --color-border-focus: #38bdf8;
+
+  /* 24px Structural Hairline Grid */
+  --hairline-grid-color: rgba(56, 189, 248, 0.08);
+  --hairline-crosshair-color: rgba(56, 189, 248, 0.25);
+
+  /* Status */
+  --color-success: #10b981;
   --color-warning: #f59e0b;
-  --color-warning-muted: rgba(245, 158, 11, 0.1);
-  --color-error: #ef4444;
-  --color-error-muted: rgba(239, 68, 68, 0.1);
+  --color-error: #f43f5e;
 
-  /* ===== Gradients ===== */
-  --gradient-accent: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
-  --gradient-fade: linear-gradient(180deg, transparent 0%, #0a0a0a 100%);
-  --gradient-radial-glow: radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.15), transparent 60%);
+  /* Typography */
+  --font-heading: var(--font-sans), system-ui, sans-serif;
+  --font-body: var(--font-sans), system-ui, sans-serif;
+  --font-telemetry: var(--font-mono), monospace;
 
-  /* ===== Shadows ===== */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
-  --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.6);
-  --shadow-glow: 0 0 24px rgba(59, 130, 246, 0.25);
+  /* Gradients */
+  --gradient-accent: linear-gradient(135deg, #38bdf8 0%, #6366f1 100%);
+  --gradient-fade: linear-gradient(180deg, transparent 0%, #060b13 100%);
+  --gradient-glow: radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.14), transparent 70%);
 
-  /* ===== Radius ===== */
-  --radius-sm: 6px;
-  --radius-md: 12px;
-  --radius-lg: 20px;
+  color-scheme: dark;
 }
 
+/* 2. Systematic Blueprint Grid (Light Mode) */
+html[data-aesthetic="blueprint"][data-theme="light"] {
+  /* Precision Blueprint Drafting Paper */
+  --color-bg: #f0f5fa;
+  --color-surface: #ffffff;
+  --color-surface-elevated: #e4eef8;
+  --color-surface-hover: #d8e6f4;
+  --color-overlay: rgba(240, 245, 250, 0.92);
+
+  /* Deep Technical Ink */
+  --color-text-primary: #0b1727;
+  --color-text-secondary: #334155;
+  --color-text-muted: #64748b;
+  --color-text-disabled: #94a3b8;
+  --color-text-inverse: #ffffff;
+
+  /* Deep Blueprint Cyan */
+  --color-accent: #0284c7;
+  --color-accent-hover: #0369a1;
+  --color-accent-active: #075985;
+  --color-accent-subtle: rgba(2, 132, 199, 0.12);
+  --color-accent-subtler: rgba(2, 132, 199, 0.05);
+  --color-accent-glow: rgba(2, 132, 199, 0.22);
+
+  /* Cyan Hairlines */
+  --color-border: rgba(2, 132, 199, 0.20);
+  --color-border-strong: rgba(2, 132, 199, 0.42);
+  --color-border-focus: #0284c7;
+
+  /* 24px Structural Hairlines */
+  --hairline-grid-color: rgba(2, 132, 199, 0.08);
+  --hairline-crosshair-color: rgba(2, 132, 199, 0.25);
+
+  /* Status */
+  --color-success: #059669;
+  --color-warning: #d97706;
+  --color-error: #e11d48;
+
+  /* Typography */
+  --font-heading: var(--font-sans), system-ui, sans-serif;
+  --font-body: var(--font-sans), system-ui, sans-serif;
+  --font-telemetry: var(--font-mono), monospace;
+
+  /* Gradients */
+  --gradient-accent: linear-gradient(135deg, #0284c7 0%, #4f46e5 100%);
+  --gradient-fade: linear-gradient(180deg, transparent 0%, #f0f5fa 100%);
+  --gradient-glow: radial-gradient(circle at 50% 0%, rgba(2, 132, 199, 0.12), transparent 70%);
+
+  color-scheme: light;
+}
+
+/* 3. Direction B: Editorial Engineering Craft (Light Mode — #F9F7F3 Warm Paper) */
+html[data-aesthetic="editorial"][data-theme="light"] {
+  /* Warm Artisan Paper Surface */
+  --color-bg: #F9F7F3;
+  --color-surface: #ffffff;
+  --color-surface-elevated: #F2EFE9;
+  --color-surface-hover: #E9E3D8;
+  --color-overlay: rgba(249, 247, 243, 0.94);
+
+  /* Rich Espresso & Charcoal Ink */
+  --color-text-primary: #1c1917;
+  --color-text-secondary: #44403c;
+  --color-text-muted: #78716c;
+  --color-text-disabled: #a8a29e;
+  --color-text-inverse: #ffffff;
+
+  /* Rich Terracotta (#D95D39 / #C85A32) */
+  --color-accent: #D95D39;
+  --color-accent-hover: #C85A32;
+  --color-accent-active: #9a3412;
+  --color-accent-subtle: rgba(217, 93, 57, 0.12);
+  --color-accent-subtler: rgba(217, 93, 57, 0.05);
+  --color-accent-glow: rgba(217, 93, 57, 0.25);
+
+  /* Artisan Warm Terracotta Borders */
+  --color-border: rgba(217, 93, 57, 0.20);
+  --color-border-strong: rgba(217, 93, 57, 0.45);
+  --color-border-focus: #D95D39;
+
+  /* Subtle Warm Grain */
+  --hairline-grid-color: rgba(217, 93, 57, 0.04);
+  --hairline-crosshair-color: rgba(217, 93, 57, 0.15);
+
+  /* Status */
+  --color-success: #0f766e;
+  --color-warning: #b45309;
+  --color-error: #be123c;
+
+  /* Typography — Instrument Serif Headlines & Flourishes */
+  --font-heading: var(--font-serif), Georgia, serif;
+  --font-body: var(--font-sans), system-ui, sans-serif;
+  --font-telemetry: var(--font-mono), monospace;
+
+  /* Gradients */
+  --gradient-accent: linear-gradient(135deg, #D95D39 0%, #d97706 100%);
+  --gradient-fade: linear-gradient(180deg, transparent 0%, #F9F7F3 100%);
+  --gradient-glow: radial-gradient(circle at 50% 0%, rgba(217, 93, 57, 0.15), transparent 70%);
+
+  color-scheme: light;
+}
+
+/* 4. Direction B: Editorial Engineering Craft (Dark Mode — Deep Warm Charcoal #141311) */
+html[data-aesthetic="editorial"][data-theme="dark"],
+html[data-aesthetic="editorial"]:not([data-theme="light"]) {
+  /* Deep Warm Charcoal & Espresso Night Surface */
+  --color-bg: #141311;
+  --color-surface: #1b1916;
+  --color-surface-elevated: #24211d;
+  --color-surface-hover: #2c2823;
+  --color-overlay: rgba(20, 19, 17, 0.92);
+
+  /* Warm Cream & Parchment Text */
+  --color-text-primary: #f5f2eb;
+  --color-text-secondary: #d6d0c7;
+  --color-text-muted: #a8a29e;
+  --color-text-disabled: #57534e;
+  --color-text-inverse: #141311;
+
+  /* Glowing Terracotta Ember (#E06D48 / #D95D39) */
+  --color-accent: #E06D48;
+  --color-accent-hover: #eb7f5b;
+  --color-accent-active: #c85a32;
+  --color-accent-subtle: rgba(224, 109, 72, 0.16);
+  --color-accent-subtler: rgba(224, 109, 72, 0.08);
+  --color-accent-glow: rgba(224, 109, 72, 0.32);
+
+  /* Artisan Terracotta Ember Borders */
+  --color-border: rgba(224, 109, 72, 0.22);
+  --color-border-strong: rgba(224, 109, 72, 0.44);
+  --color-border-focus: #E06D48;
+
+  /* Subtle Warm Grid */
+  --hairline-grid-color: rgba(224, 109, 72, 0.05);
+  --hairline-crosshair-color: rgba(224, 109, 72, 0.18);
+
+  /* Status */
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #f43f5e;
+
+  /* Typography — Instrument Serif Headlines & Flourishes */
+  --font-heading: var(--font-serif), Georgia, serif;
+  --font-body: var(--font-sans), system-ui, sans-serif;
+  --font-telemetry: var(--font-mono), monospace;
+
+  /* Gradients */
+  --gradient-accent: linear-gradient(135deg, #E06D48 0%, #f59e0b 100%);
+  --gradient-fade: linear-gradient(180deg, transparent 0%, #141311 100%);
+  --gradient-glow: radial-gradient(circle at 50% 0%, rgba(224, 109, 72, 0.18), transparent 70%);
+
+  color-scheme: dark;
+}
+
+/* ==========================================================================
+   Tailwind @theme Bindings
+   ========================================================================== */
 @theme inline {
-  --color-bg: var(--color-bg);
-  --color-bg-elevated: var(--color-bg-elevated);
-  --color-bg-elevated-2: var(--color-bg-elevated-2);
-  --color-bg-hover: var(--color-bg-hover);
-  --color-bg-overlay: var(--color-bg-overlay);
+  --color-theme-base: var(--color-bg);
+  --color-theme-surface: var(--color-surface);
+  --color-theme-elevated: var(--color-surface-elevated);
+  --color-theme-hover: var(--color-surface-hover);
+  --color-theme-overlay: var(--color-overlay);
 
-  --color-text-primary: var(--color-text-primary);
-  --color-text-secondary: var(--color-text-secondary);
-  --color-text-tertiary: var(--color-text-tertiary);
-  --color-text-disabled: var(--color-text-disabled);
-  --color-text-inverse: var(--color-text-inverse);
+  --color-theme-border: var(--color-border);
+  --color-theme-border-strong: var(--color-border-strong);
+  --color-theme-border-focus: var(--color-border-focus);
 
-  --color-accent: var(--color-accent);
-  --color-accent-hover: var(--color-accent-hover);
-  --color-accent-active: var(--color-accent-active);
-  --color-accent-muted: var(--color-accent-muted);
-  --color-accent-subtle: var(--color-accent-subtle);
+  --color-theme-text-primary: var(--color-text-primary);
+  --color-theme-text-secondary: var(--color-text-secondary);
+  --color-theme-text-muted: var(--color-text-muted);
+  --color-theme-text-disabled: var(--color-text-disabled);
 
-  --color-border: var(--color-border);
-  --color-border-strong: var(--color-border-strong);
-  --color-border-focus: var(--color-border-focus);
+  --color-theme-primary: var(--color-text-primary);
+  --color-theme-secondary: var(--color-text-secondary);
+  --color-theme-muted: var(--color-text-muted);
+  --color-theme-disabled: var(--color-text-disabled);
+  --color-theme-inverse: var(--color-text-inverse);
 
-  --color-success: var(--color-success);
-  --color-success-muted: var(--color-success-muted);
-  --color-warning: var(--color-warning);
-  --color-warning-muted: var(--color-warning-muted);
-  --color-error: var(--color-error);
-  --color-error-muted: var(--color-error-muted);
+  --color-theme-accent: var(--color-accent);
+  --color-theme-accent-hover: var(--color-accent-hover);
+  --color-theme-accent-subtle: var(--color-accent-subtle);
 
-  --background-image-gradient-accent: var(--gradient-accent);
-  --background-image-gradient-fade: var(--gradient-fade);
-  --background-image-gradient-radial-glow: var(--gradient-radial-glow);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --font-serif: var(--font-serif);
+}
 
-  --shadow-sm: var(--shadow-sm);
-  --shadow-md: var(--shadow-md);
-  --shadow-lg: var(--shadow-lg);
-  --shadow-glow: var(--shadow-glow);
+/* ==========================================================================
+   Core Semantic Utility Classes
+   ========================================================================== */
+.bg-theme-base {
+  background-color: var(--color-bg);
+}
 
-  --radius-sm: var(--radius-sm);
-  --radius-md: var(--radius-md);
-  --radius-lg: var(--radius-lg);
+.bg-theme-surface {
+  background-color: var(--color-surface);
+}
 
-  --font-sans: var(--font-inter);
+.bg-theme-elevated {
+  background-color: var(--color-surface-elevated);
+}
+
+.bg-theme-hover {
+  background-color: var(--color-surface-hover);
+}
+
+.bg-theme-overlay {
+  background-color: var(--color-overlay);
+}
+
+.border-theme-border {
+  border-color: var(--color-border);
+}
+
+.border-theme-strong {
+  border-color: var(--color-border-strong);
+}
+
+.text-theme-primary {
+  color: var(--color-text-primary);
+}
+
+.text-theme-secondary {
+  color: var(--color-text-secondary);
+}
+
+.text-theme-muted {
+  color: var(--color-text-muted);
+}
+
+.text-theme-accent {
+  color: var(--color-accent);
+}
+
+.bg-theme-accent {
+  background-color: var(--color-accent);
+}
+
+.bg-theme-accent-subtle {
+  background-color: var(--color-accent-subtle);
+}
+
+.border-theme-accent {
+  border-color: var(--color-accent);
+}
+
+/* Typography Classes */
+.font-heading {
+  font-family: var(--font-heading);
+}
+
+.font-body {
+  font-family: var(--font-body);
+}
+
+.font-telemetry {
+  font-family: var(--font-telemetry);
+}
+
+/* Automatic Headline Styling per Aesthetic */
+[data-aesthetic="editorial"] h1,
+[data-aesthetic="editorial"] h2,
+[data-aesthetic="editorial"] .heading-display {
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 400;
+  letter-spacing: -0.015em;
+}
+
+[data-aesthetic="editorial"] .editorial-italic {
+  font-style: italic;
+  font-family: var(--font-serif), Georgia, serif;
+}
+
+[data-aesthetic="blueprint"] h1,
+[data-aesthetic="blueprint"] h2,
+[data-aesthetic="blueprint"] .heading-display {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  letter-spacing: -0.03em;
+}
+
+/* ==========================================================================
+   24px Structural Hairline Grid (Blueprint Mode)
+   ========================================================================== */
+.blueprint-grid-24 {
+  background-size: 24px 24px;
+  background-image: 
+    linear-gradient(to right, var(--hairline-grid-color) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--hairline-grid-color) 1px, transparent 1px);
+}
+
+/* Subtle crosshair watermarks for Blueprint mode */
+.blueprint-crosshair {
+  position: relative;
+}
+.blueprint-crosshair::before {
+  content: "+";
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  font-family: var(--font-mono), monospace;
+  font-size: 14px;
+  line-height: 1;
+  color: var(--hairline-crosshair-color);
+  pointer-events: none;
+}
+.blueprint-crosshair::after {
+  content: "+";
+  position: absolute;
+  bottom: -10px;
+  right: -10px;
+  font-family: var(--font-mono), monospace;
+  font-size: 14px;
+  line-height: 1;
+  color: var(--hairline-crosshair-color);
+  pointer-events: none;
+}
+
+/* Telemetry Badge styling */
+.blueprint-tag {
+  font-family: var(--font-mono), monospace;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Editorial Craft Badge */
+.editorial-stamp {
+  font-family: var(--font-serif), Georgia, serif;
+  font-style: italic;
+  letter-spacing: 0.02em;
+}
+
+/* Aesthetic Display Helpers */
+[data-aesthetic="blueprint"] .blueprint-only {
+  display: inherit;
+}
+[data-aesthetic="blueprint"] .editorial-only {
+  display: none !important;
+}
+[data-aesthetic="editorial"] .editorial-only {
+  display: inherit;
+}
+[data-aesthetic="editorial"] .blueprint-only {
+  display: none !important;
+}
+
+/* ==========================================================================
+   Document & Base Elements
+   ========================================================================== */
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--color-bg);
+  background-color: var(--color-bg);
   color: var(--color-text-primary);
-  font-family: var(--font-inter), system-ui, sans-serif;
+  font-family: var(--font-body);
   margin: 0;
   padding: 0;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* Glassmorphism Panel mapped to active theme */
+.glass-panel {
+  background: var(--color-surface);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--color-border);
+}
+
+.glass-panel-hover {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-panel-hover:hover {
+  background: var(--color-surface-hover);
+  border-color: var(--color-accent);
+  box-shadow: 0 10px 30px -10px var(--color-accent-glow);
+}
+
+/* Custom Sleek Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent);
+}
+
+/* Selection */
+::selection {
+  background: var(--color-accent-subtle);
+  color: var(--color-accent);
+}
+
+/* ==========================================================================
+   Global Fallback Color Bridges
+   Ensures deep dark classes adapt smoothly when Light or Editorial mode is active
+   ========================================================================== */
+html[data-theme="light"] body,
+html[data-theme="light"] main {
+  background-color: var(--color-bg) !important;
+  color: var(--color-text-primary) !important;
+}
+
+/* In light mode, bridge hardcoded dark backgrounds to theme surfaces */
+html[data-theme="light"] .bg-\[\#07080a\] {
+  background-color: var(--color-bg) !important;
+}
+
+html[data-theme="light"] .bg-\[\#0d0f14\] {
+  background-color: var(--color-surface) !important;
+}
+
+html[data-theme="light"] .bg-\[\#111520\],
+html[data-theme="light"] .bg-\[\#121620\],
+html[data-theme="light"] .bg-\[\#131720\] {
+  background-color: var(--color-surface-elevated) !important;
+}
+
+html[data-theme="light"] .text-slate-100 {
+  color: var(--color-text-primary) !important;
+}
+
+html[data-theme="light"] .text-slate-300,
+html[data-theme="light"] .text-slate-400 {
+  color: var(--color-text-secondary) !important;
+}
+
+html[data-theme="light"] .border-white\/\[0\.08\],
+html[data-theme="light"] .border-white\/\[0\.04\],
+html[data-theme="light"] .border-white\/\[0\.06\],
+html[data-theme="light"] .border-white\/10 {
+  border-color: var(--color-border) !important;
+}
+
+html[data-theme="light"] .bg-white\/\[0\.02\],
+html[data-theme="light"] .bg-white\/\[0\.03\],
+html[data-theme="light"] .bg-white\/\[0\.04\] {
+  background-color: var(--color-surface-elevated) !important;
+}
+
+/* In editorial mode, bridge sky accents to terracotta accents */
+html[data-aesthetic="editorial"] .text-sky-400,
+html[data-aesthetic="editorial"] .text-sky-300 {
+  color: var(--color-accent) !important;
+}
+
+html[data-aesthetic="editorial"] .border-sky-400\/20,
+html[data-aesthetic="editorial"] .border-sky-400\/25,
+html[data-aesthetic="editorial"] .border-sky-400\/30,
+html[data-aesthetic="editorial"] .border-sky-400\/35,
+html[data-aesthetic="editorial"] .border-sky-400\/40,
+html[data-aesthetic="editorial"] .border-sky-500\/30 {
+  border-color: var(--color-border) !important;
+}
+
+html[data-aesthetic="editorial"] .bg-sky-400\/10,
+html[data-aesthetic="editorial"] .bg-sky-400\/15,
+html[data-aesthetic="editorial"] .bg-sky-500\/15 {
+  background-color: var(--color-accent-subtle) !important;
+}
+
+html[data-aesthetic="editorial"] .bg-gradient-to-r.from-sky-400,
+html[data-aesthetic="editorial"] .from-sky-400 {
+  --tw-gradient-from: var(--color-accent) var(--tw-gradient-from-position) !important;
+}
+
+html[data-aesthetic="editorial"] .to-sky-500,
+html[data-aesthetic="editorial"] .to-blue-500,
+html[data-aesthetic="editorial"] .to-indigo-400 {
+  --tw-gradient-to: #c85a32 var(--tw-gradient-to-position) !important;
+}
+
+/* In Editorial Dark, ensure pure black masks match warm charcoal */
+html[data-aesthetic="editorial"][data-theme="dark"] .from-\[\#07080a\],
+html[data-aesthetic="editorial"][data-theme="dark"] .via-\[\#07080a\]\/85,
+html[data-aesthetic="editorial"][data-theme="dark"] .to-\[\#07080a\] {
+  --tw-gradient-from: #141311 var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: #141311 var(--tw-gradient-to-position) !important;
 }

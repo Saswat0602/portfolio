@@ -6,7 +6,7 @@ import type { LoaderProps } from "./types";
 export function SpotlightLoader({
   onComplete,
   name = "Saswat Ranjan",
-  title = "MERN / Front-End Developer",
+  title = "Full Stack & AI Developer",
 }: LoaderProps) {
   const [percent, setPercent] = useState(0);
   const [loaded, setLoaded] = useState(false);
@@ -23,7 +23,7 @@ export function SpotlightLoader({
     });
   }, [onComplete]);
 
-  // Smooth realistic incrementation matching dev/portfolio-website-main
+  // Smooth realistic incrementation matching original portfolio
   useEffect(() => {
     let p = 0;
     const interval = setInterval(() => {
@@ -68,9 +68,10 @@ export function SpotlightLoader({
 
   const marqueeItems = [
     title.toUpperCase(),
+    "FULL STACK & AI DEVELOPER",
     "REACT & REACT NATIVE",
-    "SOFTWARE DEVELOPMENT ENGINEER",
-    "HYSCALER",
+    "AWS BEDROCK & RAG PIPELINES",
+    "SOFTWARE ENGINEER • HYSCALER",
     "SCALABLE WEB & MOBILE APPS",
   ];
 

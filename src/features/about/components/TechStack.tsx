@@ -1,203 +1,178 @@
 "use client";
 
-import "./TechStack.css";
-import { useEffect, useRef } from "react";
-
-interface TechItem {
-  name: string;
-  icon: string;
-  url: string;
-}
-
-// Perfect inverted pyramid: 8 → 7 → 6 → 5 → 4 → 3 → 2
-const techStack: TechItem[][] = [
-  [
-    { name: "JavaScript", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg", url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript" },
-    { name: "TypeScript", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg", url: "https://typescriptlang.org" },
-    { name: "HTML5", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg", url: "https://developer.mozilla.org/en-US/docs/Web/HTML" },
-    { name: "CSS3", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg", url: "https://developer.mozilla.org/en-US/docs/Web/CSS" },
-    { name: "React", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg", url: "https://react.dev" },
-    { name: "Next.js", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg", url: "https://nextjs.org" },
-    { name: "Tailwind", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg", url: "https://tailwindcss.com" },
-    { name: "Bootstrap", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg", url: "https://getbootstrap.com" },
-  ],
-  [
-    { name: "React Native", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg", url: "https://reactnative.dev" },
-    { name: "Redux", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redux/redux-original.svg", url: "https://redux.js.org" },
-    { name: "Node.js", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg", url: "https://nodejs.org" },
-    { name: "Express", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg", url: "https://expressjs.com" },
-    { name: "Django", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg", url: "https://djangoproject.com" },
-    { name: "Laravel", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/laravel/laravel-original.svg", url: "https://laravel.com" },
-    { name: "Ruby on Rails", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/rails/rails-original-wordmark.svg", url: "https://rubyonrails.org" },
-  ],
-  [
-    { name: "MongoDB", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg", url: "https://mongodb.com" },
-    { name: "PostgreSQL", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg", url: "https://postgresql.org" },
-    { name: "MySQL", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg", url: "https://mysql.com" },
-    { name: "SQLite", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlite/sqlite-original.svg", url: "https://sqlite.org" },
-    { name: "Firebase", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-plain.svg", url: "https://firebase.google.com" },
-    { name: "Supabase", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/supabase/supabase-original.svg", url: "https://supabase.com" },
-  ],
-  [
-    { name: "Git", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg", url: "https://git-scm.com" },
-    { name: "GitHub", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg", url: "https://github.com" },
-    { name: "Docker", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg", url: "https://docker.com" },
-    { name: "Vercel", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vercel/vercel-original.svg", url: "https://vercel.com" },
-    { name: "Three.js", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/threejs/threejs-original.svg", url: "https://threejs.org" },
-  ],
-  [
-    { name: "Socket.io", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/socketio/socketio-original.svg", url: "https://socket.io" },
-    { name: "Postman", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postman/postman-original.svg", url: "https://postman.com" },
-    { name: "Figma", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg", url: "https://figma.com" },
-    { name: "VS Code", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg", url: "https://code.visualstudio.com" },
-  ],
-  [
-    { name: "Java", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg", url: "https://java.com" },
-    { name: "C", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/c/c-original.svg", url: "https://en.cppreference.com/w/c" },
-    { name: "Linux", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg", url: "https://linux.org" },
-  ],
-  [
-    { name: "WebRTC", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/webflow/webflow-original.svg", url: "https://webrtc.org" },
-    { name: "Swift", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/swift/swift-original.svg", url: "https://swift.org" },
-  ],
-];
+import { useState } from "react";
+import { userData } from "@/lib/data";
+import {
+  Brain,
+  Layers,
+  Smartphone,
+  Database,
+  Cpu,
+  CheckCircle2,
+  Compass,
+} from "lucide-react";
+import { useAestheticTheme } from "@/hooks/useAestheticTheme";
 
 export function TechStack() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [activeCategory, setActiveCategory] = useState<string>("all");
+  const { aesthetic } = useAestheticTheme();
 
-  // Clean, high-tech particle network animation
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+  const categoryIcons: Record<string, React.ElementType> = {
+    "ai-rag": Brain,
+    "fullstack-web": Layers,
+    "mobile-realtime": Smartphone,
+    "cloud-databases": Database,
+  };
 
-    let particles: Particle[] = [];
-    let animationFrameId: number;
-    let w = canvas.width = window.innerWidth;
-    let h = canvas.height = window.innerHeight;
+  const tabs = [
+    { id: "all", label: "All Capabilities" },
+    { id: "ai-rag", label: "Modern AI & RAG" },
+    { id: "fullstack-web", label: "Full Stack & Web" },
+    { id: "mobile-realtime", label: "Mobile & Real-Time" },
+    { id: "cloud-databases", label: "Cloud & Databases" },
+  ];
 
-    class Particle {
-      x: number;
-      y: number;
-      vx: number;
-      vy: number;
-      size: number;
-
-      constructor() {
-        this.x = Math.random() * w;
-        this.y = Math.random() * h;
-        this.vx = (Math.random() - 0.5) * 0.5;
-        this.vy = (Math.random() - 0.5) * 0.5;
-        this.size = Math.random() * 1.5 + 0.5;
-      }
-
-      update() {
-        this.x += this.vx;
-        this.y += this.vy;
-        if (this.x < 0 || this.x > w) this.vx *= -1;
-        if (this.y < 0 || this.y > h) this.vy *= -1;
-      }
-
-      draw() {
-        if (!ctx) return;
-        ctx.fillStyle = "rgba(59, 130, 246, 0.5)";
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    }
-
-    const init = () => {
-      particles = [];
-      const numParticles = Math.min(Math.floor((w * h) / 15000), 100);
-      for (let i = 0; i < numParticles; i++) {
-        particles.push(new Particle());
-      }
-    };
-
-    const animate = () => {
-      ctx.clearRect(0, 0, w, h);
-      
-      particles.forEach((p) => {
-        p.update();
-        p.draw();
-      });
-
-      // Draw connecting lines
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-
-          if (dist < 120) {
-            ctx.beginPath();
-            ctx.strokeStyle = `rgba(59, 130, 246, ${0.15 - dist / 800})`;
-            ctx.lineWidth = 0.6;
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.stroke();
-          }
-        }
-      }
-
-      animationFrameId = requestAnimationFrame(animate);
-    };
-
-    const handleResize = () => {
-      w = canvas.width = window.innerWidth;
-      h = canvas.height = window.innerHeight;
-      init();
-    };
-
-    window.addEventListener("resize", handleResize);
-    init();
-    animate();
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      cancelAnimationFrame(animationFrameId);
-    };
-  }, []);
+  const displayedCategories =
+    activeCategory === "all"
+      ? userData.about.skill_categories
+      : userData.about.skill_categories.filter((cat) => cat.id === activeCategory);
 
   return (
-    <div className="techstack-new">
-      {/* Canvas Particle Background Instead of Video/GSAP */}
-      <div className="techstack-video-container">
-        <canvas
-          ref={canvasRef}
-          className="absolute inset-0 bg-[#0a0a0a] w-full h-full"
-          style={{ display: "block" }}
-        />
-        <div className="techstack-overlay" style={{ background: "rgba(10, 10, 10, 0.55)" }} />
-      </div>
+    <section id="skills" className="w-full py-24 px-6 sm:px-8 bg-theme-base text-theme-primary relative z-10 border-t border-theme-border transition-colors duration-300">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="flex flex-col items-center text-center mb-16">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-theme-border bg-theme-accent-subtle text-theme-accent text-xs font-mono uppercase tracking-wider mb-4">
+            {aesthetic === "blueprint" ? <Compass size={13} /> : <Cpu size={13} />}
+            <span>{aesthetic === "blueprint" ? "TELEMETRY // TECHNICAL_CAPABILITIES" : "Engineering Discipline & Capabilities"}</span>
+          </div>
 
-      {/* Content */}
-      <div className="techstack-content">
-        <h2>Tech Stack</h2>
+          {aesthetic === "editorial" ? (
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-normal font-serif text-theme-primary tracking-tight mb-4">
+              Full Stack &amp; <span className="italic text-theme-accent">Modern AI</span> Engineering
+            </h2>
+          ) : (
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black font-sans text-theme-primary tracking-tight mb-4">
+              Full Stack &amp; Modern AI Engineering
+            </h2>
+          )}
 
-        <div className="techstack-pyramid">
-          {techStack.map((row, rowIndex) => (
-            <div key={rowIndex} className="techstack-row">
-              {row.map((tech) => (
-                <a
-                  key={tech.name}
-                  href={tech.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="techstack-item"
-                  title={tech.name}
+          <p className="max-w-2xl text-sm sm:text-base text-theme-secondary font-light leading-relaxed">
+            Combining 3+ years of full-stack web and mobile engineering with production-grade AI systems, AWS Bedrock integrations, and high-performance vector search pipelines.
+          </p>
+
+          {/* Interactive Category Filter Tabs */}
+          <div className="flex flex-wrap items-center justify-center gap-2 mt-8 p-1.5 rounded-2xl border border-theme-border bg-theme-surface/80 backdrop-blur-xl">
+            {tabs.map((tab) => {
+              const isActive = activeCategory === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveCategory(tab.id)}
+                  className={`px-4 py-2 rounded-xl text-xs font-mono transition-all cursor-pointer ${
+                    isActive
+                      ? "bg-theme-accent text-white dark:text-zinc-950 font-bold shadow-sm"
+                      : "text-theme-secondary hover:text-theme-primary hover:bg-theme-hover"
+                  }`}
                 >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={tech.icon} alt={tech.name} loading="lazy" decoding="async" />
-                  <span>{tech.name}</span>
-                </a>
-              ))}
-            </div>
-          ))}
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Clean Capability Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+          {displayedCategories.map((cat) => {
+            const Icon = categoryIcons[cat.id] || Cpu;
+
+            return (
+              <div
+                key={cat.id}
+                className="group flex flex-col justify-between p-7 sm:p-8 rounded-2xl border border-theme-border bg-theme-surface/90 backdrop-blur-xl hover:border-theme-accent hover:bg-theme-surface transition-all duration-300 shadow-md hover:shadow-lg"
+              >
+                <div>
+                  {/* Card Header */}
+                  <div className="flex items-start justify-between mb-4">
+                    <div>
+                      <span className="text-[11px] font-mono uppercase tracking-widest text-theme-accent font-semibold block mb-1">
+                        {cat.subtitle}
+                      </span>
+                      <h3 className={`text-xl sm:text-2xl font-bold text-theme-primary tracking-tight ${
+                        aesthetic === "editorial" ? "font-serif font-normal" : "font-sans"
+                      }`}>
+                        {cat.title}
+                      </h3>
+                    </div>
+
+                    <div className="w-11 h-11 rounded-xl border border-theme-border bg-theme-surface-elevated flex items-center justify-center text-theme-accent group-hover:scale-105 group-hover:border-theme-accent group-hover:bg-theme-accent-subtle transition-all flex-shrink-0">
+                      <Icon size={20} />
+                    </div>
+                  </div>
+
+                  <p className="text-xs sm:text-sm text-theme-secondary font-light leading-relaxed mb-6">
+                    {cat.description}
+                  </p>
+
+                  {/* Skills Grid */}
+                  <div className="flex flex-col gap-2.5 mb-6">
+                    {cat.skills.map((skill) => (
+                      <div
+                        key={skill.name}
+                        className="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl border border-theme-border/60 bg-theme-surface-elevated/60 hover:bg-theme-hover hover:border-theme-border transition-colors gap-1 sm:gap-3"
+                      >
+                        <div className="flex items-center gap-2">
+                          <CheckCircle2 size={14} className="text-theme-accent flex-shrink-0" />
+                          <span className="text-xs font-semibold text-theme-primary font-mono">
+                            {skill.name}
+                          </span>
+                        </div>
+
+                        {skill.highlight && (
+                          <span className="text-[11px] font-mono text-theme-muted sm:text-right pl-6 sm:pl-0">
+                            {skill.highlight}
+                          </span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Footer Tag */}
+                <div className="pt-4 border-t border-theme-border flex items-center justify-between text-xs font-mono text-theme-muted">
+                  <span>{cat.skills.length} Core Areas</span>
+                  <span className="text-theme-accent font-medium">Production Experience</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Bottom Metrics Bar */}
+        <div className="mt-12 p-6 rounded-2xl border border-theme-border bg-theme-surface/70 backdrop-blur-md grid grid-cols-1 sm:grid-cols-3 gap-6 text-center shadow-xs">
+          <div className="flex flex-col items-center">
+            <span className={`text-2xl sm:text-3xl font-black mb-1 text-theme-primary ${
+              aesthetic === "editorial" ? "font-serif text-theme-accent" : "font-mono"
+            }`}>3+ Years</span>
+            <span className="text-xs font-mono text-theme-muted">Production Engineering Experience</span>
+          </div>
+
+          <div className="flex flex-col items-center sm:border-x sm:border-theme-border">
+            <span className={`text-2xl sm:text-3xl font-black mb-1 text-theme-accent ${
+              aesthetic === "editorial" ? "font-serif italic font-normal" : "font-mono"
+            }`}>Full Stack &amp; AI</span>
+            <span className="text-xs font-mono text-theme-muted">Web, Mobile &amp; Bedrock RAG Systems</span>
+          </div>
+
+          <div className="flex flex-col items-center">
+            <span className={`text-2xl sm:text-3xl font-black mb-1 text-emerald-500 ${
+              aesthetic === "editorial" ? "font-serif font-normal" : "font-mono"
+            }`}>Bhubaneswar, IN</span>
+            <span className="text-xs font-mono text-theme-muted">Software Engineer at HyScaler</span>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
