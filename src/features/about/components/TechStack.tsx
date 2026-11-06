@@ -12,6 +12,7 @@ import {
   Compass,
 } from "lucide-react";
 import { useAestheticTheme } from "@/hooks/useAestheticTheme";
+import { SpotlightCard } from "@/components/ui/SpotlightCard";
 
 export function TechStack() {
   const [activeCategory, setActiveCategory] = useState<string>("all");
@@ -82,15 +83,15 @@ export function TechStack() {
           </div>
         </div>
 
-        {/* Clean Capability Cards Grid */}
+        {/* Clean Capability Cards Grid with 60fps Spotlight */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
           {displayedCategories.map((cat) => {
             const Icon = categoryIcons[cat.id] || Cpu;
 
             return (
-              <div
+              <SpotlightCard
                 key={cat.id}
-                className="group flex flex-col justify-between p-7 sm:p-8 rounded-2xl border border-theme-border bg-theme-surface/90 backdrop-blur-xl hover:border-theme-accent hover:bg-theme-surface transition-all duration-300 shadow-md hover:shadow-lg"
+                className="group flex flex-col justify-between p-7 sm:p-8 rounded-2xl border border-theme-border bg-theme-surface/90 backdrop-blur-xl hover:border-theme-accent transition-all duration-300 shadow-md hover:shadow-lg"
               >
                 <div>
                   {/* Card Header */}
@@ -144,7 +145,7 @@ export function TechStack() {
                   <span>{cat.skills.length} Core Areas</span>
                   <span className="text-theme-accent font-medium">Production Experience</span>
                 </div>
-              </div>
+              </SpotlightCard>
             );
           })}
         </div>
@@ -161,15 +162,15 @@ export function TechStack() {
           <div className="flex flex-col items-center sm:border-x sm:border-theme-border">
             <span className={`text-2xl sm:text-3xl font-black mb-1 text-theme-accent ${
               aesthetic === "editorial" ? "font-serif italic font-normal" : "font-mono"
-            }`}>Full Stack &amp; AI</span>
-            <span className="text-xs font-mono text-theme-muted">Web, Mobile &amp; Bedrock RAG Systems</span>
+            }`}>Full Stack &amp; Applied AI</span>
+            <span className="text-xs font-mono text-theme-muted">Video Automation, Copilot SDKs &amp; RAG</span>
           </div>
 
           <div className="flex flex-col items-center">
             <span className={`text-2xl sm:text-3xl font-black mb-1 text-emerald-500 ${
               aesthetic === "editorial" ? "font-serif font-normal" : "font-mono"
             }`}>Bhubaneswar, IN</span>
-            <span className="text-xs font-mono text-theme-muted">Software Engineer at HyScaler</span>
+            <span className="text-xs font-mono text-theme-muted">Software Engineer at NetTantra Technologies</span>
           </div>
         </div>
       </div>

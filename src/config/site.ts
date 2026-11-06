@@ -13,11 +13,11 @@ export interface SiteConfig {
 }
 
 export const siteConfig: SiteConfig = {
-  name: "Saswat Ranjan",
-  title: "Saswat Ranjan | Full Stack & AI Developer",
-  role: "Full Stack & AI Developer",
+  name: "Saswat Ranjan Mohanty",
+  title: "Saswat Ranjan Mohanty | Software Engineer • Full-Stack & Applied AI",
+  role: "Software Engineer • Full-Stack & Applied AI",
   description:
-    "Full Stack Developer with 3+ years of experience specializing in React, React Native, Node.js, and modern AI engineering including AWS Bedrock, Agentic AI, and RAG pipelines.",
+    "Software Engineer with 3+ years of experience specializing in Full-Stack Web, Cross-Platform Mobile, and Applied AI Engineering (AWS Bedrock, pgvector RAG, & Agentic Copilots).",
   url: "https://saswat.dev",
   defaultLoader: "spotlight",
   enableLoaderPreviewSwitcher: true,

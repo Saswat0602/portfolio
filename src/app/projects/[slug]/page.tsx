@@ -19,12 +19,12 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
 
   if (!project) {
     return {
-      title: "Project Not Found | Saswat Ranjan",
+      title: "Project Not Found | Saswat Ranjan Mohanty",
     };
   }
 
   return {
-    title: `${project.project_name} | Saswat Ranjan`,
+    title: `${project.project_name} | Saswat Ranjan Mohanty`,
     description: project.description,
   };
 }

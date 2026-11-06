@@ -50,11 +50,11 @@ export function Navbar() {
             <span className={`text-sm font-bold tracking-tight text-theme-primary group-hover:text-theme-accent transition-colors ${
               aesthetic === "editorial" ? "font-serif text-base" : "font-sans"
             }`}>
-              Saswat Ranjan
+              Saswat Ranjan Mohanty
             </span>
             <span className="text-[11px] font-mono text-theme-secondary flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              {aesthetic === "editorial" ? "Artisan Software Craftsman" : "Full Stack & AI Engineer"}
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+              {aesthetic === "editorial" ? "Artisan Software Craftsman" : "Software Engineer • Applied AI"}
             </span>
           </div>
         </Link>
@@ -115,7 +115,7 @@ export function Navbar() {
 
           <Link
             href="/#contact"
-            className="group flex items-center gap-1.5 px-4 py-2 rounded-lg bg-theme-accent text-white dark:text-zinc-950 text-xs font-semibold hover:brightness-110 shadow-sm hover:shadow-md transition-all flex-shrink-0"
+            className="btn-sheen group flex items-center gap-1.5 px-4 py-2 rounded-lg bg-theme-accent text-white dark:text-zinc-950 text-xs font-semibold hover:brightness-110 shadow-sm hover:shadow-md transition-all flex-shrink-0"
           >
             <span>Let&apos;s Connect</span>
             <ArrowUpRight size={14} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />

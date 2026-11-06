@@ -1,15 +1,22 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Sans, JetBrains_Mono, Instrument_Serif } from "next/font/google";
+import { Outfit, Plus_Jakarta_Sans, JetBrains_Mono, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { siteConfig } from "@/config/site";
 import { AestheticThemeProvider } from "@/components/theme/AestheticThemeContext";
 
-const ibmPlexSans = IBM_Plex_Sans({
+const outfit = Outfit({
+  variable: "--font-heading-sans",
+  subsets: ["latin"],
+  weight: ["500", "600", "700", "800"],
+  display: "swap",
+});
+
+const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-sans",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
@@ -32,19 +39,23 @@ export const metadata: Metadata = {
   title: siteConfig.title,
   description: siteConfig.description,
   keywords: [
-    "Full Stack Developer",
-    "AI Systems Engineer",
+    "Saswat Ranjan Mohanty",
+    "Software Engineer",
+    "Full-Stack Developer",
+    "Applied AI",
+    "NetTantra Technologies",
     "AWS Bedrock",
     "Agentic AI",
     "RAG Pipelines",
-    "Vector Search",
+    "pgvector",
     "Next.js",
-    "React",
+    "React 19",
     "TypeScript",
-    "Python",
-    "Distributed Systems",
+    "Python FastAPI",
+    "WebRTC",
+    "FFmpeg",
   ],
-  authors: [{ name: "Saswat Ranjan" }],
+  authors: [{ name: "Saswat Ranjan Mohanty" }],
   openGraph: {
     title: siteConfig.title,
     description: siteConfig.description,
@@ -82,7 +93,7 @@ export default function RootLayout({
       suppressHydrationWarning
       data-aesthetic="blueprint"
       data-theme="dark"
-      className={`${ibmPlexSans.variable} ${jetbrainsMono.variable} ${instrumentSerif.variable} dark h-full antialiased`}
+      className={`${outfit.variable} ${plusJakartaSans.variable} ${jetbrainsMono.variable} ${instrumentSerif.variable} dark h-full antialiased`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />

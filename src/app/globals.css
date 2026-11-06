@@ -34,7 +34,7 @@ html[data-aesthetic="blueprint"] {
   --color-accent-active: #0284c7;
   --color-accent-subtle: rgba(56, 189, 248, 0.12);
   --color-accent-subtler: rgba(56, 189, 248, 0.06);
-  --color-accent-glow: rgba(56, 189, 248, 0.28);
+  --color-accent-glow: rgba(56, 189, 248, 0.09);
 
   /* Hairlines & Structural Borders */
   --color-border: rgba(56, 189, 248, 0.16);
@@ -85,7 +85,7 @@ html[data-aesthetic="blueprint"][data-theme="light"] {
   --color-accent-active: #075985;
   --color-accent-subtle: rgba(2, 132, 199, 0.12);
   --color-accent-subtler: rgba(2, 132, 199, 0.05);
-  --color-accent-glow: rgba(2, 132, 199, 0.22);
+  --color-accent-glow: rgba(2, 132, 199, 0.08);
 
   /* Cyan Hairlines */
   --color-border: rgba(2, 132, 199, 0.20);
@@ -136,7 +136,7 @@ html[data-aesthetic="editorial"][data-theme="light"] {
   --color-accent-active: #9a3412;
   --color-accent-subtle: rgba(217, 93, 57, 0.12);
   --color-accent-subtler: rgba(217, 93, 57, 0.05);
-  --color-accent-glow: rgba(217, 93, 57, 0.25);
+  --color-accent-glow: rgba(217, 93, 57, 0.08);
 
   /* Artisan Warm Terracotta Borders */
   --color-border: rgba(217, 93, 57, 0.20);
@@ -188,7 +188,7 @@ html[data-aesthetic="editorial"]:not([data-theme="light"]) {
   --color-accent-active: #c85a32;
   --color-accent-subtle: rgba(224, 109, 72, 0.16);
   --color-accent-subtler: rgba(224, 109, 72, 0.08);
-  --color-accent-glow: rgba(224, 109, 72, 0.32);
+  --color-accent-glow: rgba(224, 109, 72, 0.10);
 
   /* Artisan Terracotta Ember Borders */
   --color-border: rgba(224, 109, 72, 0.22);
@@ -558,3 +558,258 @@ html[data-aesthetic="editorial"][data-theme="dark"] .to-\[\#07080a\] {
   --tw-gradient-from: #141311 var(--tw-gradient-from-position) !important;
   --tw-gradient-to: #141311 var(--tw-gradient-to-position) !important;
 }
+
+/* ==========================================================================
+   SIGNATURE ANIMATION SYSTEMS
+   1. Interactive Dot Grid with Gentle Drift (32px)
+   2. 60fps Cursor-Following Spotlight Cards (.spotlight-card)
+   3. Specular Sheen Button Effect (.btn-sheen)
+   4. Infinite Smooth Tech Marquee (Dual-Track with edge fade & hover-pause)
+   5. Architecture Data Flow Pulse & Packet Flow (@keyframes packetFlow)
+   6. Scroll Reveal Transitions (.reveal.is-visible)
+   ========================================================================== */
+
+/* 2. Interactive Dot Grid with Gentle Drift */
+@keyframes gridDrift {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 32px 32px;
+  }
+}
+
+.dot-grid-drift {
+  background-image: radial-gradient(circle, var(--hairline-grid-color) 1.25px, transparent 1.25px);
+  background-size: 32px 32px;
+  animation: gridDrift 24s linear infinite;
+  mask-image: radial-gradient(ellipse 75% 65% at 50% 40%, #000 35%, transparent 95%);
+  -webkit-mask-image: radial-gradient(ellipse 75% 65% at 50% 40%, #000 35%, transparent 95%);
+}
+
+/* 3. 60fps Cursor-Following Spotlight Cards */
+.spotlight-card {
+  position: relative;
+  overflow: hidden;
+  --mouse-x: 50%;
+  --mouse-y: 50%;
+}
+
+.spotlight-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    300px circle at var(--mouse-x) var(--mouse-y),
+    var(--color-accent-glow),
+    transparent 60%
+  );
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+  z-index: 1;
+}
+
+.spotlight-card:hover::before {
+  opacity: 0.55;
+}
+
+/* 4. Specular Sheen Button Effect */
+.btn-sheen {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.btn-sheen::after {
+  content: "";
+  position: absolute;
+  top: -60%;
+  left: -70%;
+  width: 240%;
+  height: 220%;
+  background: linear-gradient(
+    75deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.28) 50%,
+    transparent 65%
+  );
+  transform: translateX(-100%) rotate(25deg);
+  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.btn-sheen:hover::after {
+  transform: translateX(100%) rotate(25deg);
+}
+
+/* 5. Infinite Smooth Tech Marquee */
+@keyframes marqueeScroll {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-100%, 0, 0);
+  }
+}
+
+@keyframes marqueeScrollReverse {
+  0% {
+    transform: translate3d(-100%, 0, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes marqueeScrollLeft {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes marqueeScrollRight {
+  0% {
+    transform: translate3d(-50%, 0, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.animate-marquee-left {
+  animation: marqueeScroll 34s linear infinite;
+  will-change: transform;
+}
+
+.animate-marquee-right {
+  animation: marqueeScrollReverse 34s linear infinite;
+  will-change: transform;
+}
+
+.marquee-track-left {
+  display: flex;
+  width: max-content;
+  animation: marqueeScrollLeft 34s linear infinite;
+  will-change: transform;
+}
+
+.marquee-track-right {
+  display: flex;
+  width: max-content;
+  animation: marqueeScrollRight 34s linear infinite;
+  will-change: transform;
+}
+
+.marquee-container:hover .animate-marquee-left,
+.marquee-container:hover .animate-marquee-right,
+.marquee-container:hover .marquee-track-left,
+.marquee-container:hover .marquee-track-right {
+  animation-play-state: paused;
+}
+
+.marquee-mask {
+  mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+}
+
+/* 6. Architecture Data Flow Pulse & Packet Flow */
+@keyframes packetFlow {
+  0% {
+    left: 0%;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.6);
+  }
+  8% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.15);
+  }
+  92% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.15);
+  }
+  100% {
+    left: 100%;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.6);
+  }
+}
+
+@keyframes packetFlowVertical {
+  0% {
+    top: 0%;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.6);
+  }
+  10% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.15);
+  }
+  90% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.15);
+  }
+  100% {
+    top: 100%;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.6);
+  }
+}
+
+
+@keyframes dashFlow {
+  to {
+    stroke-dashoffset: -32;
+  }
+}
+
+.packet-stream-dot {
+  position: absolute;
+  top: 50%;
+  width: 9px;
+  height: 9px;
+  border-radius: 9999px;
+  background-color: var(--color-accent);
+  box-shadow: 0 0 6px var(--color-accent-glow);
+  animation: packetFlow 2.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  will-change: left, opacity, transform;
+}
+
+.packet-stream-dot-vertical {
+  position: absolute;
+  left: 50%;
+  width: 9px;
+  height: 9px;
+  border-radius: 9999px;
+  background-color: var(--color-accent);
+  box-shadow: 0 0 6px var(--color-accent-glow);
+  animation: packetFlowVertical 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  will-change: top, opacity, transform;
+}
+
+.dash-flow-line {
+  stroke-dasharray: 6 6;
+  animation: dashFlow 1.2s linear infinite;
+}
+
+/* 7. Scroll Reveal Transitions */
+.reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  filter: blur(6px);
+  transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform, filter;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+

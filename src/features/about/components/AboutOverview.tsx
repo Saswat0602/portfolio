@@ -16,6 +16,7 @@ import {
   Compass,
 } from "lucide-react";
 import { useAestheticTheme } from "@/hooks/useAestheticTheme";
+import { SpotlightCard } from "@/components/ui/SpotlightCard";
 
 export function AboutOverview() {
   const { aesthetic } = useAestheticTheme();
@@ -40,7 +41,7 @@ export function AboutOverview() {
       icon: Zap,
     },
     {
-      title: "End-to-End Delivery at HyScaler",
+      title: "End-to-End Delivery at NetTantra",
       description:
         "Leading features from concept through deployment: cloud storage, microservices, database schemas, and smooth client interfaces with 3+ years of production rigor.",
       icon: ShieldCheck,
@@ -89,7 +90,7 @@ export function AboutOverview() {
           <div className="flex flex-wrap items-center gap-4 pt-2">
             <Link
               href="/projects"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-theme-accent text-white dark:text-zinc-950 text-xs font-bold hover:brightness-110 transition-all shadow-sm"
+              className="btn-sheen inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-theme-accent text-white dark:text-zinc-950 text-xs font-bold hover:brightness-110 transition-all shadow-sm"
             >
               <span>Explore Shipped Projects</span>
               <ArrowRight size={14} />
@@ -122,9 +123,9 @@ export function AboutOverview() {
           {principles.map((principle) => {
             const Icon = principle.icon;
             return (
-              <div
+              <SpotlightCard
                 key={principle.title}
-                className="p-7 rounded-2xl border border-theme-border bg-theme-surface/90 backdrop-blur-xl hover:border-theme-accent hover:bg-theme-surface transition-all flex flex-col justify-between group shadow-sm"
+                className="p-7 rounded-2xl border border-theme-border bg-theme-surface/90 backdrop-blur-xl hover:border-theme-accent transition-all flex flex-col justify-between group shadow-sm"
               >
                 <div>
                   <div className="w-10 h-10 rounded-xl border border-theme-border bg-theme-surface-elevated flex items-center justify-center text-theme-accent mb-4 group-hover:scale-110 transition-transform">
@@ -139,7 +140,7 @@ export function AboutOverview() {
                     {principle.description}
                   </p>
                 </div>
-              </div>
+              </SpotlightCard>
             );
           })}
         </div>
@@ -151,7 +152,7 @@ export function AboutOverview() {
         <div className="lg:col-span-7 p-8 rounded-2xl border border-theme-border bg-theme-surface/90 backdrop-blur-xl shadow-sm">
           <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-theme-accent mb-3">
             <Briefcase size={14} />
-            <span>Track Record at HyScaler</span>
+            <span>Track Record at NetTantra Technologies</span>
           </div>
           <h3 className={`text-2xl font-bold text-theme-primary mb-6 ${
             aesthetic === "editorial" ? "font-serif font-normal text-3xl" : "font-sans"

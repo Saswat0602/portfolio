@@ -1,40 +1,70 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, MapPin, Sparkles, Layers, Cpu, Database, Mail, Compass, BookmarkCheck } from "lucide-react";
+import { ArrowRight, MapPin, Layers, Cpu, Mail, Compass, BookmarkCheck, Workflow, Zap } from "lucide-react";
 import Link from "next/link";
 import { userData } from "@/lib/data";
 import { useAestheticTheme } from "@/hooks/useAestheticTheme";
+import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
+
+import { useRef, useCallback } from "react";
 
 export function Hero() {
   const { aesthetic } = useAestheticTheme();
+  const heroRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (!heroRef.current) return;
+    const rect = heroRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    heroRef.current.style.setProperty("--hero-x", `${x}px`);
+    heroRef.current.style.setProperty("--hero-y", `${y}px`);
+  }, []);
 
   const coreCompetencies = [
-    { label: "Full Stack (React / Next.js / Node.js)", icon: Layers },
-    { label: "AWS Bedrock & RAG Pipelines", icon: Cpu },
-    { label: "Agentic AI & LangGraph", icon: Sparkles },
-    { label: "Vector Search & Real-Time Comms", icon: Database },
+    { label: "Full Stack (Next.js 15 / React 19 / Node)", icon: Layers },
+    { label: "AWS Bedrock & Enterprise RAG", icon: Cpu },
+    { label: "Agentic Copilots & LangGraph", icon: Workflow },
+    { label: "Automated FFmpeg & Video Pipelines", icon: Zap },
   ];
 
   const highlights = [
-    { number: "3+", label: "Years Engineering Experience" },
-    { number: "Full Stack", label: "Web, Mobile & Microservices" },
-    { number: "AWS Bedrock", label: "Enterprise RAG & Agentic AI" },
-    { number: "HyScaler", label: "Software Engineer (SDE 1)" },
+    { value: "98%", label: "Action Execution Success" },
+    { value: "384ms", label: "P95 Vector Retrieval Latency" },
+    { value: "-60%", label: "Batch Turnaround Reduction" },
+    { value: "190k", label: "Production LOC Delivered" },
   ];
 
   return (
-    <section className="relative w-full min-h-[92vh] flex flex-col items-center justify-center overflow-hidden px-6 pt-10 pb-20 bg-theme-base text-theme-primary transition-colors duration-300">
-      {/* Dynamic Background: 24px Hairline Blueprint Grid OR Warm Editorial Paper Texture */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
+    <section
+      ref={heroRef}
+      onMouseMove={handleMouseMove}
+      className="relative w-full min-h-[92vh] flex flex-col items-center justify-center overflow-hidden px-6 pt-10 pb-20 bg-theme-base text-theme-primary transition-colors duration-300"
+    >
+      {/* Dynamic Background: 32px Animated Dot Matrix Drift with Radial Vignette */}
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
         {/* Glow ambient */}
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] md:w-[1000px] h-[400px] bg-theme-accent/10 blur-[150px] rounded-full transition-colors duration-500" />
         <div className="absolute top-1/3 left-1/3 w-[500px] h-[300px] bg-theme-accent/5 blur-[140px] rounded-full transition-colors duration-500" />
 
+        {/* Interactive Pointer Radial Spotlight behind Dot Matrix */}
+        <div
+          className="absolute inset-0 pointer-events-none transition-opacity duration-300"
+          style={{
+            background:
+              "radial-gradient(600px circle at var(--hero-x, 50%) var(--hero-y, 40%), var(--color-accent-subtle), transparent 70%)",
+          }}
+        />
+
+        {/* 32px Continuous Linear Drift Dot Grid with Radial Vignette */}
+        <div className="absolute inset-0 dot-grid-drift opacity-60 transition-opacity duration-500" />
+
         {/* 24px Structural Hairlines for Blueprint mode */}
         <div
           className={`absolute inset-0 transition-opacity duration-500 ${
-            aesthetic === "blueprint" ? "opacity-100 blueprint-grid-24" : "opacity-20"
+            aesthetic === "blueprint" ? "opacity-100 blueprint-grid-24" : "opacity-0"
           }`}
         />
 
@@ -45,18 +75,18 @@ export function Hero() {
         <div className="blueprint-only hidden lg:flex justify-between items-start absolute inset-x-8 top-24 text-[10px] font-mono text-theme-muted/50 select-none pointer-events-none tracking-widest">
           <div>
             <span>[COORD: 20.2961° N, 85.8245° E]</span>
-            <span className="block mt-0.5">BHUBANESWAR // SYS_ID: HYSCALER_SDE1</span>
+            <span className="block mt-0.5">BHUBANESWAR // SYS_ID: NETTANTRA_SDE1</span>
           </div>
           <div className="text-right">
-            <span>[GRID: 24PX_STRUCTURAL_HAIRLINE]</span>
+            <span>[GRID: 32PX_DRIFT_MATRIX]</span>
             <span className="block mt-0.5">STATUS: ALL_SYSTEMS_OPERATIONAL</span>
           </div>
         </div>
 
         {/* Editorial Craft Watermark */}
         <div className="editorial-only hidden lg:flex justify-between items-center absolute inset-x-10 top-24 text-xs font-serif italic text-theme-muted/50 select-none pointer-events-none tracking-wider">
-          <span>Volume III — Production Engineering Record</span>
-          <span>HyScaler Engineering Craft • Saswat Ranjan</span>
+          <span>Volume IV — Production Engineering Record</span>
+          <span>NetTantra Technologies • Saswat Ranjan Mohanty</span>
         </div>
       </div>
 
@@ -74,12 +104,12 @@ export function Hero() {
             <>
               <div className="flex items-center gap-1.5 text-xs font-mono text-theme-accent">
                 <Compass size={13} />
-                <span>SPEC // FULL-STACK &amp; AI</span>
+                <span>SPEC // FULL-STACK &amp; APPLIED AI</span>
               </div>
               <span className="text-theme-border hidden sm:inline">|</span>
               <div className="flex items-center gap-1.5 text-xs font-mono text-theme-secondary">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                <span>3+ YOE • HYSCALER SDE 1</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                <span>3+ YOE • NETTANTRA TECHNOLOGIES SDE 1</span>
               </div>
               <span className="text-theme-border hidden sm:inline">|</span>
               <div className="flex items-center gap-1 text-xs font-mono text-theme-muted">
@@ -91,12 +121,12 @@ export function Hero() {
             <>
               <div className="flex items-center gap-1.5 text-xs font-serif italic text-theme-accent font-medium">
                 <BookmarkCheck size={13} />
-                <span>Artisan Full Stack &amp; Generative AI Systems</span>
+                <span>Software Engineer • Full-Stack &amp; Applied AI</span>
               </div>
               <span className="text-theme-border hidden sm:inline">•</span>
               <div className="flex items-center gap-1.5 text-xs font-sans text-theme-secondary">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                <span>3+ Years Production Craft</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                <span>NetTantra Technologies • 3+ YOE</span>
               </div>
               <span className="text-theme-border hidden sm:inline">•</span>
               <div className="flex items-center gap-1 text-xs font-sans text-theme-muted">
@@ -107,7 +137,7 @@ export function Hero() {
           )}
         </motion.div>
 
-        {/* Dynamic Typography: IBM Plex Sans (Blueprint) vs Instrument Serif (Editorial) */}
+        {/* Dynamic Headline: Outfit/Sans (Blueprint) vs Instrument Serif (Editorial) */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -116,25 +146,25 @@ export function Hero() {
         >
           {aesthetic === "editorial" ? (
             <>
-              <h1 className="text-6xl sm:text-7xl md:text-9xl font-normal font-serif tracking-tight text-theme-primary mb-4 leading-[0.95]">
-                <span className="italic block sm:inline">Saswat</span> Ranjan
+              <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-normal font-serif tracking-tight text-theme-primary mb-4 leading-[0.95]">
+                <span className="italic block sm:inline">Saswat</span> Ranjan Mohanty
               </h1>
               <p className="text-xl sm:text-2xl md:text-3xl font-serif text-theme-accent tracking-normal max-w-3xl mx-auto leading-relaxed">
-                <span className="italic">Architecting</span> high-performance web systems, distributed microservices, and <span className="italic">enterprise AWS Bedrock RAG</span> pipelines.
+                <span className="italic">Architecting</span> high-performance web systems, distributed microservices, and <span className="italic">applied AI &amp; agentic copilots</span>.
               </p>
             </>
           ) : (
             <>
               <div className="inline-block mb-1">
                 <span className="text-[11px] font-mono uppercase tracking-[0.2em] text-theme-accent bg-theme-accent-subtle px-2.5 py-0.5 rounded border border-theme-border">
-                  [SYSTEM_ENGINEER // PRODUCTION_READY]
+                  [SOFTWARE_ENGINEER // FULL_STACK_APPLIED_AI]
                 </span>
               </div>
-              <h1 className="text-5xl sm:text-6xl md:text-8xl font-black font-sans tracking-tight text-theme-primary mb-4">
+              <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black font-sans tracking-tight text-theme-primary mb-4">
                 {userData.name}
               </h1>
               <p className="text-lg sm:text-xl md:text-2xl font-mono font-medium tracking-tight text-theme-accent">
-                Full Stack Development • AWS Bedrock &amp; RAG • Agentic AI
+                Full-Stack Systems • Applied AI Copilots • Video Pipelines • pgvector RAG
               </p>
             </>
           )}
@@ -149,7 +179,7 @@ export function Hero() {
             aesthetic === "editorial" ? "font-sans leading-relaxed" : "font-sans"
           }`}
         >
-          Full Stack Developer with 3+ years of experience engineering high-performance web applications, cross-platform mobile apps, and modern generative AI architectures with AWS Bedrock, vector search, and agentic workflows.
+          Software Engineer (SDE 1) at NetTantra Technologies with 3+ years of production experience shipping high-throughput web apps, cross-platform mobile apps, automated video generation pipelines, and agentic copilots.
         </motion.p>
 
         {/* Core Competencies Badges */}
@@ -172,7 +202,7 @@ export function Hero() {
           ))}
         </motion.div>
 
-        {/* Call to Actions */}
+        {/* Call to Actions with Specular Sheen Button Effect */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -181,7 +211,7 @@ export function Hero() {
         >
           <Link
             href="/projects"
-            className="group flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-theme-accent text-white dark:text-zinc-950 font-semibold text-sm transition-all hover:brightness-110 shadow-md hover:shadow-lg active:scale-[0.98]"
+            className="btn-sheen group flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-theme-accent text-white dark:text-zinc-950 font-semibold text-sm transition-all hover:brightness-110 shadow-md hover:shadow-lg active:scale-[0.98]"
           >
             <span>Explore Shipped Projects</span>
             <ArrowRight
@@ -191,23 +221,23 @@ export function Hero() {
           </Link>
 
           <a
-            href="#contact"
+            href="#architecture"
             className="flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl border border-theme-accent/40 bg-theme-accent-subtle text-theme-accent font-medium text-sm transition-all hover:bg-theme-accent/20 hover:border-theme-accent"
           >
-            <Mail size={15} />
-            <span>Email Me</span>
+            <Workflow size={15} />
+            <span>Architecture Explorer</span>
           </a>
 
           <a
-            href="#skills"
+            href="#contact"
             className="flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl border border-theme-border bg-theme-surface/70 backdrop-blur-md text-theme-secondary font-medium text-sm transition-all hover:bg-theme-hover hover:border-theme-border-strong hover:text-theme-primary"
           >
-            <Sparkles size={15} className="text-amber-500" />
-            <span>Technical Capabilities</span>
+            <Mail size={15} />
+            <span>Direct Contact</span>
           </a>
         </motion.div>
 
-        {/* Key Metrics Strip (3+ YOE Showcase) */}
+        {/* Key Metrics Strip with EaseOutExpo Animated Counter on Spotlight Cards */}
         <motion.div
           initial={{ opacity: 0, y: 25 }}
           animate={{ opacity: 1, y: 0 }}
@@ -215,19 +245,21 @@ export function Hero() {
           className="w-full max-w-4xl grid grid-cols-2 md:grid-cols-4 gap-4 pt-8 border-t border-theme-border"
         >
           {highlights.map((item, idx) => (
-            <div
+            <SpotlightCard
               key={idx}
-              className="flex flex-col items-center p-4 rounded-xl border border-theme-border/60 bg-theme-surface/40 backdrop-blur-sm"
+              className="flex flex-col items-center p-4 rounded-xl border border-theme-border/60 bg-theme-surface/50 backdrop-blur-sm hover:border-theme-accent/60 transition-colors"
             >
-              <span className={`text-2xl sm:text-3xl font-black mb-1 text-theme-primary ${
-                aesthetic === "editorial" ? "font-serif text-theme-accent" : "font-mono"
-              }`}>
-                {item.number}
+              <span
+                className={`text-2xl sm:text-3xl font-black mb-1 text-theme-primary ${
+                  aesthetic === "editorial" ? "font-serif text-theme-accent" : "font-mono"
+                }`}
+              >
+                <AnimatedCounter value={item.value} />
               </span>
               <span className="text-xs font-mono text-theme-muted text-center">
                 {item.label}
               </span>
-            </div>
+            </SpotlightCard>
           ))}
         </motion.div>
       </div>

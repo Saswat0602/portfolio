@@ -223,7 +223,7 @@ export function ContactSection({ isStandalone = false }: ContactSectionProps) {
         </div>
 
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-500 shadow-xs">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
           <span>Worldwide Remote &amp; Relocation Ready</span>
         </div>
       </div>
@@ -250,7 +250,7 @@ export function ContactSection({ isStandalone = false }: ContactSectionProps) {
               </div>
 
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-theme-border bg-theme-accent-subtle text-theme-accent text-[10px] font-mono font-medium">
-                <span className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse" />
+                <span className="w-1.5 h-1.5 rounded-full bg-theme-accent" />
                 <span>Inbox Ready</span>
               </span>
             </div>
@@ -273,11 +273,29 @@ export function ContactSection({ isStandalone = false }: ContactSectionProps) {
               </a>
             </div>
 
+            {/* Direct Phone & WhatsApp */}
+            <div className="mb-5 p-3.5 rounded-xl border border-theme-border bg-theme-surface-elevated/70 backdrop-blur-md flex items-center justify-between">
+              <div>
+                <span className="text-[10px] font-mono uppercase text-theme-muted block mb-1">
+                  Direct Line &amp; WhatsApp
+                </span>
+                <a
+                  href={`tel:${userData.about.phone}`}
+                  className="text-sm sm:text-base font-mono font-bold text-theme-primary hover:text-theme-accent transition-colors"
+                >
+                  {userData.about.phone}
+                </a>
+              </div>
+              <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                Active
+              </span>
+            </div>
+
             {/* Action Buttons: Email Me & Copy Email */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
               <a
                 href={mailtoUrl}
-                className="inline-flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl bg-theme-accent text-white dark:text-zinc-950 text-xs font-bold font-mono hover:brightness-110 active:scale-[0.98] transition-all shadow-sm"
+                className="btn-sheen inline-flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl bg-theme-accent text-white dark:text-zinc-950 text-xs font-bold font-mono hover:brightness-110 active:scale-[0.98] transition-all shadow-sm"
               >
                 <Mail size={15} />
                 <span>Email Me</span>
@@ -520,7 +538,7 @@ export function ContactSection({ isStandalone = false }: ContactSectionProps) {
                 <button
                   type="submit"
                   disabled={status === "submitting"}
-                  className="mt-2 flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-theme-accent text-white dark:text-zinc-950 text-xs font-bold font-mono hover:brightness-110 disabled:opacity-50 active:scale-[0.99] transition-all shadow-sm cursor-pointer"
+                  className="btn-sheen mt-2 flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-theme-accent text-white dark:text-zinc-950 text-xs font-bold font-mono hover:brightness-110 disabled:opacity-50 active:scale-[0.99] transition-all shadow-sm cursor-pointer"
                 >
                   <Send size={14} />
                   <span>

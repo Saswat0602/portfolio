@@ -7,7 +7,7 @@ import { useAestheticTheme } from "@/hooks/useAestheticTheme";
 
 export function CurtainLoader({
   onComplete,
-  name = "Saswat Ranjan",
+  name = "Saswat Ranjan Mohanty",
   durationMs = 2200,
 }: LoaderProps) {
   const [progress, setProgress] = useState(0);

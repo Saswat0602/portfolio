@@ -75,7 +75,7 @@ export function CareerSection() {
           )}
 
           <p className="max-w-2xl text-sm sm:text-base text-theme-secondary font-light leading-relaxed">
-            Software Development Engineer at HyScaler, engineering scalable full-stack web and mobile systems alongside modern Generative AI and AWS Bedrock RAG pipelines.
+            Software Development Engineer at NetTantra Technologies, engineering scalable full-stack web and mobile systems alongside automated video generation pipelines, agentic copilots, and pgvector RAG.
           </p>
         </div>
 

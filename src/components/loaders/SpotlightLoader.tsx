@@ -5,8 +5,8 @@ import type { LoaderProps } from "./types";
 
 export function SpotlightLoader({
   onComplete,
-  name = "Saswat Ranjan",
-  title = "Full Stack & AI Developer",
+  name = "Saswat Ranjan Mohanty",
+  title = "Software Engineer • Full-Stack & Applied AI",
 }: LoaderProps) {
   const [percent, setPercent] = useState(0);
   const [loaded, setLoaded] = useState(false);
@@ -71,7 +71,7 @@ export function SpotlightLoader({
     "FULL STACK & AI DEVELOPER",
     "REACT & REACT NATIVE",
     "AWS BEDROCK & RAG PIPELINES",
-    "SOFTWARE ENGINEER • HYSCALER",
+    "SOFTWARE ENGINEER • NETTANTRA TECHNOLOGIES",
     "SCALABLE WEB & MOBILE APPS",
   ];
 

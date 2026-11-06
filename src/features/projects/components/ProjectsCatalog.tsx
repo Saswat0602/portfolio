@@ -6,6 +6,8 @@ import Link from "next/link";
 import { userData } from "@/lib/data";
 import { Search, ExternalLink, Code2, ArrowRight, Sparkles, Filter } from "lucide-react";
 import { useAestheticTheme } from "@/hooks/useAestheticTheme";
+import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import { ScrollReveal } from "@/components/ui/ScrollReveal";
 
 export function ProjectsCatalog() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
@@ -14,11 +16,11 @@ export function ProjectsCatalog() {
 
   const categories = [
     { id: "all", label: "All Projects" },
-    { id: "full stack", label: "Full Stack" },
-    { id: "ai & rag", label: "AI & RAG" },
-    { id: "mobile", label: "Mobile" },
+    { id: "applied ai", label: "Applied AI" },
     { id: "agentic ai", label: "Agentic AI" },
-    { id: "web application", label: "Web Apps" },
+    { id: "full stack", label: "Full Stack" },
+    { id: "mobile", label: "Mobile" },
+    { id: "frontend", label: "Design Systems" },
   ];
 
   const filteredProjects = useMemo(() => {
@@ -117,10 +119,14 @@ export function ProjectsCatalog() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {filteredProjects.map((project, index) => (
-            <article
+            <ScrollReveal
               key={project.slug || project.project_name}
-              className="group flex flex-col justify-between rounded-2xl border border-theme-border bg-theme-surface/90 backdrop-blur-xl overflow-hidden hover:border-theme-accent hover:bg-theme-surface transition-all duration-300 shadow-md hover:shadow-lg"
+              delayMs={(index % 3) * 80}
+              className="h-full"
             >
+              <SpotlightCard
+                className="group h-full flex flex-col justify-between rounded-2xl border border-theme-border bg-theme-surface/90 backdrop-blur-xl overflow-hidden hover:border-theme-accent transition-all duration-300 shadow-md hover:shadow-lg"
+              >
               <div>
                 {/* Image Cover */}
                 <div className="relative w-full h-52 overflow-hidden bg-black/30">
@@ -221,8 +227,9 @@ export function ProjectsCatalog() {
                   <ArrowRight size={13} />
                 </Link>
               </div>
-            </article>
-          ))}
+            </SpotlightCard>
+          </ScrollReveal>
+        ))}
         </div>
       )}
     </div>

@@ -79,7 +79,7 @@ export function ProjectDetailView({ project, allProjects }: ProjectDetailViewPro
                 href={project.demo_link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-theme-accent text-white dark:text-zinc-950 text-xs font-bold shadow-sm hover:brightness-110 transition-all"
+                className="btn-sheen inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-theme-accent text-white dark:text-zinc-950 text-xs font-bold shadow-sm hover:brightness-110 transition-all"
               >
                 <ExternalLink size={14} />
                 <span>Explore Live System</span>

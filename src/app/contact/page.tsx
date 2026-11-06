@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { ContactView } from "@/features/contact/components/ContactView";
 
 export const metadata: Metadata = {
-  title: "Contact | Saswat Ranjan",
+  title: "Contact | Saswat Ranjan Mohanty",
   description:
-    "Connect with Saswat Ranjan regarding Full Stack & AI Developer roles, AWS Bedrock & enterprise RAG pipelines, or mobile app development.",
+    "Connect with Saswat Ranjan Mohanty regarding Full-Stack & Applied AI engineering roles, automated video pipelines, or mobile app development.",
 };
 
 export default function ContactPage() {

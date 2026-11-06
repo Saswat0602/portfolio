@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { AboutOverview } from "@/features/about/components/AboutOverview";
 
 export const metadata: Metadata = {
-  title: "About & Engineering Background | Saswat Ranjan",
+  title: "About & Engineering Background | Saswat Ranjan Mohanty",
   description:
-    "Learn about Saswat Ranjan's 3+ years of engineering experience delivering full-stack web and mobile applications, AWS Bedrock systems, and enterprise RAG pipelines.",
+    "Learn about Saswat Ranjan Mohanty's 3+ years of engineering experience delivering full-stack web and mobile applications, NetTantra Technologies background, and applied AI systems.",
 };
 
 export default function AboutPage() {

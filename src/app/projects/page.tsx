@@ -3,9 +3,9 @@ import { ProjectsCatalog } from "@/features/projects/components/ProjectsCatalog"
 import { Cpu } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Production Projects & AI Case Studies | Saswat Ranjan",
+  title: "Production Projects & AI Case Studies | Saswat Ranjan Mohanty",
   description:
-    "Enterprise RAG pipelines, AWS Bedrock systems, autonomous Agentic AI swarms, and scalable full-stack web platforms engineered by Saswat Ranjan.",
+    "Applied AI video pipelines, Taskosaur Any agentic copilot, Shomes real estate spatial search, Mad-UI, and scalable full-stack platforms engineered by Saswat Ranjan Mohanty.",
 };
 
 export default function ProjectsPage() {
