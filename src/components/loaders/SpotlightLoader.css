@@ -17,7 +17,7 @@
 
 .loading-header {
   width: 90%;
-  max-width: 1400px;
+  max-width: min(1400px, 100vw);
   position: fixed;
   z-index: 999999;
   display: flex;
@@ -29,6 +29,7 @@
   transform: translateX(-50%);
   top: 0;
   color: #f8fafc;
+  overflow-x: hidden;
 }
 
 .loader-title {
@@ -375,6 +376,33 @@
 @keyframes blinkDone {
   to {
     opacity: 0;
+  }
+}
+
+@media only screen and (max-width: 640px) {
+  .loaderGame {
+    display: none;
+  }
+  .loading-header {
+    justify-content: center;
+    padding: 18px 0;
+  }
+  .loader-title {
+    font-size: 13px;
+    text-align: center;
+  }
+  .loading-wrap {
+    --Lsize: 130px;
+  }
+  .loading-button {
+    padding: 16px 36px;
+    font-size: 15px;
+  }
+  .loading-container {
+    left: 36px;
+  }
+  .loading-marquee {
+    font-size: 45px;
   }
 }
 

@@ -69,12 +69,12 @@ function TechCard({ item }: { item: TechItem }) {
 export function TechMarquee() {
   return (
     <section className="w-full py-12 overflow-hidden border-y border-theme-border bg-theme-surface/40 backdrop-blur-sm relative z-10">
-      <div className="max-w-7xl mx-auto px-6 mb-6 flex items-center justify-between">
-        <div className="flex items-center gap-2 text-xs font-mono tracking-widest text-theme-accent uppercase">
-          <Workflow size={13} />
-          <span>PRODUCTION TECH STACK &amp; CAPABILITIES</span>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-4 sm:mb-6 flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2 text-[10px] xs:text-xs font-mono tracking-wider sm:tracking-widest text-theme-accent uppercase min-w-0">
+          <Workflow size={13} className="flex-shrink-0" />
+          <span className="truncate">PRODUCTION TECH STACK &amp; CAPABILITIES</span>
         </div>
-        <span className="text-[11px] font-mono text-theme-muted hidden sm:inline">
+        <span className="text-[10px] sm:text-[11px] font-mono text-theme-muted hidden sm:inline flex-shrink-0">
           [HOVER TO PAUSE STREAM]
         </span>
       </div>

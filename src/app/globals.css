@@ -414,6 +414,9 @@ html[data-aesthetic="editorial"]:not([data-theme="light"]) {
    ========================================================================== */
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
+  max-width: 100%;
+  width: 100%;
 }
 
 body {
@@ -423,9 +426,24 @@ body {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+  max-width: 100%;
+  width: 100%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Hide scrollbar utility for clean touch swiping */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 /* Glassmorphism Panel mapped to active theme */
@@ -565,8 +583,7 @@ html[data-aesthetic="editorial"][data-theme="dark"] .to-\[\#07080a\] {
    2. 60fps Cursor-Following Spotlight Cards (.spotlight-card)
    3. Specular Sheen Button Effect (.btn-sheen)
    4. Infinite Smooth Tech Marquee (Dual-Track with edge fade & hover-pause)
-   5. Architecture Data Flow Pulse & Packet Flow (@keyframes packetFlow)
-   6. Scroll Reveal Transitions (.reveal.is-visible)
+   5. Scroll Reveal Transitions (.reveal.is-visible)
    ========================================================================== */
 
 /* 2. Interactive Dot Grid with Gentle Drift */
@@ -717,86 +734,7 @@ html[data-aesthetic="editorial"][data-theme="dark"] .to-\[\#07080a\] {
   -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
 }
 
-/* 6. Architecture Data Flow Pulse & Packet Flow */
-@keyframes packetFlow {
-  0% {
-    left: 0%;
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.6);
-  }
-  8% {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1.15);
-  }
-  92% {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1.15);
-  }
-  100% {
-    left: 100%;
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.6);
-  }
-}
-
-@keyframes packetFlowVertical {
-  0% {
-    top: 0%;
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.6);
-  }
-  10% {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1.15);
-  }
-  90% {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1.15);
-  }
-  100% {
-    top: 100%;
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.6);
-  }
-}
-
-
-@keyframes dashFlow {
-  to {
-    stroke-dashoffset: -32;
-  }
-}
-
-.packet-stream-dot {
-  position: absolute;
-  top: 50%;
-  width: 9px;
-  height: 9px;
-  border-radius: 9999px;
-  background-color: var(--color-accent);
-  box-shadow: 0 0 6px var(--color-accent-glow);
-  animation: packetFlow 2.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-  will-change: left, opacity, transform;
-}
-
-.packet-stream-dot-vertical {
-  position: absolute;
-  left: 50%;
-  width: 9px;
-  height: 9px;
-  border-radius: 9999px;
-  background-color: var(--color-accent);
-  box-shadow: 0 0 6px var(--color-accent-glow);
-  animation: packetFlowVertical 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-  will-change: top, opacity, transform;
-}
-
-.dash-flow-line {
-  stroke-dasharray: 6 6;
-  animation: dashFlow 1.2s linear infinite;
-}
-
-/* 7. Scroll Reveal Transitions */
+/* 5. Scroll Reveal Transitions */
 .reveal {
   opacity: 0;
   transform: translateY(22px);

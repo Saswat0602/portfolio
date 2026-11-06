@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <main className="w-full min-h-screen py-16 px-6 sm:px-8 bg-theme-base text-theme-primary transition-colors duration-300">
+    <main className="w-full min-h-screen py-10 sm:py-16 px-4 sm:px-6 md:px-8 bg-theme-base text-theme-primary transition-colors duration-300 max-w-full overflow-hidden">
       <div className="max-w-7xl mx-auto">
         <AboutOverview />
       </div>

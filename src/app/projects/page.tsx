@@ -10,20 +10,20 @@ export const metadata: Metadata = {
 
 export default function ProjectsPage() {
   return (
-    <main className="w-full min-h-screen py-16 px-6 sm:px-8 bg-theme-base text-theme-primary transition-colors duration-300">
+    <main className="w-full min-h-screen py-10 sm:py-16 px-4 sm:px-6 md:px-8 bg-theme-base text-theme-primary transition-colors duration-300 max-w-full overflow-hidden">
       <div className="max-w-7xl mx-auto">
         {/* Page Header */}
-        <div className="flex flex-col items-start mb-14">
+        <div className="flex flex-col items-start mb-8 sm:mb-14">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-theme-border bg-theme-accent-subtle text-theme-accent text-xs font-mono uppercase tracking-wider mb-4">
-            <Cpu size={13} />
+            <Cpu size={13} className="flex-shrink-0" />
             <span>Architecture &amp; Engineering Showcase</span>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-theme-primary tracking-tight mb-4 heading-display">
+          <h1 className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl font-black text-theme-primary tracking-tight mb-3 sm:mb-4 heading-display break-words">
             Production Projects &amp; <span className="editorial-italic text-theme-accent">AI Systems</span>
           </h1>
 
-          <p className="max-w-3xl text-base sm:text-lg text-theme-secondary font-light leading-relaxed">
+          <p className="max-w-3xl text-sm sm:text-base md:text-lg text-theme-secondary font-light leading-relaxed">
             A comprehensive catalog of real-world full-stack web and mobile applications, real-time WebRTC platforms, and modern AWS Bedrock AI and RAG architectures engineered over 3+ years.
           </p>
         </div>

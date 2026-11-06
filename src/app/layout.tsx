@@ -93,15 +93,15 @@ export default function RootLayout({
       suppressHydrationWarning
       data-aesthetic="blueprint"
       data-theme="dark"
-      className={`${outfit.variable} ${plusJakartaSans.variable} ${jetbrainsMono.variable} ${instrumentSerif.variable} dark h-full antialiased`}
+      className={`${outfit.variable} ${plusJakartaSans.variable} ${jetbrainsMono.variable} ${instrumentSerif.variable} dark h-full antialiased w-full max-w-full overflow-x-hidden`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
-      <body className="min-h-full flex flex-col bg-theme-base text-theme-primary transition-colors duration-200">
+      <body className="min-h-full flex flex-col bg-theme-base text-theme-primary transition-colors duration-200 w-full max-w-full overflow-x-hidden">
         <AestheticThemeProvider>
           <Navbar />
-          <div className="flex-1 flex flex-col pt-16">{children}</div>
+          <div className="flex-1 flex flex-col pt-16 w-full max-w-full overflow-x-hidden">{children}</div>
           <Footer />
         </AestheticThemeProvider>
       </body>

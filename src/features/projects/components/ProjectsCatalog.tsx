@@ -43,7 +43,7 @@ export function ProjectsCatalog() {
   return (
     <div className="w-full text-theme-primary">
       {/* Controls Bar: Search & Category Pills */}
-      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 mb-12 p-4 sm:p-5 rounded-2xl border border-theme-border bg-theme-surface/90 backdrop-blur-xl shadow-sm">
+      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 sm:gap-4 mb-8 sm:mb-12 p-3.5 sm:p-5 rounded-2xl border border-theme-border bg-theme-surface/90 backdrop-blur-xl shadow-sm">
         {/* Search Input */}
         <div className="relative flex-1 max-w-md">
           <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-theme-muted" />
@@ -72,7 +72,7 @@ export function ProjectsCatalog() {
               <button
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-mono transition-all cursor-pointer ${
+                className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-mono transition-all cursor-pointer ${
                   isActive
                     ? "bg-theme-accent text-white dark:text-zinc-950 font-bold shadow-xs"
                     : "text-theme-secondary hover:text-theme-primary hover:bg-theme-hover"
@@ -117,7 +117,7 @@ export function ProjectsCatalog() {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
           {filteredProjects.map((project, index) => (
             <ScrollReveal
               key={project.slug || project.project_name}
@@ -129,7 +129,7 @@ export function ProjectsCatalog() {
               >
               <div>
                 {/* Image Cover */}
-                <div className="relative w-full h-52 overflow-hidden bg-black/30">
+                <div className="relative w-full h-44 sm:h-52 overflow-hidden bg-black/30">
                   <Image
                     src={project.image}
                     alt={project.project_name}
@@ -141,7 +141,7 @@ export function ProjectsCatalog() {
                   <div className="absolute inset-0 bg-gradient-to-t from-theme-surface via-theme-surface/40 to-transparent" />
 
                   {/* Top Badges */}
-                  <div className="absolute top-4 left-4 right-4 flex items-center justify-between">
+                  <div className="absolute top-3.5 left-3.5 right-3.5 sm:top-4 sm:left-4 sm:right-4 flex items-center justify-between">
                     <span className={`px-2.5 py-1 text-[10px] uppercase tracking-wider rounded-full border border-theme-border bg-theme-surface/85 backdrop-blur-md text-theme-accent ${
                       aesthetic === "editorial" ? "font-serif italic text-xs" : "font-mono"
                     }`}>
@@ -154,15 +154,15 @@ export function ProjectsCatalog() {
                 </div>
 
                 {/* Card Content */}
-                <div className="p-6">
+                <div className="p-4 sm:p-6">
                   {project.metrics && (
-                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-theme-surface-elevated border border-theme-border text-[11px] font-mono text-emerald-500 mb-3">
-                      <Sparkles size={11} />
+                    <div className="inline-flex max-w-full items-center gap-1.5 px-2.5 py-1 rounded-md bg-theme-surface-elevated border border-theme-border text-[10px] sm:text-[11px] font-mono text-emerald-500 mb-2.5 sm:mb-3">
+                      <Sparkles size={11} className="flex-shrink-0" />
                       <span className="truncate">{project.metrics}</span>
                     </div>
                   )}
 
-                  <h3 className={`text-lg font-bold text-theme-primary mb-2 leading-snug group-hover:text-theme-accent transition-colors ${
+                  <h3 className={`text-base sm:text-lg font-bold text-theme-primary mb-1.5 sm:mb-2 leading-snug group-hover:text-theme-accent transition-colors break-words ${
                     aesthetic === "editorial" ? "font-serif font-normal text-xl" : "font-sans"
                   }`}>
                     <Link href={`/projects/${project.slug}`}>
@@ -170,12 +170,12 @@ export function ProjectsCatalog() {
                     </Link>
                   </h3>
 
-                  <p className="text-xs text-theme-secondary font-light leading-relaxed mb-5 line-clamp-3">
+                  <p className="text-xs text-theme-secondary font-light leading-relaxed mb-4 sm:mb-5 line-clamp-3">
                     {project.description}
                   </p>
 
                   {/* Tech Stack Pills */}
-                  <div className="flex flex-wrap gap-1.5 mb-6">
+                  <div className="flex flex-wrap gap-1 sm:gap-1.5 mb-4 sm:mb-6">
                     {project.technologies.slice(0, 4).map((tech) => (
                       <span
                         key={tech}
@@ -194,7 +194,7 @@ export function ProjectsCatalog() {
               </div>
 
               {/* Bottom Actions */}
-              <div className="px-6 pb-6 pt-3 border-t border-theme-border flex items-center justify-between text-xs font-mono">
+              <div className="px-4 sm:px-6 pb-4 sm:pb-6 pt-3 border-t border-theme-border flex items-center justify-between text-xs font-mono flex-wrap gap-2">
                 <div className="flex items-center gap-3">
                   <a
                     href={project.code_link}

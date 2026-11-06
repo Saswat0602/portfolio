@@ -58,23 +58,23 @@ export function CareerSection() {
     <div id="experience" className="career-section text-theme-primary" ref={sectionRef}>
       <div className="career-container">
         {/* Header */}
-        <div className="flex flex-col items-center text-center mb-16">
+        <div className="flex flex-col items-center text-center mb-12 sm:mb-16">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-theme-border bg-theme-accent-subtle text-theme-accent text-xs font-mono uppercase tracking-wider mb-4">
-            {aesthetic === "blueprint" ? <Compass size={13} /> : <Briefcase size={13} />}
+            {aesthetic === "blueprint" ? <Compass size={13} className="flex-shrink-0" /> : <Briefcase size={13} className="flex-shrink-0" />}
             <span>{aesthetic === "blueprint" ? "TELEMETRY // CAREER_CHRONOLOGY" : "Chronicle of Engineering Craft"}</span>
           </div>
 
           {aesthetic === "editorial" ? (
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-normal font-serif text-theme-primary tracking-tight mb-4">
+            <h2 className="text-3xl sm:text-5xl md:text-6xl font-normal font-serif text-theme-primary tracking-tight mb-3 sm:mb-4 break-words">
               Professional <span className="italic text-theme-accent">Experience</span>
             </h2>
           ) : (
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black font-sans text-theme-primary tracking-tight mb-4">
+            <h2 className="text-2xl sm:text-4xl md:text-5xl font-black font-sans text-theme-primary tracking-tight mb-3 sm:mb-4 break-words">
               Professional Experience
             </h2>
           )}
 
-          <p className="max-w-2xl text-sm sm:text-base text-theme-secondary font-light leading-relaxed">
+          <p className="max-w-2xl text-xs sm:text-sm md:text-base text-theme-secondary font-light leading-relaxed px-2">
             Software Development Engineer at NetTantra Technologies, engineering scalable full-stack web and mobile systems alongside automated video generation pipelines, agentic copilots, and pgvector RAG.
           </p>
         </div>

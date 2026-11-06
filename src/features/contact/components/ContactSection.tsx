@@ -182,7 +182,7 @@ export function ContactSection({ isStandalone = false }: ContactSectionProps) {
         </div>
 
         {isStandalone ? (
-          <h1 className={`text-4xl sm:text-5xl md:text-6xl text-theme-primary tracking-tight mb-4 ${
+          <h1 className={`text-3xl sm:text-5xl md:text-6xl text-theme-primary tracking-tight mb-3 sm:mb-4 break-words ${
             aesthetic === "editorial" ? "font-serif font-normal" : "font-sans font-black"
           }`}>
             Let&apos;s Build{" "}
@@ -191,7 +191,7 @@ export function ContactSection({ isStandalone = false }: ContactSectionProps) {
             </span>
           </h1>
         ) : (
-          <h2 className={`text-3xl sm:text-4xl md:text-5xl text-theme-primary tracking-tight mb-4 ${
+          <h2 className={`text-2xl sm:text-4xl md:text-5xl text-theme-primary tracking-tight mb-3 sm:mb-4 break-words ${
             aesthetic === "editorial" ? "font-serif font-normal" : "font-sans font-black"
           }`}>
             Let&apos;s Build{" "}
@@ -201,68 +201,68 @@ export function ContactSection({ isStandalone = false }: ContactSectionProps) {
           </h2>
         )}
 
-        <p className="max-w-2xl text-sm sm:text-base text-theme-secondary font-light leading-relaxed">
+        <p className="max-w-2xl text-xs sm:text-sm md:text-base text-theme-secondary font-light leading-relaxed px-2">
           {userData.contact.message}
         </p>
       </div>
 
       {/* Modern Location & Status Bar */}
       <div
-        className={`flex flex-wrap items-center gap-2.5 sm:gap-4 text-xs font-mono mb-10 sm:mb-12 ${
+        className={`flex flex-wrap items-center gap-2 sm:gap-3 text-xs font-mono mb-8 sm:mb-12 max-w-full ${
           isStandalone ? "justify-start" : "justify-center"
         }`}
       >
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-theme-border bg-theme-surface/80 backdrop-blur-md text-theme-secondary shadow-xs">
-          <MapPin size={13} className="text-amber-500" />
+        <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 rounded-full border border-theme-border bg-theme-surface/80 backdrop-blur-md text-theme-secondary shadow-xs text-[11px] sm:text-xs">
+          <MapPin size={13} className="text-amber-500 flex-shrink-0" />
           <span>Bhubaneswar, India</span>
         </div>
 
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-theme-border bg-theme-surface/80 backdrop-blur-md text-theme-secondary shadow-xs">
-          <Clock size={13} className="text-theme-accent" />
+        <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 rounded-full border border-theme-border bg-theme-surface/80 backdrop-blur-md text-theme-secondary shadow-xs text-[11px] sm:text-xs">
+          <Clock size={13} className="text-theme-accent flex-shrink-0" />
           <span>{localTime || "IST (UTC+5:30)"}</span>
         </div>
 
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-500 shadow-xs">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+        <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-500 shadow-xs text-[11px] sm:text-xs">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0" />
           <span>Worldwide Remote &amp; Relocation Ready</span>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-10 items-start">
         {/* Left Column: Flagship "Email Me" Command Center */}
         <div className="lg:col-span-5 flex flex-col gap-6">
-          <div className="p-7 sm:p-8 rounded-3xl border border-theme-border bg-theme-surface/95 backdrop-blur-xl relative overflow-hidden shadow-xl">
+          <div className="p-5 sm:p-7 md:p-8 rounded-2xl sm:rounded-3xl border border-theme-border bg-theme-surface/95 backdrop-blur-xl relative overflow-hidden shadow-xl">
             {/* Ambient blur */}
             <div className="absolute -top-12 -right-12 w-48 h-48 bg-theme-accent/15 blur-[60px] pointer-events-none rounded-full" />
 
             {/* Header */}
             <div className="flex items-center justify-between gap-3 mb-5">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-theme-accent-subtle border border-theme-border flex items-center justify-center text-theme-accent shadow-xs">
+                <div className="w-8 h-8 rounded-xl bg-theme-accent-subtle border border-theme-border flex items-center justify-center text-theme-accent shadow-xs flex-shrink-0">
                   <Mail size={16} />
                 </div>
-                <div>
-                  <span className="text-[11px] font-mono uppercase tracking-widest text-theme-accent font-bold block">
+                <div className="min-w-0">
+                  <span className="text-[11px] font-mono uppercase tracking-widest text-theme-accent font-bold block truncate">
                     Direct Email
                   </span>
                   <span className="text-xs text-theme-muted font-light">Primary Contact Method</span>
                 </div>
               </div>
 
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-theme-border bg-theme-accent-subtle text-theme-accent text-[10px] font-mono font-medium">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-theme-border bg-theme-accent-subtle text-theme-accent text-[10px] font-mono font-medium flex-shrink-0">
                 <span className="w-1.5 h-1.5 rounded-full bg-theme-accent" />
                 <span>Inbox Ready</span>
               </span>
             </div>
 
             {/* Prominent Email Address */}
-            <div className="mb-5 p-3.5 rounded-xl border border-theme-border bg-theme-surface-elevated/70 backdrop-blur-md">
+            <div className="mb-4 sm:mb-5 p-3 sm:p-3.5 rounded-xl border border-theme-border bg-theme-surface-elevated/70 backdrop-blur-md">
               <span className="text-[10px] font-mono uppercase text-theme-muted block mb-1">
                 Direct Inbox Address
               </span>
               <a
                 href={mailtoUrl}
-                className="text-base sm:text-lg font-mono font-bold text-theme-primary hover:text-theme-accent transition-colors break-all flex items-center gap-2 group"
+                className="text-sm sm:text-base md:text-lg font-mono font-bold text-theme-primary hover:text-theme-accent transition-colors break-all flex items-center gap-2 group"
                 title="Click to write an email"
               >
                 <span>{userData.about.email}</span>
@@ -274,7 +274,7 @@ export function ContactSection({ isStandalone = false }: ContactSectionProps) {
             </div>
 
             {/* Direct Phone & WhatsApp */}
-            <div className="mb-5 p-3.5 rounded-xl border border-theme-border bg-theme-surface-elevated/70 backdrop-blur-md flex items-center justify-between">
+            <div className="mb-4 sm:mb-5 p-3 sm:p-3.5 rounded-xl border border-theme-border bg-theme-surface-elevated/70 backdrop-blur-md flex items-center justify-between">
               <div>
                 <span className="text-[10px] font-mono uppercase text-theme-muted block mb-1">
                   Direct Line &amp; WhatsApp
@@ -292,10 +292,10 @@ export function ContactSection({ isStandalone = false }: ContactSectionProps) {
             </div>
 
             {/* Action Buttons: Email Me & Copy Email */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 mb-6">
               <a
                 href={mailtoUrl}
-                className="btn-sheen inline-flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl bg-theme-accent text-white dark:text-zinc-950 text-xs font-bold font-mono hover:brightness-110 active:scale-[0.98] transition-all shadow-sm"
+                className="btn-sheen inline-flex items-center justify-center gap-2 px-4 py-3 sm:py-3.5 rounded-xl bg-theme-accent text-white dark:text-zinc-950 text-xs font-bold font-mono hover:brightness-110 active:scale-[0.98] transition-all shadow-sm w-full min-h-[44px]"
               >
                 <Mail size={15} />
                 <span>Email Me</span>
@@ -305,7 +305,7 @@ export function ContactSection({ isStandalone = false }: ContactSectionProps) {
               <button
                 type="button"
                 onClick={handleCopyEmail}
-                className={`inline-flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl border text-xs font-mono transition-all active:scale-[0.98] cursor-pointer ${
+                className={`inline-flex items-center justify-center gap-2 px-4 py-3 sm:py-3.5 rounded-xl border text-xs font-mono transition-all active:scale-[0.98] cursor-pointer w-full min-h-[44px] ${
                   copied
                     ? "border-emerald-500/40 bg-emerald-500/15 text-emerald-500 shadow-xs"
                     : "border-theme-border bg-theme-surface-elevated hover:bg-theme-hover hover:border-theme-accent text-theme-primary"
@@ -402,8 +402,8 @@ export function ContactSection({ isStandalone = false }: ContactSectionProps) {
 
         {/* Right Column: Direct Note Console (Form) */}
         <div className="lg:col-span-7">
-          <div className="p-7 sm:p-9 rounded-3xl border border-theme-border bg-theme-surface/95 backdrop-blur-xl shadow-xl relative">
-            <div className="mb-6">
+          <div className="p-5 sm:p-7 md:p-9 rounded-2xl sm:rounded-3xl border border-theme-border bg-theme-surface/95 backdrop-blur-xl shadow-xl relative">
+            <div className="mb-5 sm:mb-6">
               <h3 className={`text-xl sm:text-2xl font-bold text-theme-primary mb-2 ${
                 aesthetic === "editorial" ? "font-serif font-normal" : "font-sans"
               }`}>
@@ -538,7 +538,7 @@ export function ContactSection({ isStandalone = false }: ContactSectionProps) {
                 <button
                   type="submit"
                   disabled={status === "submitting"}
-                  className="btn-sheen mt-2 flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-theme-accent text-white dark:text-zinc-950 text-xs font-bold font-mono hover:brightness-110 disabled:opacity-50 active:scale-[0.99] transition-all shadow-sm cursor-pointer"
+                  className="btn-sheen mt-2 flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-theme-accent text-white dark:text-zinc-950 text-xs font-bold font-mono hover:brightness-110 disabled:opacity-50 active:scale-[0.99] transition-all shadow-sm cursor-pointer w-full min-h-[44px]"
                 >
                   <Send size={14} />
                   <span>
@@ -554,13 +554,13 @@ export function ContactSection({ isStandalone = false }: ContactSectionProps) {
   );
 
   if (isStandalone) {
-    return <div className="w-full text-theme-primary">{content}</div>;
+    return <div className="w-full text-theme-primary max-w-full overflow-hidden">{content}</div>;
   }
 
   return (
     <section
       id="contact"
-      className="w-full py-24 px-6 sm:px-8 bg-theme-base text-theme-primary relative z-10 border-t border-theme-border transition-colors duration-300"
+      className="w-full py-16 sm:py-24 px-4 sm:px-6 md:px-8 bg-theme-base text-theme-primary relative z-10 border-t border-theme-border transition-colors duration-300 max-w-full overflow-hidden"
     >
       {content}
     </section>

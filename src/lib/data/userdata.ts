@@ -564,7 +564,6 @@ const userData: UserData = {
       { label: "Projects", href: "/projects" },
       { label: "Skills", href: "/#skills" },
       { label: "Experience", href: "/#experience" },
-      { label: "Architecture", href: "/#architecture" },
       { label: "Contact", href: "/#contact" },
     ],
     contact: {

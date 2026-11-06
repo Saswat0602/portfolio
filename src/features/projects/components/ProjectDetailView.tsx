@@ -33,10 +33,10 @@ export function ProjectDetailView({ project, allProjects }: ProjectDetailViewPro
       : allProjects[0];
 
   return (
-    <article className="w-full min-h-screen py-12 px-6 sm:px-8 bg-theme-base text-theme-primary transition-colors duration-300">
+    <article className="w-full min-h-screen py-8 sm:py-12 px-4 sm:px-6 md:px-8 bg-theme-base text-theme-primary transition-colors duration-300 max-w-full overflow-hidden">
       <div className="max-w-5xl mx-auto">
         {/* Back Link */}
-        <div className="mb-8">
+        <div className="mb-6 sm:mb-8">
           <Link
             href="/projects"
             className="inline-flex items-center gap-2 text-xs font-mono text-theme-muted hover:text-theme-primary transition-colors group"
@@ -47,8 +47,8 @@ export function ProjectDetailView({ project, allProjects }: ProjectDetailViewPro
         </div>
 
         {/* Top Badges & Title */}
-        <div className="flex flex-col gap-4 mb-8">
-          <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-col gap-3 sm:gap-4 mb-6 sm:mb-8">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             <span className={`px-3 py-1 text-xs uppercase tracking-wider rounded-full border border-theme-border bg-theme-accent-subtle text-theme-accent ${
               aesthetic === "editorial" ? "font-serif italic text-sm" : "font-mono"
             }`}>
@@ -56,30 +56,30 @@ export function ProjectDetailView({ project, allProjects }: ProjectDetailViewPro
             </span>
             {project.metrics && (
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-mono text-emerald-500">
-                <Sparkles size={12} />
+                <Sparkles size={12} className="flex-shrink-0" />
                 <span>{project.metrics}</span>
               </span>
             )}
           </div>
 
-          <h1 className={`text-3xl sm:text-5xl md:text-6xl text-theme-primary tracking-tight leading-tight ${
+          <h1 className={`text-2xl xs:text-3xl sm:text-5xl md:text-6xl text-theme-primary tracking-tight leading-tight break-words ${
             aesthetic === "editorial" ? "font-serif font-normal" : "font-sans font-black"
           }`}>
             {project.project_name}
           </h1>
 
-          <p className="text-base sm:text-xl text-theme-secondary font-light leading-relaxed max-w-3xl">
+          <p className="text-sm sm:text-base md:text-xl text-theme-secondary font-light leading-relaxed max-w-3xl">
             {project.description}
           </p>
 
           {/* Action CTAs */}
-          <div className="flex flex-wrap items-center gap-4 pt-4">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 pt-3 sm:pt-4">
             {project.demo_link && (
               <a
                 href={project.demo_link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-sheen inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-theme-accent text-white dark:text-zinc-950 text-xs font-bold shadow-sm hover:brightness-110 transition-all"
+                className="btn-sheen inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-theme-accent text-white dark:text-zinc-950 text-xs font-bold shadow-sm hover:brightness-110 transition-all w-full sm:w-auto"
               >
                 <ExternalLink size={14} />
                 <span>Explore Live System</span>
@@ -90,7 +90,7 @@ export function ProjectDetailView({ project, allProjects }: ProjectDetailViewPro
               href={project.code_link}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-theme-border bg-theme-surface hover:bg-theme-hover text-theme-primary text-xs font-mono transition-all"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl border border-theme-border bg-theme-surface hover:bg-theme-hover text-theme-primary text-xs font-mono transition-all w-full sm:w-auto"
             >
               <Code2 size={14} />
               <span>Source Repository</span>
@@ -99,12 +99,12 @@ export function ProjectDetailView({ project, allProjects }: ProjectDetailViewPro
         </div>
 
         {/* Hero Cover Image */}
-        <div className="relative w-full h-[320px] sm:h-[460px] rounded-2xl overflow-hidden border border-theme-border bg-black/40 mb-12 shadow-xl">
+        <div className="relative w-full h-[220px] xs:h-[280px] sm:h-[400px] md:h-[460px] rounded-2xl overflow-hidden border border-theme-border bg-black/40 mb-8 sm:mb-12 shadow-xl">
           <Image
             src={project.image}
             alt={project.project_name}
             fill
-            sizes="1200px"
+            sizes="(max-width: 768px) 100vw, 1200px"
             className="object-cover opacity-85"
             priority
             unoptimized
@@ -113,11 +113,11 @@ export function ProjectDetailView({ project, allProjects }: ProjectDetailViewPro
         </div>
 
         {/* Detailed Case Study Sections */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-10">
           {/* Main Body */}
-          <div className="md:col-span-8 flex flex-col gap-10">
+          <div className="md:col-span-8 flex flex-col gap-6 sm:gap-10">
             {/* Architectural Overview */}
-            <section className="p-7 rounded-2xl border border-theme-border bg-theme-surface/90 backdrop-blur-xl shadow-sm">
+            <section className="p-5 sm:p-7 rounded-2xl border border-theme-border bg-theme-surface/90 backdrop-blur-xl shadow-sm">
               <div className="flex items-center gap-2.5 text-xs font-mono uppercase tracking-widest text-theme-accent mb-3">
                 <Cpu size={14} />
                 <span>Executive Overview</span>
@@ -134,24 +134,24 @@ export function ProjectDetailView({ project, allProjects }: ProjectDetailViewPro
 
             {/* System Architecture Points */}
             {project.architecture && project.architecture.length > 0 && (
-              <section className="p-7 rounded-2xl border border-theme-border bg-theme-surface/90 backdrop-blur-xl shadow-sm">
+              <section className="p-5 sm:p-7 rounded-2xl border border-theme-border bg-theme-surface/90 backdrop-blur-xl shadow-sm">
                 <div className="flex items-center gap-2.5 text-xs font-mono uppercase tracking-widest text-theme-accent mb-3">
                   <Layers size={14} />
                   <span>Technical Design</span>
                 </div>
-                <h2 className={`text-xl sm:text-2xl font-bold text-theme-primary mb-5 ${
-                  aesthetic === "editorial" ? "font-serif font-normal text-3xl" : "font-sans"
+                <h2 className={`text-lg sm:text-2xl font-bold text-theme-primary mb-4 sm:mb-5 break-words ${
+                  aesthetic === "editorial" ? "font-serif font-normal text-2xl sm:text-3xl" : "font-sans"
                 }`}>
                   Core {aesthetic === "editorial" ? <span className="italic text-theme-accent">Architecture</span> : "Architecture"} Components
                 </h2>
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-2.5 sm:gap-3">
                   {project.architecture.map((item, idx) => (
                     <div
                       key={idx}
-                      className="flex items-start gap-3 p-3.5 rounded-xl border border-theme-border/60 bg-theme-surface-elevated/40"
+                      className="flex items-start gap-2.5 sm:gap-3 p-3 sm:p-3.5 rounded-xl border border-theme-border/60 bg-theme-surface-elevated/40"
                     >
                       <Zap size={15} className="text-theme-accent mt-0.5 flex-shrink-0" />
-                      <span className="text-xs sm:text-sm text-theme-secondary leading-relaxed">
+                      <span className="text-xs sm:text-sm text-theme-secondary leading-relaxed break-words">
                         {item}
                       </span>
                     </div>
@@ -162,24 +162,24 @@ export function ProjectDetailView({ project, allProjects }: ProjectDetailViewPro
 
             {/* Engineering Highlights */}
             {project.highlights && project.highlights.length > 0 && (
-              <section className="p-7 rounded-2xl border border-theme-border bg-theme-surface/90 backdrop-blur-xl shadow-sm">
+              <section className="p-5 sm:p-7 rounded-2xl border border-theme-border bg-theme-surface/90 backdrop-blur-xl shadow-sm">
                 <div className="flex items-center gap-2.5 text-xs font-mono uppercase tracking-widest text-theme-accent mb-3">
                   <ShieldCheck size={14} />
                   <span>Production Impact</span>
                 </div>
-                <h2 className={`text-xl sm:text-2xl font-bold text-theme-primary mb-5 ${
-                  aesthetic === "editorial" ? "font-serif font-normal text-3xl" : "font-sans"
+                <h2 className={`text-lg sm:text-2xl font-bold text-theme-primary mb-4 sm:mb-5 break-words ${
+                  aesthetic === "editorial" ? "font-serif font-normal text-2xl sm:text-3xl" : "font-sans"
                 }`}>
                   Key Results &amp; {aesthetic === "editorial" ? <span className="italic text-theme-accent">Optimizations</span> : "Optimizations"}
                 </h2>
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-2.5 sm:gap-3">
                   {project.highlights.map((highlight, idx) => (
                     <div
                       key={idx}
-                      className="flex items-start gap-3 p-3.5 rounded-xl border border-theme-border/60 bg-theme-surface-elevated/40"
+                      className="flex items-start gap-2.5 sm:gap-3 p-3 sm:p-3.5 rounded-xl border border-theme-border/60 bg-theme-surface-elevated/40"
                     >
                       <CheckCircle2 size={15} className="text-emerald-500 mt-0.5 flex-shrink-0" />
-                      <span className="text-xs sm:text-sm text-theme-secondary leading-relaxed">
+                      <span className="text-xs sm:text-sm text-theme-secondary leading-relaxed break-words">
                         {highlight}
                       </span>
                     </div>
@@ -190,17 +190,17 @@ export function ProjectDetailView({ project, allProjects }: ProjectDetailViewPro
           </div>
 
           {/* Sidebar */}
-          <div className="md:col-span-4 flex flex-col gap-6">
+          <div className="md:col-span-4 flex flex-col gap-5 sm:gap-6">
             {/* Tech Stack Card */}
-            <div className="p-6 rounded-2xl border border-theme-border bg-theme-surface/90 backdrop-blur-xl shadow-sm">
-              <h3 className="text-xs font-mono uppercase tracking-widest text-theme-muted font-semibold mb-4">
+            <div className="p-5 sm:p-6 rounded-2xl border border-theme-border bg-theme-surface/90 backdrop-blur-xl shadow-sm">
+              <h3 className="text-xs font-mono uppercase tracking-widest text-theme-muted font-semibold mb-3 sm:mb-4">
                 Technologies &amp; Frameworks
               </h3>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-1.5 sm:gap-2">
                 {project.technologies.map((tech) => (
                   <span
                     key={tech}
-                    className="px-3 py-1.5 rounded-lg border border-theme-border bg-theme-surface-elevated text-xs font-mono text-theme-secondary"
+                    className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg border border-theme-border bg-theme-surface-elevated text-[11px] sm:text-xs font-mono text-theme-secondary"
                   >
                     {tech}
                   </span>
@@ -209,7 +209,7 @@ export function ProjectDetailView({ project, allProjects }: ProjectDetailViewPro
             </div>
 
             {/* Quick Specs */}
-            <div className="p-6 rounded-2xl border border-theme-border bg-theme-surface/90 backdrop-blur-xl flex flex-col gap-4 text-xs font-mono shadow-sm">
+            <div className="p-5 sm:p-6 rounded-2xl border border-theme-border bg-theme-surface/90 backdrop-blur-xl flex flex-col gap-3.5 sm:gap-4 text-xs font-mono shadow-sm">
               <h3 className="uppercase tracking-widest text-theme-muted font-semibold mb-1">
                 Project Specs
               </h3>
@@ -234,7 +234,7 @@ export function ProjectDetailView({ project, allProjects }: ProjectDetailViewPro
             {nextProject && (
               <Link
                 href={`/projects/${nextProject.slug}`}
-                className="group p-6 rounded-2xl border border-theme-border bg-theme-surface hover:border-theme-accent transition-all flex flex-col gap-2 shadow-sm"
+                className="group p-5 sm:p-6 rounded-2xl border border-theme-border bg-theme-surface hover:border-theme-accent transition-all flex flex-col gap-2 shadow-sm"
               >
                 <div className="flex items-center justify-between text-xs font-mono text-theme-muted group-hover:text-theme-accent transition-colors">
                   <span>Next Case Study</span>

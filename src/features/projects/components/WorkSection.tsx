@@ -79,9 +79,9 @@ export function WorkSection() {
         <div className="hidden lg:block absolute bottom-0 left-0 w-full h-28 bg-gradient-to-t from-theme-base to-transparent z-10 pointer-events-none" />
 
         {/* Section Header */}
-        <div className="px-6 md:px-14 lg:px-20 mb-6 lg:mb-8 relative z-20">
+        <div className="px-4 sm:px-8 md:px-14 lg:px-20 mb-4 sm:mb-6 lg:mb-8 relative z-20">
           <div className="flex items-center gap-2 text-xs font-mono tracking-widest text-theme-accent uppercase mb-2">
-            {aesthetic === "blueprint" ? <Compass size={14} /> : <Cpu size={14} />}
+            {aesthetic === "blueprint" ? <Compass size={14} className="flex-shrink-0" /> : <Cpu size={14} className="flex-shrink-0" />}
             <span>
               {aesthetic === "blueprint"
                 ? "CATALOG // ARCHITECTURAL SYSTEMS & CASE STUDIES"
@@ -89,14 +89,14 @@ export function WorkSection() {
             </span>
           </div>
 
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 sm:gap-4">
             <div>
               {aesthetic === "editorial" ? (
-                <h2 className="text-4xl md:text-6xl font-normal font-serif tracking-tight text-theme-primary">
+                <h2 className="text-3xl sm:text-4xl md:text-6xl font-normal font-serif tracking-tight text-theme-primary">
                   Selected <span className="italic text-theme-accent">Production Works</span>
                 </h2>
               ) : (
-                <h2 className="text-3xl md:text-5xl font-black font-sans tracking-tight text-theme-primary">
+                <h2 className="text-2xl sm:text-3xl md:text-5xl font-black font-sans tracking-tight text-theme-primary">
                   Selected{" "}
                   <span className="text-theme-accent">
                     Production Systems
@@ -107,7 +107,7 @@ export function WorkSection() {
 
             <Link
               href="/projects"
-              className="inline-flex items-center gap-1.5 text-xs font-mono text-theme-secondary hover:text-theme-accent transition-colors group"
+              className="inline-flex items-center gap-1.5 text-xs font-mono text-theme-secondary hover:text-theme-accent transition-colors group self-start md:self-auto"
             >
               <span>Browse All {userData.Projects.length} Projects</span>
               <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
@@ -116,22 +116,25 @@ export function WorkSection() {
         </div>
 
         {/* Mobile Swipe Hint */}
-        <div className="lg:hidden flex items-center justify-between text-[11px] font-mono text-theme-muted mb-3 px-6 md:px-14">
-          <span className="text-theme-accent">← Swipe horizontally to explore projects</span>
+        <div className="lg:hidden flex items-center justify-between text-[11px] font-mono text-theme-muted mb-3 px-4 sm:px-8 md:px-14">
+          <span className="text-theme-accent">← Swipe horizontally to explore</span>
           <span>{projects.length + 1} Systems</span>
         </div>
 
         {/* Cards Strip: Scrollable swipe on mobile, Pinned translation on desktop */}
         <div
           ref={flexRef}
-          className="flex gap-6 px-6 md:px-14 lg:px-20 overflow-x-auto lg:overflow-visible snap-x snap-mandatory lg:snap-none items-stretch pb-6 lg:pb-0 will-change-transform"
-          style={{ width: isDesktop ? "max-content" : "100%" }}
+          className="flex gap-4 sm:gap-6 px-4 sm:px-8 md:px-14 lg:px-20 overflow-x-auto lg:overflow-visible snap-x snap-mandatory lg:snap-none items-stretch pb-6 lg:pb-0 will-change-transform scrollbar-none"
+          style={{
+            width: isDesktop ? "max-content" : "100%",
+            WebkitOverflowScrolling: "touch",
+          }}
         >
           {projects.map((project, index) => (
             <SpotlightCard
               as="article"
               key={project.slug || project.project_name}
-              className="relative flex-shrink-0 snap-center w-[85vw] sm:w-[65vw] lg:w-[540px] h-[450px] md:h-[490px] rounded-2xl overflow-hidden border border-theme-border bg-theme-surface group flex flex-col justify-between shadow-xl transition-all duration-300 hover:border-theme-accent"
+              className="relative flex-shrink-0 snap-center w-[85vw] xs:w-[80vw] sm:w-[60vw] md:w-[480px] lg:w-[540px] min-h-[460px] sm:min-h-[480px] md:h-[490px] rounded-2xl overflow-hidden border border-theme-border bg-theme-surface group flex flex-col justify-between shadow-xl transition-all duration-300 hover:border-theme-accent"
             >
               {/* Background Cover Image with Sophisticated Mask */}
               <div className="absolute inset-0 z-0">
@@ -139,7 +142,7 @@ export function WorkSection() {
                   src={project.image}
                   alt={project.project_name}
                   fill
-                  sizes="540px"
+                  sizes="(max-width: 768px) 85vw, 540px"
                   className="object-cover opacity-20 dark:opacity-30 group-hover:opacity-40 transition-opacity duration-700 scale-100 group-hover:scale-105"
                   unoptimized
                 />
@@ -148,16 +151,16 @@ export function WorkSection() {
               </div>
 
               {/* Card Content */}
-              <div className="relative z-10 h-full flex flex-col justify-between p-7 md:p-8">
+              <div className="relative z-10 h-full flex flex-col justify-between p-5 sm:p-7 md:p-8">
                 {/* Top Row: Index + Category Pill */}
                 <div className="flex items-center justify-between">
-                  <span className={`text-4xl font-black select-none text-theme-border-strong ${
+                  <span className={`text-3xl sm:text-4xl font-black select-none text-theme-border-strong ${
                     aesthetic === "editorial" ? "font-serif italic" : "font-mono"
                   }`}>
                     0{index + 1}
                   </span>
                   <div className="flex items-center gap-2">
-                    <span className="px-3 py-1 text-[11px] font-mono uppercase tracking-wider rounded-full border border-theme-border bg-theme-accent-subtle text-theme-accent backdrop-blur-md">
+                    <span className="px-2.5 sm:px-3 py-1 text-[10px] sm:text-[11px] font-mono uppercase tracking-wider rounded-full border border-theme-border bg-theme-accent-subtle text-theme-accent backdrop-blur-md">
                       {project.category}
                     </span>
                   </div>
@@ -166,28 +169,28 @@ export function WorkSection() {
                 {/* Bottom Content: Info & Tech Stack */}
                 <div className="mt-auto">
                   {project.metrics && (
-                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-theme-surface-elevated border border-theme-border text-[11px] font-mono text-emerald-500 mb-3">
-                      <Sparkles size={11} />
-                      <span>{project.metrics}</span>
+                    <div className="inline-flex max-w-full items-center gap-1.5 px-2.5 py-1 rounded-md bg-theme-surface-elevated border border-theme-border text-[10px] sm:text-[11px] font-mono text-emerald-500 mb-2.5 sm:mb-3">
+                      <Sparkles size={11} className="flex-shrink-0" />
+                      <span className="truncate">{project.metrics}</span>
                     </div>
                   )}
 
-                  <h3 className={`text-xl md:text-2xl font-bold text-theme-primary mb-2 leading-tight group-hover:text-theme-accent transition-colors ${
+                  <h3 className={`text-lg sm:text-xl md:text-2xl font-bold text-theme-primary mb-1.5 sm:mb-2 leading-tight group-hover:text-theme-accent transition-colors break-words ${
                     aesthetic === "editorial" ? "font-serif font-normal" : "font-sans"
                   }`}>
                     {project.project_name}
                   </h3>
 
-                  <p className="text-xs md:text-sm text-theme-secondary mb-5 line-clamp-3 leading-relaxed font-light">
+                  <p className="text-xs sm:text-sm text-theme-secondary mb-4 sm:mb-5 line-clamp-3 leading-relaxed font-light">
                     {project.description}
                   </p>
 
                   {/* Tech Pills */}
-                  <div className="flex flex-wrap gap-1.5 mb-6">
+                  <div className="flex flex-wrap gap-1 sm:gap-1.5 mb-4 sm:mb-6">
                     {project.technologies.slice(0, 5).map((tech) => (
                       <span
                         key={tech}
-                        className="px-2.5 py-1 text-[11px] font-mono rounded-md bg-theme-surface-elevated border border-theme-border text-theme-secondary"
+                        className="px-2 sm:px-2.5 py-0.5 sm:py-1 text-[10px] sm:text-[11px] font-mono rounded-md bg-theme-surface-elevated border border-theme-border text-theme-secondary"
                       >
                         {tech}
                       </span>
@@ -195,8 +198,8 @@ export function WorkSection() {
                   </div>
 
                   {/* Links */}
-                  <div className="flex items-center justify-between pt-4 border-t border-theme-border">
-                    <div className="flex items-center gap-4">
+                  <div className="flex items-center justify-between pt-3 sm:pt-4 border-t border-theme-border flex-wrap gap-2">
+                    <div className="flex items-center gap-3 sm:gap-4">
                       <a
                         href={project.code_link}
                         target="_blank"
@@ -234,13 +237,13 @@ export function WorkSection() {
           ))}
 
           {/* CTA Card */}
-          <div className="flex-shrink-0 snap-center w-[85vw] sm:w-[50vw] lg:w-[320px] h-[450px] md:h-[490px] rounded-2xl border border-dashed border-theme-border bg-theme-surface/50 flex flex-col items-center justify-center gap-6 px-8 text-center group hover:border-theme-accent transition-all duration-300">
-            <div className="w-14 h-14 rounded-2xl border border-theme-border bg-theme-surface-elevated flex items-center justify-center text-theme-accent group-hover:scale-110 transition-transform">
-              <Layers size={24} />
+          <div className="flex-shrink-0 snap-center w-[85vw] xs:w-[80vw] sm:w-[50vw] md:w-[320px] lg:w-[320px] min-h-[460px] sm:min-h-[480px] md:h-[490px] rounded-2xl border border-dashed border-theme-border bg-theme-surface/50 flex flex-col items-center justify-center gap-5 sm:gap-6 p-6 sm:p-8 text-center group hover:border-theme-accent transition-all duration-300">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl border border-theme-border bg-theme-surface-elevated flex items-center justify-center text-theme-accent group-hover:scale-110 transition-transform">
+              <Layers size={22} />
             </div>
 
             <div>
-              <h3 className={`text-xl font-bold text-theme-primary mb-2 ${
+              <h3 className={`text-lg sm:text-xl font-bold text-theme-primary mb-2 ${
                 aesthetic === "editorial" ? "font-serif font-normal" : "font-sans"
               }`}>
                 Explore All Work

@@ -105,10 +105,10 @@ export function Preloader({ children }: PreloaderProps) {
 
       {/* Floating Preloader Switcher & Preview Widget */}
       {isMounted && siteConfig.enableLoaderPreviewSwitcher && (
-        <div className="fixed bottom-5 right-5 z-40">
-          <div className="flex flex-col items-end gap-2">
+        <div className="fixed bottom-3 right-3 sm:bottom-5 sm:right-5 z-40 max-w-[calc(100vw-1.5rem)]">
+          <div className="flex flex-col items-end gap-2 max-w-full">
             {showSwitcher && (
-              <div className="bg-theme-surface/98 border border-theme-border backdrop-blur-xl rounded-2xl p-4 shadow-2xl flex flex-col gap-2.5 min-w-[250px] text-xs animate-in fade-in slide-in-from-bottom-2 duration-200">
+              <div className="bg-theme-surface/98 border border-theme-border backdrop-blur-xl rounded-2xl p-3.5 sm:p-4 shadow-2xl flex flex-col gap-2.5 min-w-[240px] max-w-full text-xs animate-in fade-in slide-in-from-bottom-2 duration-200">
                 <div className="flex items-center justify-between pb-2 border-b border-theme-border font-mono text-theme-muted">
                   <span className="font-semibold tracking-wider text-[11px]">CHOOSE LOADER</span>
                   <button

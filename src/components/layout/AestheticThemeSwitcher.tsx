@@ -29,7 +29,7 @@ export function AestheticThemeSwitcher({
           role="radio"
           aria-checked={aesthetic === "blueprint"}
           onClick={() => setAesthetic("blueprint")}
-          className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-mono transition-all duration-200 cursor-pointer ${
+          className={`flex items-center gap-1.5 ${compact ? "px-2 py-1.5" : "px-2.5 py-1.5"} rounded-md text-xs font-mono transition-all duration-200 cursor-pointer ${
             aesthetic === "blueprint"
               ? "bg-sky-500/15 text-sky-700 dark:text-sky-300 font-semibold shadow-xs border border-sky-600/30 dark:border-sky-400/30"
               : "text-theme-muted hover:text-theme-primary hover:bg-theme-hover"
@@ -45,7 +45,7 @@ export function AestheticThemeSwitcher({
           role="radio"
           aria-checked={aesthetic === "editorial"}
           onClick={() => setAesthetic("editorial")}
-          className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs transition-all duration-200 cursor-pointer ${
+          className={`flex items-center gap-1.5 ${compact ? "px-2 py-1.5" : "px-2.5 py-1.5"} rounded-md text-xs transition-all duration-200 cursor-pointer ${
             aesthetic === "editorial"
               ? "bg-[#D95D39]/15 text-[#C85A32] dark:text-[#E06D48] font-serif italic font-medium shadow-xs border border-[#D95D39]/35"
               : "text-theme-muted hover:text-theme-primary hover:bg-theme-hover font-sans"

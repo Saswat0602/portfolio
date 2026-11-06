@@ -87,7 +87,7 @@ export function CurtainLoader({
             className="relative z-[10] flex flex-col items-end gap-5 px-6 max-w-4xl"
           >
             {/* Split Names with Masked Slide-Up */}
-            <div className="flex items-baseline gap-3 md:gap-6 overflow-hidden">
+            <div className="flex flex-wrap items-baseline justify-center gap-2 sm:gap-4 md:gap-6 overflow-hidden max-w-full">
               <div className="overflow-hidden">
                 <motion.h1
                   initial={{ y: "120%" }}
@@ -97,7 +97,7 @@ export function CurtainLoader({
                     ease: [0.16, 1, 0.3, 1],
                     delay: 0.1,
                   }}
-                  className={`text-5xl sm:text-7xl md:text-9xl tracking-tight text-theme-primary ${
+                  className={`text-3xl xs:text-4xl sm:text-7xl md:text-9xl tracking-tight text-theme-primary ${
                     aesthetic === "editorial"
                       ? "font-serif italic font-normal"
                       : "font-extrabold uppercase font-sans"
@@ -116,7 +116,7 @@ export function CurtainLoader({
                     ease: [0.16, 1, 0.3, 1],
                     delay: 0.22,
                   }}
-                  className={`text-5xl sm:text-7xl md:text-9xl tracking-tight text-theme-accent drop-shadow-md ${
+                  className={`text-3xl xs:text-4xl sm:text-7xl md:text-9xl tracking-tight text-theme-accent drop-shadow-md ${
                     aesthetic === "editorial"
                       ? "font-serif font-normal"
                       : "font-extrabold uppercase font-sans"
