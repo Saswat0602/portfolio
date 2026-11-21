@@ -12,11 +12,9 @@ import {
   ArrowUpRight,
   Clock,
   MapPin,
-  Sparkles,
   Compass,
 } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/icons";
-import { useAestheticTheme } from "@/hooks/useAestheticTheme";
 
 export interface ContactSectionProps {
   isStandalone?: boolean;
@@ -62,7 +60,6 @@ const TOPIC_PRESETS: TopicPreset[] = [
 ];
 
 export function ContactSection({ isStandalone = false }: ContactSectionProps) {
-  const { aesthetic } = useAestheticTheme();
   const [copied, setCopied] = useState(false);
   const [selectedTopicId, setSelectedTopicId] = useState<string>("fullstack");
   const [localTime, setLocalTime] = useState<string>("");
@@ -177,25 +174,21 @@ export function ContactSection({ isStandalone = false }: ContactSectionProps) {
         }`}
       >
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-theme-border bg-theme-accent-subtle text-theme-accent text-xs font-mono uppercase tracking-wider mb-4">
-          {aesthetic === "blueprint" ? <Compass size={13} /> : <Sparkles size={13} />}
-          <span>{aesthetic === "blueprint" ? "TELEMETRY // DIRECT_CONNECTION" : "Direct Connection Hub"}</span>
+          <Compass size={13} />
+          <span>TELEMETRY // DIRECT_CONNECTION</span>
         </div>
 
         {isStandalone ? (
-          <h1 className={`text-3xl sm:text-5xl md:text-6xl text-theme-primary tracking-tight mb-3 sm:mb-4 break-words ${
-            aesthetic === "editorial" ? "font-serif font-normal" : "font-sans font-black"
-          }`}>
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-black font-sans text-theme-primary tracking-tight mb-3 sm:mb-4 break-words">
             Let&apos;s Build{" "}
-            <span className={aesthetic === "editorial" ? "italic text-theme-accent" : "text-theme-accent"}>
+            <span className="text-theme-accent">
               Something Great
             </span>
           </h1>
         ) : (
-          <h2 className={`text-2xl sm:text-4xl md:text-5xl text-theme-primary tracking-tight mb-3 sm:mb-4 break-words ${
-            aesthetic === "editorial" ? "font-serif font-normal" : "font-sans font-black"
-          }`}>
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-black font-sans text-theme-primary tracking-tight mb-3 sm:mb-4 break-words">
             Let&apos;s Build{" "}
-            <span className={aesthetic === "editorial" ? "italic text-theme-accent" : "text-theme-accent"}>
+            <span className="text-theme-accent">
               Something Great
             </span>
           </h2>
@@ -404,9 +397,7 @@ export function ContactSection({ isStandalone = false }: ContactSectionProps) {
         <div className="lg:col-span-7">
           <div className="p-5 sm:p-7 md:p-9 rounded-2xl sm:rounded-3xl border border-theme-border bg-theme-surface/95 backdrop-blur-xl shadow-xl relative">
             <div className="mb-5 sm:mb-6">
-              <h3 className={`text-xl sm:text-2xl font-bold text-theme-primary mb-2 ${
-                aesthetic === "editorial" ? "font-serif font-normal" : "font-sans"
-              }`}>
+              <h3 className="text-xl sm:text-2xl font-bold font-sans text-theme-primary mb-2">
                 Send a Direct Note
               </h3>
               <p className="text-xs sm:text-sm text-theme-secondary font-light">
@@ -432,9 +423,7 @@ export function ContactSection({ isStandalone = false }: ContactSectionProps) {
                 <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-500 mb-4 shadow-sm">
                   <CheckCircle2 size={28} />
                 </div>
-                <h4 className={`text-xl font-bold text-theme-primary mb-2 ${
-                  aesthetic === "editorial" ? "font-serif font-normal" : "font-sans"
-                }`}>
+                <h4 className="text-xl font-bold font-sans text-theme-primary mb-2">
                   Note Received Successfully
                 </h4>
                 <p className="text-xs sm:text-sm text-theme-secondary max-w-sm mb-6 leading-relaxed">

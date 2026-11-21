@@ -6,14 +6,12 @@ import { usePathname } from "next/navigation";
 import { siteConfig } from "@/config/site";
 import { Menu, X, ArrowUpRight, Terminal } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/icons";
-import { AestheticThemeSwitcher } from "./AestheticThemeSwitcher";
-import { useAestheticTheme } from "@/hooks/useAestheticTheme";
+import { ThemeToggle } from "./ThemeToggle";
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
-  const { aesthetic } = useAestheticTheme();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -39,23 +37,19 @@ export function Navbar() {
         >
           <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-theme-accent p-[1px] shadow-sm transition-colors duration-300 flex-shrink-0">
             <div className="w-full h-full bg-theme-surface rounded-[7px] flex items-center justify-center transition-colors">
-              <span className={`text-xs font-black tracking-wider text-theme-accent group-hover:brightness-125 transition-all ${
-                aesthetic === "editorial" ? "font-serif italic text-sm" : "font-mono"
-              }`}>
+              <span className="text-xs font-black tracking-wider text-theme-accent group-hover:brightness-125 transition-all font-mono">
                 SR
               </span>
             </div>
           </div>
           <div className="flex flex-col min-w-0">
-            <span className={`text-xs sm:text-sm font-bold tracking-tight text-theme-primary group-hover:text-theme-accent transition-colors truncate max-w-[135px] xs:max-w-[200px] sm:max-w-none ${
-              aesthetic === "editorial" ? "font-serif sm:text-base" : "font-sans"
-            }`}>
+            <span className="text-xs sm:text-sm font-bold tracking-tight text-theme-primary group-hover:text-theme-accent transition-colors truncate max-w-[135px] xs:max-w-[200px] sm:max-w-none font-sans">
               Saswat Ranjan Mohanty
             </span>
             <span className="text-[10px] sm:text-[11px] font-mono text-theme-secondary hidden xs:flex items-center gap-1.5 truncate">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0" />
               <span className="truncate">
-                {aesthetic === "editorial" ? "Artisan Software Craftsman" : "Software Engineer • Applied AI"}
+                Software Engineer • Applied AI
               </span>
             </span>
           </div>
@@ -88,10 +82,10 @@ export function Navbar() {
           })}
         </nav>
 
-        {/* Right Controls: Aesthetic Switcher + Socials + CTA */}
+        {/* Right Controls: Theme Toggle + Socials + CTA */}
         <div className="hidden md:flex items-center gap-2.5 flex-shrink-0">
-          {/* Header Switcher */}
-          <AestheticThemeSwitcher />
+          {/* Header Theme Toggle */}
+          <ThemeToggle />
 
           <div className="h-4 w-px bg-theme-border mx-1" />
 
@@ -126,7 +120,7 @@ export function Navbar() {
 
         {/* Mobile Right Bar: Compact Switcher + Hamburger Button */}
         <div className="md:hidden flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
-          <AestheticThemeSwitcher compact />
+          <ThemeToggle compact />
 
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -149,12 +143,12 @@ export function Navbar() {
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
         <div className="md:hidden relative z-40 border-b border-theme-border bg-theme-surface/98 backdrop-blur-2xl px-4 sm:px-6 py-5 animate-in slide-in-from-top-3 duration-200 shadow-xl max-h-[calc(100dvh-4rem)] overflow-y-auto">
-          {/* Aesthetic Switcher in Drawer */}
-          <div className="mb-4 pb-4 border-b border-theme-border flex flex-col xs:flex-row xs:items-center justify-between gap-2.5">
+          {/* Theme Toggle in Drawer */}
+          <div className="mb-4 pb-4 border-b border-theme-border flex items-center justify-between gap-2.5">
             <span className="text-xs font-mono text-theme-muted uppercase tracking-wider">
-              Aesthetic &amp; Theme
+              Theme Mode
             </span>
-            <AestheticThemeSwitcher className="w-full xs:w-auto justify-between" />
+            <ThemeToggle />
           </div>
 
           <div className="flex flex-col gap-1.5 mb-5">

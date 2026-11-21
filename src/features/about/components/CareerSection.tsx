@@ -5,8 +5,7 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { userData } from "@/lib/data";
-import { Briefcase, Calendar, MapPin, CheckCircle2, Compass } from "lucide-react";
-import { useAestheticTheme } from "@/hooks/useAestheticTheme";
+import { Calendar, MapPin, CheckCircle2, Compass } from "lucide-react";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -14,13 +13,14 @@ if (typeof window !== "undefined") {
 
 export function CareerSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const { aesthetic } = useAestheticTheme();
 
   useEffect(() => {
+    if (!sectionRef.current) return;
+
     const ctx = gsap.context(() => {
       const careerTimeline = gsap.timeline({
         scrollTrigger: {
-          trigger: ".career-section",
+          trigger: sectionRef.current,
           start: "top 60%",
           end: "bottom 30%",
           scrub: 1.2,
@@ -60,19 +60,13 @@ export function CareerSection() {
         {/* Header */}
         <div className="flex flex-col items-center text-center mb-12 sm:mb-16">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-theme-border bg-theme-accent-subtle text-theme-accent text-xs font-mono uppercase tracking-wider mb-4">
-            {aesthetic === "blueprint" ? <Compass size={13} className="flex-shrink-0" /> : <Briefcase size={13} className="flex-shrink-0" />}
-            <span>{aesthetic === "blueprint" ? "TELEMETRY // CAREER_CHRONOLOGY" : "Chronicle of Engineering Craft"}</span>
+            <Compass size={13} className="flex-shrink-0" />
+            <span>TELEMETRY // CAREER_CHRONOLOGY</span>
           </div>
 
-          {aesthetic === "editorial" ? (
-            <h2 className="text-3xl sm:text-5xl md:text-6xl font-normal font-serif text-theme-primary tracking-tight mb-3 sm:mb-4 break-words">
-              Professional <span className="italic text-theme-accent">Experience</span>
-            </h2>
-          ) : (
-            <h2 className="text-2xl sm:text-4xl md:text-5xl font-black font-sans text-theme-primary tracking-tight mb-3 sm:mb-4 break-words">
-              Professional Experience
-            </h2>
-          )}
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-black font-sans text-theme-primary tracking-tight mb-3 sm:mb-4 break-words">
+            Professional Experience
+          </h2>
 
           <p className="max-w-2xl text-xs sm:text-sm md:text-base text-theme-secondary font-light leading-relaxed px-2">
             Software Development Engineer at NetTantra Technologies, engineering scalable full-stack web and mobile systems alongside automated video generation pipelines, agentic copilots, and pgvector RAG.
@@ -108,9 +102,7 @@ export function CareerSection() {
                       </span>
                     </div>
 
-                    <h4 className={`text-xl sm:text-2xl font-bold text-theme-primary mb-1 ${
-                      aesthetic === "editorial" ? "font-serif font-normal" : "font-sans"
-                    }`}>
+                    <h4 className="text-xl sm:text-2xl font-bold font-sans text-theme-primary mb-1">
                       {exp.title}
                     </h4>
                     <h5 className="text-sm font-semibold text-theme-accent mb-3">
@@ -127,7 +119,7 @@ export function CareerSection() {
                     </div>
                   </div>
 
-                  <h3 className={`career-year ${aesthetic === "editorial" ? "font-serif" : "font-mono"}`}>
+                  <h3 className="career-year font-mono">
                     {exp.duration.toLowerCase().includes("present")
                       ? "NOW"
                       : exp.duration.split(" - ")[0]}

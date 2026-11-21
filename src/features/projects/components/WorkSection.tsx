@@ -3,16 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ExternalLink, Code2, ArrowRight, Sparkles, Layers, Cpu, Compass } from "lucide-react";
+import { ExternalLink, Code2, ArrowRight, Sparkles, Layers, Compass } from "lucide-react";
 import { userData } from "@/lib/data";
-import { useAestheticTheme } from "@/hooks/useAestheticTheme";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 
 export function WorkSection() {
   const flexRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
   const [isDesktop, setIsDesktop] = useState(false);
-  const { aesthetic } = useAestheticTheme();
   const projects = userData.Projects.slice(0, 5);
 
   useEffect(() => {
@@ -81,28 +79,18 @@ export function WorkSection() {
         {/* Section Header */}
         <div className="px-4 sm:px-8 md:px-14 lg:px-20 mb-4 sm:mb-6 lg:mb-8 relative z-20">
           <div className="flex items-center gap-2 text-xs font-mono tracking-widest text-theme-accent uppercase mb-2">
-            {aesthetic === "blueprint" ? <Compass size={14} className="flex-shrink-0" /> : <Cpu size={14} className="flex-shrink-0" />}
-            <span>
-              {aesthetic === "blueprint"
-                ? "CATALOG // ARCHITECTURAL SYSTEMS & CASE STUDIES"
-                : "Curated Works & Production Architectures"}
-            </span>
+            <Compass size={14} className="flex-shrink-0" />
+            <span>CATALOG // ARCHITECTURAL SYSTEMS &amp; CASE STUDIES</span>
           </div>
 
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 sm:gap-4">
             <div>
-              {aesthetic === "editorial" ? (
-                <h2 className="text-3xl sm:text-4xl md:text-6xl font-normal font-serif tracking-tight text-theme-primary">
-                  Selected <span className="italic text-theme-accent">Production Works</span>
-                </h2>
-              ) : (
-                <h2 className="text-2xl sm:text-3xl md:text-5xl font-black font-sans tracking-tight text-theme-primary">
-                  Selected{" "}
-                  <span className="text-theme-accent">
-                    Production Systems
-                  </span>
-                </h2>
-              )}
+              <h2 className="text-2xl sm:text-3xl md:text-5xl font-black font-sans tracking-tight text-theme-primary">
+                Selected{" "}
+                <span className="text-theme-accent">
+                  Production Systems
+                </span>
+              </h2>
             </div>
 
             <Link
@@ -154,9 +142,7 @@ export function WorkSection() {
               <div className="relative z-10 h-full flex flex-col justify-between p-5 sm:p-7 md:p-8">
                 {/* Top Row: Index + Category Pill */}
                 <div className="flex items-center justify-between">
-                  <span className={`text-3xl sm:text-4xl font-black select-none text-theme-border-strong ${
-                    aesthetic === "editorial" ? "font-serif italic" : "font-mono"
-                  }`}>
+                  <span className="text-3xl sm:text-4xl font-black select-none text-theme-border-strong font-mono">
                     0{index + 1}
                   </span>
                   <div className="flex items-center gap-2">
@@ -175,9 +161,7 @@ export function WorkSection() {
                     </div>
                   )}
 
-                  <h3 className={`text-lg sm:text-xl md:text-2xl font-bold text-theme-primary mb-1.5 sm:mb-2 leading-tight group-hover:text-theme-accent transition-colors break-words ${
-                    aesthetic === "editorial" ? "font-serif font-normal" : "font-sans"
-                  }`}>
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold font-sans text-theme-primary mb-1.5 sm:mb-2 leading-tight group-hover:text-theme-accent transition-colors break-words">
                     {project.project_name}
                   </h3>
 
@@ -243,9 +227,7 @@ export function WorkSection() {
             </div>
 
             <div>
-              <h3 className={`text-lg sm:text-xl font-bold text-theme-primary mb-2 ${
-                aesthetic === "editorial" ? "font-serif font-normal" : "font-sans"
-              }`}>
+              <h3 className="text-lg sm:text-xl font-bold font-sans text-theme-primary mb-2">
                 Explore All Work
               </h3>
               <p className="text-xs text-theme-secondary leading-relaxed font-light">

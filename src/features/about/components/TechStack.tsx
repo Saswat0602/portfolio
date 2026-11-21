@@ -11,12 +11,10 @@ import {
   CheckCircle2,
   Compass,
 } from "lucide-react";
-import { useAestheticTheme } from "@/hooks/useAestheticTheme";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 
 export function TechStack() {
   const [activeCategory, setActiveCategory] = useState<string>("all");
-  const { aesthetic } = useAestheticTheme();
 
   const categoryIcons: Record<string, React.ElementType> = {
     "ai-rag": Brain,
@@ -44,19 +42,13 @@ export function TechStack() {
         {/* Header */}
         <div className="flex flex-col items-center text-center mb-12 sm:mb-16">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-theme-border bg-theme-accent-subtle text-theme-accent text-xs font-mono uppercase tracking-wider mb-4">
-            {aesthetic === "blueprint" ? <Compass size={13} className="flex-shrink-0" /> : <Cpu size={13} className="flex-shrink-0" />}
-            <span>{aesthetic === "blueprint" ? "TELEMETRY // TECHNICAL_CAPABILITIES" : "Engineering Discipline & Capabilities"}</span>
+            <Compass size={13} className="flex-shrink-0" />
+            <span>TELEMETRY // TECHNICAL_CAPABILITIES</span>
           </div>
 
-          {aesthetic === "editorial" ? (
-            <h2 className="text-3xl sm:text-5xl md:text-6xl font-normal font-serif text-theme-primary tracking-tight mb-3 sm:mb-4 break-words">
-              Full Stack &amp; <span className="italic text-theme-accent">Modern AI</span> Engineering
-            </h2>
-          ) : (
-            <h2 className="text-2xl sm:text-4xl md:text-5xl font-black font-sans text-theme-primary tracking-tight mb-3 sm:mb-4 break-words">
-              Full Stack &amp; Modern AI Engineering
-            </h2>
-          )}
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-black font-sans text-theme-primary tracking-tight mb-3 sm:mb-4 break-words">
+            Full Stack &amp; Modern AI Engineering
+          </h2>
 
           <p className="max-w-2xl text-xs sm:text-sm md:text-base text-theme-secondary font-light leading-relaxed px-2">
             Combining 3+ years of full-stack web and mobile engineering with production-grade AI systems, AWS Bedrock integrations, and high-performance vector search pipelines.
@@ -100,9 +92,7 @@ export function TechStack() {
                       <span className="text-[10px] sm:text-[11px] font-mono uppercase tracking-widest text-theme-accent font-semibold block mb-1">
                         {cat.subtitle}
                       </span>
-                      <h3 className={`text-lg sm:text-xl md:text-2xl font-bold text-theme-primary tracking-tight break-words ${
-                        aesthetic === "editorial" ? "font-serif font-normal" : "font-sans"
-                      }`}>
+                      <h3 className="text-lg sm:text-xl md:text-2xl font-bold font-sans text-theme-primary tracking-tight break-words">
                         {cat.title}
                       </h3>
                     </div>
@@ -153,23 +143,23 @@ export function TechStack() {
         {/* Bottom Metrics Bar */}
         <div className="mt-10 sm:mt-12 p-4 sm:p-6 rounded-2xl border border-theme-border bg-theme-surface/70 backdrop-blur-md grid grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-6 text-center shadow-xs">
           <div className="flex flex-col items-center">
-            <span className={`text-lg xs:text-xl sm:text-2xl md:text-3xl font-black mb-1 text-theme-primary break-words ${
-              aesthetic === "editorial" ? "font-serif text-theme-accent" : "font-mono"
-            }`}>3+ Years</span>
+            <span className="text-lg xs:text-xl sm:text-2xl md:text-3xl font-black mb-1 text-theme-primary break-words font-mono">
+              3+ Years
+            </span>
             <span className="text-[11px] sm:text-xs font-mono text-theme-muted">Production Engineering Experience</span>
           </div>
 
           <div className="flex flex-col items-center sm:border-x sm:border-theme-border">
-            <span className={`text-lg xs:text-xl sm:text-2xl md:text-3xl font-black mb-1 text-theme-accent break-words ${
-              aesthetic === "editorial" ? "font-serif italic font-normal" : "font-mono"
-            }`}>Full Stack &amp; Applied AI</span>
+            <span className="text-lg xs:text-xl sm:text-2xl md:text-3xl font-black mb-1 text-theme-accent break-words font-mono">
+              Full Stack &amp; Applied AI
+            </span>
             <span className="text-[11px] sm:text-xs font-mono text-theme-muted">Video Automation, Copilot SDKs &amp; RAG</span>
           </div>
 
           <div className="flex flex-col items-center">
-            <span className={`text-lg xs:text-xl sm:text-2xl md:text-3xl font-black mb-1 text-emerald-500 break-words ${
-              aesthetic === "editorial" ? "font-serif font-normal" : "font-mono"
-            }`}>Bhubaneswar, IN</span>
+            <span className="text-lg xs:text-xl sm:text-2xl md:text-3xl font-black mb-1 text-emerald-500 break-words font-mono">
+              Bhubaneswar, IN
+            </span>
             <span className="text-[11px] sm:text-xs font-mono text-theme-muted">Software Engineer at NetTantra Technologies</span>
           </div>
         </div>

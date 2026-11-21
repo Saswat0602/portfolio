@@ -20,7 +20,7 @@ export default function ProjectsPage() {
           </div>
 
           <h1 className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl font-black text-theme-primary tracking-tight mb-3 sm:mb-4 heading-display break-words">
-            Production Projects &amp; <span className="editorial-italic text-theme-accent">AI Systems</span>
+            Production Projects &amp; <span className="text-theme-accent">AI Systems</span>
           </h1>
 
           <p className="max-w-3xl text-sm sm:text-base md:text-lg text-theme-secondary font-light leading-relaxed">

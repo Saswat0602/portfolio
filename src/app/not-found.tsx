@@ -10,7 +10,7 @@ export default function NotFound() {
         </span>
 
         <h1 className="text-3xl sm:text-4xl font-bold text-theme-primary tracking-tight mb-3 heading-display">
-          Page Not <span className="editorial-italic text-theme-accent">Found</span>
+          Page Not <span className="text-theme-accent">Found</span>
         </h1>
 
         <p className="text-xs sm:text-sm text-theme-secondary font-light leading-relaxed mb-8">

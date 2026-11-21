@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Outfit, Plus_Jakarta_Sans, JetBrains_Mono, Instrument_Serif } from "next/font/google";
+import { Outfit, Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { siteConfig } from "@/config/site";
-import { AestheticThemeProvider } from "@/components/theme/AestheticThemeContext";
+import { ThemeProvider } from "@/components/theme/ThemeContext";
 
 const outfit = Outfit({
   variable: "--font-heading-sans",
@@ -24,14 +24,6 @@ const jetbrainsMono = JetBrains_Mono({
   variable: "--font-mono",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
-  display: "swap",
-});
-
-const instrumentSerif = Instrument_Serif({
-  variable: "--font-serif",
-  subsets: ["latin"],
-  weight: ["400"],
-  style: ["normal", "italic"],
   display: "swap",
 });
 
@@ -69,9 +61,9 @@ export const metadata: Metadata = {
 const themeInitScript = `
 (function() {
   try {
-    var aesthetic = localStorage.getItem('portfolio_aesthetic') || 'blueprint';
+    localStorage.removeItem('portfolio_aesthetic');
+    document.documentElement.removeAttribute('data-aesthetic');
     var theme = localStorage.getItem('portfolio_theme') || 'dark';
-    document.documentElement.setAttribute('data-aesthetic', aesthetic);
     document.documentElement.setAttribute('data-theme', theme);
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
@@ -91,19 +83,18 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      data-aesthetic="blueprint"
       data-theme="dark"
-      className={`${outfit.variable} ${plusJakartaSans.variable} ${jetbrainsMono.variable} ${instrumentSerif.variable} dark h-full antialiased w-full max-w-full overflow-x-hidden`}
+      className={`${outfit.variable} ${plusJakartaSans.variable} ${jetbrainsMono.variable} dark h-full antialiased w-full max-w-full overflow-x-hidden`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body className="min-h-full flex flex-col bg-theme-base text-theme-primary transition-colors duration-200 w-full max-w-full overflow-x-hidden">
-        <AestheticThemeProvider>
+        <ThemeProvider>
           <Navbar />
           <div className="flex-1 flex flex-col pt-16 w-full max-w-full overflow-x-hidden">{children}</div>
           <Footer />
-        </AestheticThemeProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

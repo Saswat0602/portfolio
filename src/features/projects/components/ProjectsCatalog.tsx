@@ -5,14 +5,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { userData } from "@/lib/data";
 import { Search, ExternalLink, Code2, ArrowRight, Sparkles, Filter } from "lucide-react";
-import { useAestheticTheme } from "@/hooks/useAestheticTheme";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 
 export function ProjectsCatalog() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const { aesthetic } = useAestheticTheme();
 
   const categories = [
     { id: "all", label: "All Projects" },
@@ -142,12 +140,10 @@ export function ProjectsCatalog() {
 
                   {/* Top Badges */}
                   <div className="absolute top-3.5 left-3.5 right-3.5 sm:top-4 sm:left-4 sm:right-4 flex items-center justify-between">
-                    <span className={`px-2.5 py-1 text-[10px] uppercase tracking-wider rounded-full border border-theme-border bg-theme-surface/85 backdrop-blur-md text-theme-accent ${
-                      aesthetic === "editorial" ? "font-serif italic text-xs" : "font-mono"
-                    }`}>
+                    <span className="px-2.5 py-1 text-[10px] uppercase tracking-wider rounded-full border border-theme-border bg-theme-surface/85 backdrop-blur-md text-theme-accent font-mono">
                       {project.category}
                     </span>
-                    <span className={`text-xs text-theme-muted ${aesthetic === "editorial" ? "font-serif italic" : "font-mono"}`}>
+                    <span className="text-xs text-theme-muted font-mono">
                       0{index + 1}
                     </span>
                   </div>
@@ -162,9 +158,7 @@ export function ProjectsCatalog() {
                     </div>
                   )}
 
-                  <h3 className={`text-base sm:text-lg font-bold text-theme-primary mb-1.5 sm:mb-2 leading-snug group-hover:text-theme-accent transition-colors break-words ${
-                    aesthetic === "editorial" ? "font-serif font-normal text-xl" : "font-sans"
-                  }`}>
+                  <h3 className="text-base sm:text-lg font-bold font-sans text-theme-primary mb-1.5 sm:mb-2 leading-snug group-hover:text-theme-accent transition-colors break-words">
                     <Link href={`/projects/${project.slug}`}>
                       {project.project_name}
                     </Link>

@@ -1,17 +1,15 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, MapPin, Layers, Cpu, Mail, Compass, BookmarkCheck, Workflow, Zap } from "lucide-react";
+import { ArrowRight, MapPin, Layers, Cpu, Mail, Compass, Workflow, Zap } from "lucide-react";
 import Link from "next/link";
 import { userData } from "@/lib/data";
-import { useAestheticTheme } from "@/hooks/useAestheticTheme";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
 
 import { useRef, useCallback } from "react";
 
 export function Hero() {
-  const { aesthetic } = useAestheticTheme();
   const heroRef = useRef<HTMLDivElement>(null);
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
@@ -62,17 +60,13 @@ export function Hero() {
         <div className="absolute inset-0 dot-grid-drift opacity-60 transition-opacity duration-500" />
 
         {/* 24px Structural Hairlines for Blueprint mode */}
-        <div
-          className={`absolute inset-0 transition-opacity duration-500 ${
-            aesthetic === "blueprint" ? "opacity-100 blueprint-grid-24" : "opacity-0"
-          }`}
-        />
+        <div className="absolute inset-0 opacity-100 blueprint-grid-24" />
 
         {/* Gradient fade to bottom */}
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-theme-base/50 to-theme-base" />
 
         {/* Blueprint Telemetry Watermark Corner Stamps */}
-        <div className="blueprint-only hidden lg:flex justify-between items-start absolute inset-x-8 top-24 text-[10px] font-mono text-theme-muted/50 select-none pointer-events-none tracking-widest">
+        <div className="hidden lg:flex justify-between items-start absolute inset-x-8 top-24 text-[10px] font-mono text-theme-muted/50 select-none pointer-events-none tracking-widest">
           <div>
             <span>[COORD: 20.2961° N, 85.8245° E]</span>
             <span className="block mt-0.5">BHUBANESWAR // SYS_ID: NETTANTRA_SDE1</span>
@@ -82,92 +76,50 @@ export function Hero() {
             <span className="block mt-0.5">STATUS: ALL_SYSTEMS_OPERATIONAL</span>
           </div>
         </div>
-
-        {/* Editorial Craft Watermark */}
-        <div className="editorial-only hidden lg:flex justify-between items-center absolute inset-x-10 top-24 text-xs font-serif italic text-theme-muted/50 select-none pointer-events-none tracking-wider">
-          <span>Volume IV — Production Engineering Record</span>
-          <span>NetTantra Technologies • Saswat Ranjan Mohanty</span>
-        </div>
       </div>
 
       <div className="relative z-10 max-w-5xl mx-auto flex flex-col items-center text-center w-full">
-        {/* Aesthetic-Specific Status Pill */}
+        {/* Blueprint Status Pill */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
-          className={`flex flex-wrap items-center justify-center gap-2 px-3 sm:px-4 py-1.5 rounded-2xl sm:rounded-full border border-theme-border bg-theme-surface/80 backdrop-blur-xl mb-6 sm:mb-8 shadow-sm max-w-full text-center ${
-            aesthetic === "blueprint" ? "blueprint-crosshair" : ""
-          }`}
+          className="flex flex-wrap items-center justify-center gap-2 px-3 sm:px-4 py-1.5 rounded-2xl sm:rounded-full border border-theme-border bg-theme-surface/80 backdrop-blur-xl mb-6 sm:mb-8 shadow-sm max-w-full text-center blueprint-crosshair"
         >
-          {aesthetic === "blueprint" ? (
-            <>
-              <div className="flex items-center gap-1.5 text-xs font-mono text-theme-accent">
-                <Compass size={13} className="flex-shrink-0" />
-                <span>SPEC // FULL-STACK &amp; APPLIED AI</span>
-              </div>
-              <span className="text-theme-border hidden sm:inline">|</span>
-              <div className="flex items-center gap-1.5 text-xs font-mono text-theme-secondary">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0" />
-                <span>3+ YOE • NETTANTRA TECHNOLOGIES SDE 1</span>
-              </div>
-              <span className="text-theme-border hidden sm:inline">|</span>
-              <div className="flex items-center gap-1 text-xs font-mono text-theme-muted">
-                <MapPin size={12} className="text-amber-500 flex-shrink-0" />
-                <span>20.2961° N, 85.8245° E</span>
-              </div>
-            </>
-          ) : (
-            <>
-              <div className="flex items-center gap-1.5 text-xs font-serif italic text-theme-accent font-medium">
-                <BookmarkCheck size={13} className="flex-shrink-0" />
-                <span>Software Engineer • Full-Stack &amp; Applied AI</span>
-              </div>
-              <span className="text-theme-border hidden sm:inline">•</span>
-              <div className="flex items-center gap-1.5 text-xs font-sans text-theme-secondary">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0" />
-                <span>NetTantra Technologies • 3+ YOE</span>
-              </div>
-              <span className="text-theme-border hidden sm:inline">•</span>
-              <div className="flex items-center gap-1 text-xs font-sans text-theme-muted">
-                <MapPin size={12} className="text-amber-500 flex-shrink-0" />
-                <span>Bhubaneswar, India</span>
-              </div>
-            </>
-          )}
+          <div className="flex items-center gap-1.5 text-xs font-mono text-theme-accent">
+            <Compass size={13} className="flex-shrink-0" />
+            <span>SPEC // FULL-STACK &amp; APPLIED AI</span>
+          </div>
+          <span className="text-theme-border hidden sm:inline">|</span>
+          <div className="flex items-center gap-1.5 text-xs font-mono text-theme-secondary">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0" />
+            <span>3+ YOE • NETTANTRA TECHNOLOGIES SDE 1</span>
+          </div>
+          <span className="text-theme-border hidden sm:inline">|</span>
+          <div className="flex items-center gap-1 text-xs font-mono text-theme-muted">
+            <MapPin size={12} className="text-amber-500 flex-shrink-0" />
+            <span>20.2961° N, 85.8245° E</span>
+          </div>
         </motion.div>
 
-        {/* Dynamic Headline: Outfit/Sans (Blueprint) vs Instrument Serif (Editorial) */}
+        {/* Blueprint Headline */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
           className="mb-4 sm:mb-6 w-full px-2"
         >
-          {aesthetic === "editorial" ? (
-            <>
-              <h1 className="text-3xl xs:text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-normal font-serif tracking-tight text-theme-primary mb-3 sm:mb-4 leading-[1.05] sm:leading-[0.95] break-words">
-                <span className="italic block sm:inline">Saswat</span> Ranjan Mohanty
-              </h1>
-              <p className="text-base xs:text-lg sm:text-2xl md:text-3xl font-serif text-theme-accent tracking-normal max-w-3xl mx-auto leading-relaxed">
-                <span className="italic">Architecting</span> high-performance web systems, distributed microservices, and <span className="italic">applied AI &amp; agentic copilots</span>.
-              </p>
-            </>
-          ) : (
-            <>
-              <div className="inline-block mb-1.5 max-w-full">
-                <span className="text-[9px] xs:text-[10px] sm:text-[11px] font-mono uppercase tracking-[0.08em] xs:tracking-[0.15em] sm:tracking-[0.2em] text-theme-accent bg-theme-accent-subtle px-2 sm:px-2.5 py-0.5 rounded border border-theme-border break-all xs:break-normal max-w-full inline-block">
-                  [SOFTWARE_ENGINEER // FULL_STACK_APPLIED_AI]
-                </span>
-              </div>
-              <h1 className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black font-sans tracking-tight text-theme-primary mb-3 sm:mb-4 break-words">
-                {userData.name}
-              </h1>
-              <p className="text-sm sm:text-lg md:text-xl font-mono font-medium tracking-tight text-theme-accent">
-                Full-Stack Systems • Applied AI Copilots • Video Pipelines • pgvector RAG
-              </p>
-            </>
-          )}
+          <div className="inline-block mb-1.5 max-w-full">
+            <span className="text-[9px] xs:text-[10px] sm:text-[11px] font-mono uppercase tracking-[0.08em] xs:tracking-[0.15em] sm:tracking-[0.2em] text-theme-accent bg-theme-accent-subtle px-2 sm:px-2.5 py-0.5 rounded border border-theme-border break-all xs:break-normal max-w-full inline-block">
+              [SOFTWARE_ENGINEER // FULL_STACK_APPLIED_AI]
+            </span>
+          </div>
+          <h1 className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black font-sans tracking-tight text-theme-primary mb-3 sm:mb-4 break-words">
+            {userData.name}
+          </h1>
+          <p className="text-sm sm:text-lg md:text-xl font-mono font-medium tracking-tight text-theme-accent">
+            Full-Stack Systems • Applied AI Copilots • Video Pipelines • pgvector RAG
+          </p>
         </motion.div>
 
         {/* Introduction Subtitle */}
@@ -175,9 +127,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
-          className={`max-w-3xl text-sm sm:text-base md:text-lg text-theme-secondary mb-8 sm:mb-10 leading-relaxed font-light px-2 ${
-            aesthetic === "editorial" ? "font-sans leading-relaxed" : "font-sans"
-          }`}
+          className="max-w-3xl text-sm sm:text-base md:text-lg text-theme-secondary mb-8 sm:mb-10 leading-relaxed font-light px-2 font-sans"
         >
           Software Engineer (SDE 1) at NetTantra Technologies with 3+ years of production experience shipping high-throughput web apps, cross-platform mobile apps, automated video generation pipelines, and agentic copilots.
         </motion.p>
@@ -192,9 +142,7 @@ export function Hero() {
           {coreCompetencies.map(({ label, icon: Icon }) => (
             <div
               key={label}
-              className={`flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1.5 rounded-lg border border-theme-border bg-theme-surface/80 backdrop-blur-md text-[11px] sm:text-xs text-theme-secondary shadow-sm hover:border-theme-accent hover:text-theme-primary transition-all duration-200 ${
-                aesthetic === "editorial" ? "font-sans" : "font-mono"
-              }`}
+              className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1.5 rounded-lg border border-theme-border bg-theme-surface/80 backdrop-blur-md text-[11px] sm:text-xs text-theme-secondary shadow-sm hover:border-theme-accent hover:text-theme-primary transition-all duration-200 font-mono"
             >
               <Icon size={14} className="text-theme-accent flex-shrink-0" />
               <span>{label}</span>
@@ -241,11 +189,7 @@ export function Hero() {
               key={idx}
               className="flex flex-col items-center p-3 sm:p-4 rounded-xl border border-theme-border/60 bg-theme-surface/50 backdrop-blur-sm hover:border-theme-accent/60 transition-colors"
             >
-              <span
-                className={`text-xl sm:text-2xl md:text-3xl font-black mb-1 text-theme-primary ${
-                  aesthetic === "editorial" ? "font-serif text-theme-accent" : "font-mono"
-                }`}
-              >
+              <span className="text-xl sm:text-2xl md:text-3xl font-black mb-1 text-theme-primary font-mono">
                 <AnimatedCounter value={item.value} />
               </span>
               <span className="text-[10px] sm:text-xs font-mono text-theme-muted text-center leading-snug">

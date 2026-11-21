@@ -15,7 +15,6 @@ import {
   ShieldCheck,
   Zap,
 } from "lucide-react";
-import { useAestheticTheme } from "@/hooks/useAestheticTheme";
 
 interface ProjectDetailViewProps {
   project: ProjectData;
@@ -23,8 +22,6 @@ interface ProjectDetailViewProps {
 }
 
 export function ProjectDetailView({ project, allProjects }: ProjectDetailViewProps) {
-  const { aesthetic } = useAestheticTheme();
-
   // Find next project
   const currentIndex = allProjects.findIndex((p) => p.slug === project.slug);
   const nextProject =
@@ -49,9 +46,7 @@ export function ProjectDetailView({ project, allProjects }: ProjectDetailViewPro
         {/* Top Badges & Title */}
         <div className="flex flex-col gap-3 sm:gap-4 mb-6 sm:mb-8">
           <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-            <span className={`px-3 py-1 text-xs uppercase tracking-wider rounded-full border border-theme-border bg-theme-accent-subtle text-theme-accent ${
-              aesthetic === "editorial" ? "font-serif italic text-sm" : "font-mono"
-            }`}>
+            <span className="px-3 py-1 text-xs uppercase tracking-wider rounded-full border border-theme-border bg-theme-accent-subtle text-theme-accent font-mono">
               {project.category}
             </span>
             {project.metrics && (
@@ -62,9 +57,7 @@ export function ProjectDetailView({ project, allProjects }: ProjectDetailViewPro
             )}
           </div>
 
-          <h1 className={`text-2xl xs:text-3xl sm:text-5xl md:text-6xl text-theme-primary tracking-tight leading-tight break-words ${
-            aesthetic === "editorial" ? "font-serif font-normal" : "font-sans font-black"
-          }`}>
+          <h1 className="text-2xl xs:text-3xl sm:text-5xl md:text-6xl text-theme-primary tracking-tight leading-tight break-words font-sans font-black">
             {project.project_name}
           </h1>
 
@@ -122,10 +115,8 @@ export function ProjectDetailView({ project, allProjects }: ProjectDetailViewPro
                 <Cpu size={14} />
                 <span>Executive Overview</span>
               </div>
-              <h2 className={`text-xl sm:text-2xl font-bold text-theme-primary mb-4 ${
-                aesthetic === "editorial" ? "font-serif font-normal text-3xl" : "font-sans"
-              }`}>
-                Architecture &amp; {aesthetic === "editorial" ? <span className="italic text-theme-accent">System Scope</span> : "System Scope"}
+              <h2 className="text-xl sm:text-2xl font-bold font-sans text-theme-primary mb-4">
+                Architecture &amp; System Scope
               </h2>
               <p className="text-sm sm:text-base text-theme-secondary font-light leading-relaxed">
                 {project.long_description || project.description}
@@ -139,10 +130,8 @@ export function ProjectDetailView({ project, allProjects }: ProjectDetailViewPro
                   <Layers size={14} />
                   <span>Technical Design</span>
                 </div>
-                <h2 className={`text-lg sm:text-2xl font-bold text-theme-primary mb-4 sm:mb-5 break-words ${
-                  aesthetic === "editorial" ? "font-serif font-normal text-2xl sm:text-3xl" : "font-sans"
-                }`}>
-                  Core {aesthetic === "editorial" ? <span className="italic text-theme-accent">Architecture</span> : "Architecture"} Components
+                <h2 className="text-lg sm:text-2xl font-bold font-sans text-theme-primary mb-4 sm:mb-5 break-words">
+                  Core Architecture Components
                 </h2>
                 <div className="flex flex-col gap-2.5 sm:gap-3">
                   {project.architecture.map((item, idx) => (
@@ -167,10 +156,8 @@ export function ProjectDetailView({ project, allProjects }: ProjectDetailViewPro
                   <ShieldCheck size={14} />
                   <span>Production Impact</span>
                 </div>
-                <h2 className={`text-lg sm:text-2xl font-bold text-theme-primary mb-4 sm:mb-5 break-words ${
-                  aesthetic === "editorial" ? "font-serif font-normal text-2xl sm:text-3xl" : "font-sans"
-                }`}>
-                  Key Results &amp; {aesthetic === "editorial" ? <span className="italic text-theme-accent">Optimizations</span> : "Optimizations"}
+                <h2 className="text-lg sm:text-2xl font-bold font-sans text-theme-primary mb-4 sm:mb-5 break-words">
+                  Key Results &amp; Optimizations
                 </h2>
                 <div className="flex flex-col gap-2.5 sm:gap-3">
                   {project.highlights.map((highlight, idx) => (
@@ -240,9 +227,7 @@ export function ProjectDetailView({ project, allProjects }: ProjectDetailViewPro
                   <span>Next Case Study</span>
                   <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
                 </div>
-                <h4 className={`text-sm font-bold text-theme-primary group-hover:text-theme-accent transition-colors line-clamp-1 ${
-                  aesthetic === "editorial" ? "font-serif font-normal text-base" : "font-sans"
-                }`}>
+                <h4 className="text-sm font-bold font-sans text-theme-primary group-hover:text-theme-accent transition-colors line-clamp-1">
                   {nextProject.project_name}
                 </h4>
               </Link>

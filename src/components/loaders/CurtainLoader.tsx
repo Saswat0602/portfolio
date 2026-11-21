@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { LoaderProps } from "./types";
-import { useAestheticTheme } from "@/hooks/useAestheticTheme";
 
 export function CurtainLoader({
   onComplete,
@@ -12,7 +11,6 @@ export function CurtainLoader({
 }: LoaderProps) {
   const [progress, setProgress] = useState(0);
   const [isExiting, setIsExiting] = useState(false);
-  const { aesthetic } = useAestheticTheme();
 
   // Split name into first and last
   const parts = name.split(" ");
@@ -97,11 +95,7 @@ export function CurtainLoader({
                     ease: [0.16, 1, 0.3, 1],
                     delay: 0.1,
                   }}
-                  className={`text-3xl xs:text-4xl sm:text-7xl md:text-9xl tracking-tight text-theme-primary ${
-                    aesthetic === "editorial"
-                      ? "font-serif italic font-normal"
-                      : "font-extrabold uppercase font-sans"
-                  }`}
+                  className="text-3xl xs:text-4xl sm:text-7xl md:text-9xl tracking-tight text-theme-primary font-extrabold uppercase font-sans"
                 >
                   {firstName}
                 </motion.h1>
@@ -116,11 +110,7 @@ export function CurtainLoader({
                     ease: [0.16, 1, 0.3, 1],
                     delay: 0.22,
                   }}
-                  className={`text-3xl xs:text-4xl sm:text-7xl md:text-9xl tracking-tight text-theme-accent drop-shadow-md ${
-                    aesthetic === "editorial"
-                      ? "font-serif font-normal"
-                      : "font-extrabold uppercase font-sans"
-                  }`}
+                  className="text-3xl xs:text-4xl sm:text-7xl md:text-9xl tracking-tight text-theme-accent drop-shadow-md font-extrabold uppercase font-sans"
                 >
                   {lastName}
                 </motion.h1>
@@ -139,7 +129,7 @@ export function CurtainLoader({
 
               <div className="flex justify-between items-center text-xs font-mono text-theme-muted">
                 <span className="tracking-widest uppercase">
-                  {aesthetic === "blueprint" ? "SYS // INITIALIZING_TELEMETRY" : "Initializing Architectural Craft"}
+                  SYS // INITIALIZING_TELEMETRY
                 </span>
                 <span className="text-theme-accent font-semibold">{progress}%</span>
               </div>

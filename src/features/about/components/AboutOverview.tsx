@@ -4,7 +4,6 @@ import Link from "next/link";
 import { userData } from "@/lib/data";
 import {
   Brain,
-  Cpu,
   Layers,
   ShieldCheck,
   Zap,
@@ -15,11 +14,9 @@ import {
   Mail,
   Compass,
 } from "lucide-react";
-import { useAestheticTheme } from "@/hooks/useAestheticTheme";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 
 export function AboutOverview() {
-  const { aesthetic } = useAestheticTheme();
 
   const principles = [
     {
@@ -56,15 +53,9 @@ export function AboutOverview() {
 
         <div className="relative z-10 max-w-4xl">
           <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 mb-4 sm:mb-6">
-            {aesthetic === "blueprint" ? (
-              <span className="px-3 sm:px-3.5 py-1 text-xs font-mono uppercase tracking-wider rounded-full border border-theme-border bg-theme-accent-subtle text-theme-accent">
-                [SYS // 3+ YOE PRODUCTION ARCHITECT]
-              </span>
-            ) : (
-              <span className="px-3 sm:px-3.5 py-1 text-xs font-serif italic tracking-wide rounded-full border border-theme-border bg-theme-accent-subtle text-theme-accent">
-                Artisan Engineering • 3+ Years Production Craft
-              </span>
-            )}
+            <span className="px-3 sm:px-3.5 py-1 text-xs font-mono uppercase tracking-wider rounded-full border border-theme-border bg-theme-accent-subtle text-theme-accent">
+              [SYS // 3+ YOE PRODUCTION ARCHITECT]
+            </span>
             <span className="text-theme-border hidden xs:inline">•</span>
             <span className="text-xs font-mono text-theme-secondary flex items-center gap-1.5">
               <MapPin size={12} className="text-amber-500" />
@@ -72,15 +63,9 @@ export function AboutOverview() {
             </span>
           </div>
 
-          {aesthetic === "editorial" ? (
-            <h1 className="text-3xl sm:text-5xl md:text-6xl text-theme-primary tracking-tight leading-tight mb-4 sm:mb-6 font-serif font-normal break-words">
-              Engineering Full Stack Platforms &amp; <span className="italic text-theme-accent">Modern AI</span> Systems
-            </h1>
-          ) : (
-            <h1 className="text-3xl sm:text-5xl md:text-6xl text-theme-primary tracking-tight leading-tight mb-4 sm:mb-6 font-sans font-black break-words">
-              Engineering Full Stack Platforms &amp; Modern AI Systems
-            </h1>
-          )}
+          <h1 className="text-3xl sm:text-5xl md:text-6xl text-theme-primary tracking-tight leading-tight mb-4 sm:mb-6 font-sans font-black break-words">
+            Engineering Full Stack Platforms &amp; Modern AI Systems
+          </h1>
 
           <div className="flex flex-col gap-3 sm:gap-4 text-sm sm:text-base md:text-lg text-theme-secondary font-light leading-relaxed mb-6 sm:mb-8">
             <p>{userData.about.description}</p>
@@ -110,12 +95,10 @@ export function AboutOverview() {
       {/* Engineering Philosophy Cards */}
       <section className="mb-16">
         <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-theme-accent mb-2">
-          {aesthetic === "blueprint" ? <Compass size={14} /> : <Cpu size={14} />}
-          <span>{aesthetic === "blueprint" ? "TELEMETRY // PRINCIPLES" : "Core Engineering Principles"}</span>
+          <Compass size={14} />
+          <span>TELEMETRY // PRINCIPLES</span>
         </div>
-        <h2 className={`text-3xl text-theme-primary tracking-tight mb-8 ${
-          aesthetic === "editorial" ? "font-serif font-normal text-4xl" : "font-sans font-black"
-        }`}>
+        <h2 className="text-3xl font-black font-sans text-theme-primary tracking-tight mb-8">
           How I Approach Software &amp; AI Engineering
         </h2>
 
@@ -131,9 +114,7 @@ export function AboutOverview() {
                   <div className="w-10 h-10 rounded-xl border border-theme-border bg-theme-surface-elevated flex items-center justify-center text-theme-accent mb-4 group-hover:scale-110 transition-transform">
                     <Icon size={18} />
                   </div>
-                  <h3 className={`text-base sm:text-lg font-bold text-theme-primary mb-2 group-hover:text-theme-accent transition-colors break-words ${
-                    aesthetic === "editorial" ? "font-serif font-normal text-xl" : "font-sans"
-                  }`}>
+                  <h3 className="text-base sm:text-lg font-bold font-sans text-theme-primary mb-2 group-hover:text-theme-accent transition-colors break-words">
                     {principle.title}
                   </h3>
                   <p className="text-xs sm:text-sm text-theme-secondary font-light leading-relaxed">
@@ -154,9 +135,7 @@ export function AboutOverview() {
             <Briefcase size={14} />
             <span>Track Record at NetTantra Technologies</span>
           </div>
-          <h3 className={`text-xl sm:text-2xl font-bold text-theme-primary mb-5 sm:mb-6 ${
-            aesthetic === "editorial" ? "font-serif font-normal text-2xl sm:text-3xl" : "font-sans"
-          }`}>
+          <h3 className="text-xl sm:text-2xl font-bold font-sans text-theme-primary mb-5 sm:mb-6">
             Experience Timeline
           </h3>
 
@@ -198,9 +177,7 @@ export function AboutOverview() {
               <GraduationCap size={15} />
               <span>Academic Foundation</span>
             </div>
-            <h3 className={`text-xl sm:text-2xl font-bold text-theme-primary mb-5 sm:mb-6 ${
-              aesthetic === "editorial" ? "font-serif font-normal text-2xl sm:text-3xl" : "font-sans"
-            }`}>
+            <h3 className="text-xl sm:text-2xl font-bold font-sans text-theme-primary mb-5 sm:mb-6">
               Education
             </h3>
 

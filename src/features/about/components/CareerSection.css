@@ -92,12 +92,6 @@
   transition: color 0.25s ease;
 }
 
-[data-aesthetic="editorial"] .career-year {
-  font-family: var(--font-serif), Georgia, serif;
-  font-style: italic;
-  font-weight: 400;
-}
-
 .career-role h4 {
   font-size: 22px;
   line-height: 1.3;
