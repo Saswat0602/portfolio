@@ -93,15 +93,15 @@ export default function RootLayout({
       lang="en"
       suppressHydrationWarning
       data-theme="dark"
-      className={`${outfit.variable} ${plusJakartaSans.variable} ${jetbrainsMono.variable} dark h-full antialiased w-full max-w-full overflow-x-hidden`}
+      className={`${outfit.variable} ${plusJakartaSans.variable} ${jetbrainsMono.variable} dark antialiased`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
-      <body className="min-h-full flex flex-col bg-theme-base text-theme-primary transition-colors duration-200 w-full max-w-full overflow-x-hidden">
+      <body className="min-h-screen flex flex-col bg-theme-base text-theme-primary">
         <ThemeProvider>
           <Navbar />
-          <div className="flex-1 flex flex-col pt-16 w-full max-w-full overflow-x-hidden">{children}</div>
+          <div className="flex-1 flex flex-col pt-16">{children}</div>
           <Footer />
         </ThemeProvider>
       </body>

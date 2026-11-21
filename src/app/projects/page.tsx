@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function ProjectsPage() {
   return (
-    <main className="w-full min-h-screen py-10 sm:py-16 px-4 sm:px-6 md:px-8 bg-theme-base text-theme-primary transition-colors duration-300 max-w-full overflow-hidden">
+    <main className="w-full min-h-screen py-10 sm:py-16 px-4 sm:px-6 md:px-8 bg-theme-base text-theme-primary transition-colors duration-300">
       <div className="max-w-7xl mx-auto">
         {/* Page Header */}
         <div className="flex flex-col items-start mb-8 sm:mb-14">

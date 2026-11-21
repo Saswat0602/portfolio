@@ -10,7 +10,7 @@ import { ScrollReveal } from "@/components/ui/ScrollReveal";
 export default function Home() {
   return (
     <Preloader>
-      <main className="bg-theme-base text-theme-primary min-h-screen transition-colors duration-300 w-full max-w-full overflow-x-hidden">
+      <main className="bg-theme-base text-theme-primary min-h-screen transition-colors duration-300">
         {/* 1. Hero with Interactive 32px Dot Grid Drift & Animated Metric Counters */}
         <Hero />
 
