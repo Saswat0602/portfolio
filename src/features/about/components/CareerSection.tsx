@@ -81,28 +81,37 @@ export function CareerSection() {
 
           {experiences.map((exp, index) => {
             const isEven = index % 2 === 0;
+            const isPresent = exp.duration.toLowerCase().includes("present");
 
             return (
               <div
                 key={`${exp.company}-${index}`}
                 className={`career-info-box ${isEven ? "career-left" : "career-right"}`}
               >
-                {/* Left/Right Column: Role & Company Info */}
+                {/* Column 1: Role, Company, Date & Skills */}
                 <div className="career-info-in">
                   <div className="career-role">
-                    <div className="flex items-center gap-2 mb-1.5">
-                      <span className="text-xs font-mono font-bold text-theme-accent flex items-center gap-1">
-                        <Calendar size={12} />
-                        {exp.duration}
+                    {/* Clean unified Date Range & Location metadata pill */}
+                    <div className="flex flex-wrap items-center gap-2 mb-3">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-mono font-semibold bg-theme-accent-subtle text-theme-accent border border-theme-border shadow-2xs">
+                        <Calendar size={12} className="flex-shrink-0" />
+                        <span>{exp.duration}</span>
                       </span>
-                      <span className="text-theme-border">•</span>
-                      <span className="text-[11px] font-mono text-theme-muted flex items-center gap-1">
-                        <MapPin size={11} />
-                        {exp.location.split("·")[0].trim()}
+
+                      {isPresent && (
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">
+                          CURRENT
+                        </span>
+                      )}
+
+                      <span className="text-[11px] font-mono text-theme-muted inline-flex items-center gap-1">
+                        <MapPin size={11} className="flex-shrink-0" />
+                        <span>{exp.location.split("·")[0].trim()}</span>
                       </span>
                     </div>
 
-                    <h4 className="text-xl sm:text-2xl font-bold font-sans text-theme-primary mb-1">
+                    {/* Role Title & Company */}
+                    <h4 className="text-xl sm:text-2xl font-bold font-sans text-theme-primary mb-1 tracking-tight">
                       {exp.title}
                     </h4>
                     <h5 className="text-sm font-semibold text-theme-accent mb-3">
@@ -118,22 +127,16 @@ export function CareerSection() {
                       ))}
                     </div>
                   </div>
-
-                  <h3 className="career-year font-mono">
-                    {exp.duration.toLowerCase().includes("present")
-                      ? "NOW"
-                      : exp.duration.split(" - ")[0]}
-                  </h3>
                 </div>
 
-                {/* Opposite Column: Responsibilities & Impact */}
+                {/* Column 2: Responsibilities & Impact */}
                 <div className="career-desc-col">
                   <p className="text-xs sm:text-sm text-theme-secondary font-light leading-relaxed mb-4">
                     {exp.description}
                   </p>
 
                   {exp.responsibilities && exp.responsibilities.length > 0 && (
-                    <ul className="flex flex-col gap-2">
+                    <ul className="flex flex-col gap-2.5">
                       {exp.responsibilities.map((resp, rIdx) => (
                         <li
                           key={rIdx}
@@ -154,3 +157,5 @@ export function CareerSection() {
     </div>
   );
 }
+
+export default CareerSection;

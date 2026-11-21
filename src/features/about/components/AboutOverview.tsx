@@ -28,7 +28,7 @@ export function AboutOverview() {
     {
       title: "Generative AI & Enterprise RAG",
       description:
-        "Engineering production AI architectures utilizing AWS Bedrock (Claude & Titan), pgvector hybrid search, autonomous LangGraph workflows, and strict prompt safety guardrails.",
+        "Engineering production AI architectures utilizing AWS Bedrock (Claude & Titan), pgvector hybrid search, autonomous agent integration, generative AI workflows, and strict prompt safety guardrails.",
       icon: Brain,
     },
     {

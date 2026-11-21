@@ -141,7 +141,7 @@ const userData: UserData = {
       "Agentic AI",
       "RAG Pipelines",
       "pgvector",
-      "LangChain / LangGraph",
+      "Agent & AI Integration",
       "WebRTC",
       "FFmpeg",
       "HeyGen API",
@@ -158,13 +158,13 @@ const userData: UserData = {
         title: "Applied AI, Agentic Copilots & RAG",
         subtitle: "Enterprise LLMs, Tool-Calling & Vector Retrieval",
         description:
-          "Production generative AI implementations leveraging AWS Bedrock foundation models, multi-agent LangGraph workflows, hybrid semantic RAG with pgvector, and automated video generation pipelines.",
+          "Production generative AI implementations leveraging AWS Bedrock foundation models, autonomous agent integrations, hybrid semantic RAG with pgvector, and automated video generation pipelines.",
         skills: [
           { name: "AWS Bedrock", highlight: "Claude 3.5 Sonnet & Titan foundation inference" },
           { name: "Agentic Copilots", highlight: "Autonomous multi-step tool calling & sandboxed execution" },
           { name: "Hybrid RAG & pgvector", highlight: "Sub-384ms P95 semantic + lexical retrieval with HNSW" },
           { name: "Video Automation", highlight: "HeyGen API, FFmpeg distributed rendering pipeline" },
-          { name: "LangChain / LangGraph", highlight: "Stateful agent graphs & cyclic execution loops" },
+          { name: "Agent & AI Integration", highlight: "Autonomous agent execution loops & GenAI workflow integration" },
           { name: "Guardrails & Safety", highlight: "Deterministic validation, PII scrubbing & citation check" },
         ],
       },
@@ -267,13 +267,13 @@ const userData: UserData = {
       description:
         "Agentic AI copilot delivered via a zero-dependency Shadow DOM SDK. Features autonomous tool execution, hybrid pgvector RAG, deterministic guardrails, and streaming multi-step task execution.",
       long_description:
-        "Developed Taskosaur Any, an embeddable enterprise agentic AI copilot engineered to execute complex multi-step workflows directly within client applications. Designed a ultra-lightweight zero-dependency Shadow DOM SDK (<15kB gzipped) that isolates styles and scripts from host websites. Built the backend on LangGraph and Python FastAPI, executing hybrid semantic search on pgvector, autonomous tool calling, and deterministic output validation with a 98% action execution success rate and 384ms P95 latency.",
+        "Developed Taskosaur Any, an embeddable enterprise agentic AI copilot engineered to execute complex multi-step workflows directly within client applications. Designed a ultra-lightweight zero-dependency Shadow DOM SDK (<15kB gzipped) that isolates styles and scripts from host websites. Built the backend with autonomous agent integration and Python FastAPI, executing hybrid semantic search on pgvector, autonomous tool calling, and deterministic output validation with a 98% action execution success rate and 384ms P95 latency.",
       image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200&auto=format&fit=crop",
       category: "Agentic AI",
       technologies: [
         "Agentic AI",
         "Shadow DOM SDK",
-        "LangGraph",
+        "Agent Integration",
         "AWS Bedrock",
         "pgvector",
         "Python FastAPI",
@@ -283,7 +283,7 @@ const userData: UserData = {
       metrics: "98% action success • 384ms P95 latency • Sub-15kB Shadow DOM SDK",
       architecture: [
         "Zero-Dependency Embed: Native Web Components with Shadow DOM style scoping",
-        "Multi-Agent Graph: Cyclic LangGraph state machine coordinating Planner and Executor agents",
+        "Multi-Agent System: Autonomous state machine coordinating Planner and Executor agents with GenAI integration",
         "Hybrid pgvector Search: Combining BM25 keyword matching with cosine vector proximity",
         "Streaming Tool Dispatch: Server-Sent Events (SSE) streaming live execution steps to the client",
       ],
@@ -508,7 +508,7 @@ const userData: UserData = {
         "AWS Bedrock",
         "Agentic AI",
         "pgvector",
-        "LangGraph",
+        "Agent Integration",
         "Python FastAPI",
         "Node.js",
         "FFmpeg",

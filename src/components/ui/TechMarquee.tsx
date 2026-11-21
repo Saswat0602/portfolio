@@ -27,7 +27,7 @@ const TRACK_1: TechItem[] = [
   { name: "AWS Bedrock", category: "Applied AI", icon: Cpu },
   { name: "Claude 3.5 Sonnet", category: "LLM", icon: Sparkles },
   { name: "pgvector", category: "Vector DB", icon: Database },
-  { name: "LangGraph", category: "Agentic AI", icon: Workflow },
+  { name: "Agent Integration", category: "GenAI", icon: Workflow },
   { name: "Python FastAPI", category: "Backend", icon: Zap },
   { name: "WebRTC", category: "Streaming", icon: Radio },
   { name: "FFmpeg Pipeline", category: "Media Processing", icon: FileVideo },

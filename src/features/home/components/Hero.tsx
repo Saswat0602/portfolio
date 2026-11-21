@@ -1,11 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, MapPin, Layers, Cpu, Mail, Compass, Workflow, Zap } from "lucide-react";
+import { ArrowRight, MapPin, Layers, Cpu, Mail, Compass, Workflow, Smartphone } from "lucide-react";
 import Link from "next/link";
 import { userData } from "@/lib/data";
-import { SpotlightCard } from "@/components/ui/SpotlightCard";
-import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
 
 import { useRef, useCallback } from "react";
 
@@ -23,17 +21,12 @@ export function Hero() {
 
   const coreCompetencies = [
     { label: "Full Stack (Next.js 15 / React 19 / Node)", icon: Layers },
+    { label: "Mobile Applications (React Native)", icon: Smartphone },
+    { label: "Agent & AI Integration (GenAI)", icon: Workflow },
     { label: "AWS Bedrock & Enterprise RAG", icon: Cpu },
-    { label: "Agentic Copilots & LangGraph", icon: Workflow },
-    { label: "Automated FFmpeg & Video Pipelines", icon: Zap },
   ];
 
-  const highlights = [
-    { value: "98%", label: "Action Execution Success" },
-    { value: "384ms", label: "P95 Vector Retrieval Latency" },
-    { value: "-60%", label: "Batch Turnaround Reduction" },
-    { value: "190k", label: "Production LOC Delivered" },
-  ];
+
 
   return (
     <section
@@ -97,7 +90,7 @@ export function Hero() {
             {userData.name}
           </h1>
           <p className="text-sm sm:text-lg md:text-xl font-mono font-medium tracking-tight text-theme-accent">
-            Full-Stack Systems • Applied AI Copilots • Video Pipelines • pgvector RAG
+            Full-Stack Systems • Mobile Applications • Agent &amp; AI Integration • GenAI &amp; RAG
           </p>
         </motion.div>
 
@@ -108,7 +101,7 @@ export function Hero() {
           transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
           className="max-w-3xl text-sm sm:text-base md:text-lg text-theme-secondary mb-8 sm:mb-10 leading-relaxed font-light px-2 font-sans"
         >
-          Software Engineer (SDE 1) at NetTantra Technologies with 3+ years of production experience shipping high-throughput web apps, cross-platform mobile apps, automated video generation pipelines, and agentic copilots.
+          Software Engineer (SDE 1) at NetTantra Technologies with 3+ years of production experience shipping high-throughput web apps, cross-platform mobile applications, automated video generation pipelines, and agentic AI integrations.
         </motion.p>
 
         {/* Core Competencies Badges */}
@@ -154,28 +147,6 @@ export function Hero() {
             <Mail size={15} />
             <span>Direct Contact</span>
           </a>
-        </motion.div>
-
-        {/* Key Metrics Strip with EaseOutExpo Animated Counter on Spotlight Cards */}
-        <motion.div
-          initial={{ opacity: 0, y: 25 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.4, ease: "easeOut" }}
-          className="w-full max-w-4xl grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4 pt-6 sm:pt-8 border-t border-theme-border"
-        >
-          {highlights.map((item, idx) => (
-            <SpotlightCard
-              key={idx}
-              className="flex flex-col items-center p-3 sm:p-4 rounded-xl border border-theme-border/60 bg-theme-surface/50 backdrop-blur-sm hover:border-theme-accent/60 transition-colors"
-            >
-              <span className="text-xl sm:text-2xl md:text-3xl font-black mb-1 text-theme-primary font-mono">
-                <AnimatedCounter value={item.value} />
-              </span>
-              <span className="text-[10px] sm:text-xs font-mono text-theme-muted text-center leading-snug">
-                {item.label}
-              </span>
-            </SpotlightCard>
-          ))}
         </motion.div>
       </div>
     </section>

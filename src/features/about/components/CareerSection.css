@@ -5,7 +5,6 @@
   position: relative;
   width: 100%;
   max-width: 100%;
-  overflow: hidden;
   padding: 80px 0 100px;
   background: var(--color-bg);
   transition: background-color 0.25s ease;
@@ -16,7 +15,6 @@
   max-width: 1240px;
   padding: 0 24px;
   box-sizing: border-box;
-  overflow: hidden;
 }
 
 .career-info {
@@ -36,60 +34,45 @@
   gap: 40px;
 }
 
+/* Milestone center node along the timeline */
+.career-info-box::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 24px;
+  transform: translate(-50%, -50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--color-bg);
+  border: 2px solid var(--color-accent);
+  box-shadow: 0 0 12px var(--color-accent-glow);
+  z-index: 2;
+  transition: all 0.3s ease;
+}
+
+.career-info-box:hover::after {
+  background: var(--color-accent);
+  box-shadow: 0 0 18px var(--color-accent);
+  transform: translate(-50%, -50%) scale(1.15);
+}
+
 /* Alternate layout using row-reverse */
 .career-right {
   flex-direction: row-reverse;
 }
 
-.career-right .career-info-in {
-  flex-direction: row-reverse;
-  text-align: right;
-}
-
-.career-right .career-skills {
-  justify-content: flex-end;
-}
-
-.career-right .career-desc-col {
-  text-align: left;
-}
-
-.career-desc-col {
-  width: 48%;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 16px;
-  padding: 24px;
-  backdrop-filter: blur(12px);
-  box-sizing: border-box;
-  transition: all 0.3s ease;
-}
-
-.career-desc-col:hover {
-  border-color: var(--color-accent);
-  background: var(--color-surface-hover);
-  box-shadow: 0 8px 30px var(--color-accent-glow);
-}
-
 .career-info-in {
   display: flex;
   width: 48%;
-  justify-content: space-between;
   align-items: flex-start;
-  gap: 24px;
-  padding: 12px 16px;
+  padding: 8px 12px;
   box-sizing: border-box;
+  text-align: left;
 }
 
-.career-year {
-  font-size: 40px;
-  margin: 0;
-  font-weight: 900;
-  line-height: 1;
-  font-family: var(--font-telemetry), monospace;
-  color: var(--color-border-strong);
-  user-select: none;
-  transition: color 0.25s ease;
+.career-role {
+  width: 100%;
 }
 
 .career-role h4 {
@@ -108,6 +91,24 @@
   color: var(--color-accent);
 }
 
+.career-desc-col {
+  width: 48%;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 24px;
+  backdrop-filter: blur(12px);
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+  text-align: left;
+}
+
+.career-desc-col:hover {
+  border-color: var(--color-accent);
+  background: var(--color-surface-hover);
+  box-shadow: 0 8px 30px var(--color-accent-glow);
+}
+
 /* Skill pills */
 .career-skills {
   display: flex;
@@ -124,6 +125,12 @@
   background: var(--color-accent-subtler);
   border: 1px solid var(--color-border);
   color: var(--color-text-secondary);
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.career-skill-tag:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
 }
 
 /* Vertical timeline line — centered */
@@ -175,47 +182,18 @@
     box-sizing: border-box;
   }
 
-  /* Glowing node on mobile timeline */
-  .career-info-box::before {
-    content: "";
-    position: absolute;
-    left: -28px;
-    top: 6px;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: var(--color-bg);
-    border: 2px solid var(--color-accent);
-    box-shadow: 0 0 10px var(--color-accent-glow);
-    z-index: 2;
-    box-sizing: border-box;
+  /* Node repositioned on mobile single rail */
+  .career-info-box::after {
+    left: -28px !important;
+    top: 14px !important;
+    transform: translate(-50%, 0) !important;
   }
 
   .career-info-in {
     width: 100% !important;
     padding: 0 !important;
-    flex-direction: column-reverse !important;
-    align-items: flex-start !important;
     text-align: left !important;
-    gap: 6px;
     box-sizing: border-box;
-  }
-
-  .career-right .career-info-in {
-    flex-direction: column-reverse !important;
-    text-align: left !important;
-  }
-
-  .career-year {
-    font-size: 13px !important;
-    font-weight: 700;
-    color: var(--color-accent) !important;
-    background: var(--color-accent-subtle);
-    border: 1px solid var(--color-border);
-    padding: 2px 8px;
-    border-radius: 6px;
-    margin-bottom: 4px;
-    display: inline-block;
   }
 
   .career-desc-col {
@@ -225,10 +203,6 @@
     box-sizing: border-box;
     word-break: break-word;
     overflow-wrap: break-word;
-  }
-
-  .career-right .career-skills {
-    justify-content: flex-start !important;
   }
 
   .career-container {
@@ -252,8 +226,8 @@
     left: 12px;
   }
 
-  .career-info-box::before {
-    left: -26px;
+  .career-info-box::after {
+    left: -26px !important;
   }
 
   .career-desc-col {
