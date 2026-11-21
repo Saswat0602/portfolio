@@ -43,3 +43,9 @@ PRD.md
 AGENTS.md
 
 dev
+.agent
+agent
+.claude
+.gemini
+.anthropic
+.agents

@@ -64,9 +64,9 @@ export function WorkSection() {
       <div className="w-full">
         {/* Section Header */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6 md:mb-8">
-          <div className="flex items-center gap-2 text-xs font-mono tracking-widest text-theme-accent uppercase mb-2">
+          <div className="flex items-center gap-2 text-xs font-mono tracking-wider text-theme-accent uppercase mb-2 font-medium">
             <Compass size={14} className="flex-shrink-0" />
-            <span>CATALOG // ARCHITECTURAL SYSTEMS &amp; CASE STUDIES</span>
+            <span>Selected Architectural Systems &amp; Case Studies</span>
           </div>
 
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 sm:gap-4">
@@ -143,7 +143,7 @@ export function WorkSection() {
                 {/* Bottom Content: Info & Tech Stack */}
                 <div className="mt-auto">
                   {project.metrics && (
-                    <div className="inline-flex max-w-full items-center gap-1.5 px-2.5 py-1 rounded-md bg-theme-surface-elevated border border-theme-border text-[10px] sm:text-[11px] font-mono text-emerald-500 mb-2.5 sm:mb-3">
+                    <div className="inline-flex max-w-full items-center gap-1.5 px-2.5 py-1 rounded-md bg-theme-accent-subtle border border-theme-border text-[10px] sm:text-[11px] font-mono text-theme-accent mb-2.5 sm:mb-3 font-medium">
                       <Sparkles size={11} className="flex-shrink-0" />
                       <span className="truncate">{project.metrics}</span>
                     </div>

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { siteConfig } from "@/config/site";
-import { Menu, X, ArrowUpRight, Terminal } from "lucide-react";
+import { Menu, X, ArrowUpRight } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/icons";
 import { ThemeToggle } from "./ThemeToggle";
 
@@ -46,11 +46,8 @@ export function Navbar() {
             <span className="text-xs sm:text-sm font-bold tracking-tight text-theme-primary group-hover:text-theme-accent transition-colors truncate max-w-[135px] xs:max-w-[200px] sm:max-w-none font-sans">
               Saswat Ranjan Mohanty
             </span>
-            <span className="text-[10px] sm:text-[11px] font-mono text-theme-secondary hidden xs:flex items-center gap-1.5 truncate">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0" />
-              <span className="truncate">
-                Software Engineer • Applied AI
-              </span>
+            <span className="text-[10px] sm:text-[11px] font-mono text-theme-secondary hidden xs:block truncate">
+              Software Engineer • Applied AI
             </span>
           </div>
         </Link>
@@ -84,7 +81,6 @@ export function Navbar() {
 
         {/* Right Controls: Theme Toggle + Socials + CTA */}
         <div className="hidden md:flex items-center gap-2.5 flex-shrink-0">
-          {/* Header Theme Toggle */}
           <ThemeToggle />
 
           <div className="h-4 w-px bg-theme-border mx-1" />
@@ -118,9 +114,9 @@ export function Navbar() {
           </Link>
         </div>
 
-        {/* Mobile Right Bar: Compact Switcher + Hamburger Button */}
+        {/* Mobile Right Bar: Theme Toggle + Hamburger Button */}
         <div className="md:hidden flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
-          <ThemeToggle compact />
+          <ThemeToggle />
 
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -143,7 +139,7 @@ export function Navbar() {
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
         <div className="md:hidden relative z-40 border-b border-theme-border bg-theme-surface/98 backdrop-blur-2xl px-4 sm:px-6 py-5 animate-in slide-in-from-top-3 duration-200 shadow-xl max-h-[calc(100dvh-4rem)] overflow-y-auto">
-          {/* Theme Toggle in Drawer */}
+          {/* Theme Mode in Drawer */}
           <div className="mb-4 pb-4 border-b border-theme-border flex items-center justify-between gap-2.5">
             <span className="text-xs font-mono text-theme-muted uppercase tracking-wider">
               Theme Mode
@@ -190,10 +186,10 @@ export function Navbar() {
             <Link
               href="/#contact"
               onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-theme-accent text-white dark:text-zinc-950 text-xs font-semibold shadow-sm min-h-[44px]"
+              className="flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-xl bg-theme-accent text-white dark:text-zinc-950 text-xs font-semibold shadow-sm min-h-[44px]"
             >
-              <Terminal size={14} />
-              <span>Contact Me</span>
+              <span>Let&apos;s Connect</span>
+              <ArrowUpRight size={14} />
             </Link>
           </div>
         </div>

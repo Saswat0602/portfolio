@@ -20,7 +20,7 @@ export const siteConfig: SiteConfig = {
     "Software Engineer with 3+ years of experience specializing in Full-Stack Web, Cross-Platform Mobile, and Applied AI Engineering (AWS Bedrock, pgvector RAG, & Agentic Copilots).",
   url: "https://saswat.dev",
   defaultLoader: "spotlight",
-  enableLoaderPreviewSwitcher: true,
+  enableLoaderPreviewSwitcher: false,
   navLinks: [
     { label: "About", href: "/about" },
     { label: "Projects", href: "/projects" },

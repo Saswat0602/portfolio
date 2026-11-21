@@ -128,8 +128,8 @@ export function CurtainLoader({
               </div>
 
               <div className="flex justify-between items-center text-xs font-mono text-theme-muted">
-                <span className="tracking-widest uppercase">
-                  SYS // INITIALIZING_TELEMETRY
+                <span className="tracking-wider uppercase">
+                  Initializing Portfolio
                 </span>
                 <span className="text-theme-accent font-semibold">{progress}%</span>
               </div>

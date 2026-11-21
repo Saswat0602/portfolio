@@ -53,12 +53,12 @@ export function AboutOverview() {
 
         <div className="relative z-10 max-w-4xl">
           <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 mb-4 sm:mb-6">
-            <span className="px-3 sm:px-3.5 py-1 text-xs font-mono uppercase tracking-wider rounded-full border border-theme-border bg-theme-accent-subtle text-theme-accent">
-              [SYS // 3+ YOE PRODUCTION ARCHITECT]
+            <span className="px-3 sm:px-3.5 py-1 text-xs font-mono uppercase tracking-wider rounded-full border border-theme-border bg-theme-accent-subtle text-theme-accent font-medium">
+              3+ Years Production Experience
             </span>
             <span className="text-theme-border hidden xs:inline">•</span>
             <span className="text-xs font-mono text-theme-secondary flex items-center gap-1.5">
-              <MapPin size={12} className="text-amber-500" />
+              <MapPin size={12} className="text-theme-accent" />
               {userData.location}
             </span>
           </div>
@@ -94,9 +94,9 @@ export function AboutOverview() {
 
       {/* Engineering Philosophy Cards */}
       <section className="mb-16">
-        <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-theme-accent mb-2">
+        <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-theme-accent mb-2 font-medium">
           <Compass size={14} />
-          <span>TELEMETRY // PRINCIPLES</span>
+          <span>Core Engineering Principles</span>
         </div>
         <h2 className="text-3xl font-black font-sans text-theme-primary tracking-tight mb-8">
           How I Approach Software &amp; AI Engineering

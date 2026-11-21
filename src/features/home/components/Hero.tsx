@@ -41,13 +41,13 @@ export function Hero() {
       onMouseMove={handleMouseMove}
       className="relative w-full min-h-[92vh] flex flex-col items-center justify-center overflow-hidden px-4 sm:px-6 md:px-8 pt-6 sm:pt-10 pb-16 sm:pb-20 bg-theme-base text-theme-primary transition-colors duration-300 max-w-full"
     >
-      {/* Dynamic Background: 32px Animated Dot Matrix Drift with Radial Vignette */}
+      {/* Dynamic Background: Blueprint Grid & Ambient Vignette */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
         {/* Glow ambient */}
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] md:w-[1000px] h-[400px] bg-theme-accent/10 blur-[150px] rounded-full transition-colors duration-500" />
         <div className="absolute top-1/3 left-1/3 w-[500px] h-[300px] bg-theme-accent/5 blur-[140px] rounded-full transition-colors duration-500" />
 
-        {/* Interactive Pointer Radial Spotlight behind Dot Matrix */}
+        {/* Interactive Pointer Radial Spotlight */}
         <div
           className="absolute inset-0 pointer-events-none transition-opacity duration-300"
           style={{
@@ -56,65 +56,44 @@ export function Hero() {
           }}
         />
 
-        {/* 32px Continuous Linear Drift Dot Grid with Radial Vignette */}
-        <div className="absolute inset-0 dot-grid-drift opacity-60 transition-opacity duration-500" />
-
-        {/* 24px Structural Hairlines for Blueprint mode */}
+        {/* 24px Structural Hairlines with Smooth Radial Vignette Mask */}
         <div className="absolute inset-0 opacity-100 blueprint-grid-24" />
 
         {/* Gradient fade to bottom */}
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-theme-base/50 to-theme-base" />
-
-        {/* Blueprint Telemetry Watermark Corner Stamps */}
-        <div className="hidden lg:flex justify-between items-start absolute inset-x-8 top-24 text-[10px] font-mono text-theme-muted/50 select-none pointer-events-none tracking-widest">
-          <div>
-            <span>[COORD: 20.2961° N, 85.8245° E]</span>
-            <span className="block mt-0.5">BHUBANESWAR // SYS_ID: NETTANTRA_SDE1</span>
-          </div>
-          <div className="text-right">
-            <span>[GRID: 32PX_DRIFT_MATRIX]</span>
-            <span className="block mt-0.5">STATUS: ALL_SYSTEMS_OPERATIONAL</span>
-          </div>
-        </div>
       </div>
 
       <div className="relative z-10 max-w-5xl mx-auto flex flex-col items-center text-center w-full">
-        {/* Blueprint Status Pill */}
+        {/* Status & Focus Pill */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
-          className="flex flex-wrap items-center justify-center gap-2 px-3 sm:px-4 py-1.5 rounded-2xl sm:rounded-full border border-theme-border bg-theme-surface/80 backdrop-blur-xl mb-6 sm:mb-8 shadow-sm max-w-full text-center blueprint-crosshair"
+          className="flex flex-wrap items-center justify-center gap-2 px-3.5 sm:px-4 py-1.5 rounded-full border border-theme-border bg-theme-surface/85 backdrop-blur-xl mb-6 sm:mb-8 shadow-xs max-w-full text-center"
         >
-          <div className="flex items-center gap-1.5 text-xs font-mono text-theme-accent">
+          <div className="flex items-center gap-1.5 text-xs font-mono text-theme-accent font-medium">
             <Compass size={13} className="flex-shrink-0" />
-            <span>SPEC // FULL-STACK &amp; APPLIED AI</span>
+            <span>Full-Stack Systems &amp; Applied AI</span>
           </div>
-          <span className="text-theme-border hidden sm:inline">|</span>
+          <span className="text-theme-border hidden sm:inline">•</span>
           <div className="flex items-center gap-1.5 text-xs font-mono text-theme-secondary">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0" />
-            <span>3+ YOE • NETTANTRA TECHNOLOGIES SDE 1</span>
+            <span>3+ YOE • NetTantra Technologies SDE 1</span>
           </div>
-          <span className="text-theme-border hidden sm:inline">|</span>
+          <span className="text-theme-border hidden sm:inline">•</span>
           <div className="flex items-center gap-1 text-xs font-mono text-theme-muted">
-            <MapPin size={12} className="text-amber-500 flex-shrink-0" />
-            <span>20.2961° N, 85.8245° E</span>
+            <MapPin size={12} className="text-theme-accent flex-shrink-0" />
+            <span>Bhubaneswar, India</span>
           </div>
         </motion.div>
 
-        {/* Blueprint Headline */}
+        {/* Headline */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
           className="mb-4 sm:mb-6 w-full px-2"
         >
-          <div className="inline-block mb-1.5 max-w-full">
-            <span className="text-[9px] xs:text-[10px] sm:text-[11px] font-mono uppercase tracking-[0.08em] xs:tracking-[0.15em] sm:tracking-[0.2em] text-theme-accent bg-theme-accent-subtle px-2 sm:px-2.5 py-0.5 rounded border border-theme-border break-all xs:break-normal max-w-full inline-block">
-              [SOFTWARE_ENGINEER // FULL_STACK_APPLIED_AI]
-            </span>
-          </div>
-          <h1 className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black font-sans tracking-tight text-theme-primary mb-3 sm:mb-4 break-words">
+          <h1 className="text-4xl xs:text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black font-sans tracking-tight text-theme-primary mb-3 sm:mb-4 break-words">
             {userData.name}
           </h1>
           <p className="text-sm sm:text-lg md:text-xl font-mono font-medium tracking-tight text-theme-accent">

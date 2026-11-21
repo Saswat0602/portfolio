@@ -46,11 +46,11 @@ export function ProjectDetailView({ project, allProjects }: ProjectDetailViewPro
         {/* Top Badges & Title */}
         <div className="flex flex-col gap-3 sm:gap-4 mb-6 sm:mb-8">
           <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-            <span className="px-3 py-1 text-xs uppercase tracking-wider rounded-full border border-theme-border bg-theme-accent-subtle text-theme-accent font-mono">
+            <span className="px-3 py-1 text-xs uppercase tracking-wider rounded-full border border-theme-border bg-theme-accent-subtle text-theme-accent font-mono font-medium">
               {project.category}
             </span>
             {project.metrics && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-mono text-emerald-500">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-theme-accent-subtle border border-theme-border text-xs font-mono text-theme-accent font-medium">
                 <Sparkles size={12} className="flex-shrink-0" />
                 <span>{project.metrics}</span>
               </span>
@@ -165,7 +165,7 @@ export function ProjectDetailView({ project, allProjects }: ProjectDetailViewPro
                       key={idx}
                       className="flex items-start gap-2.5 sm:gap-3 p-3 sm:p-3.5 rounded-xl border border-theme-border/60 bg-theme-surface-elevated/40"
                     >
-                      <CheckCircle2 size={15} className="text-emerald-500 mt-0.5 flex-shrink-0" />
+                      <CheckCircle2 size={15} className="text-theme-accent mt-0.5 flex-shrink-0" />
                       <span className="text-xs sm:text-sm text-theme-secondary leading-relaxed break-words">
                         {highlight}
                       </span>
@@ -208,7 +208,7 @@ export function ProjectDetailView({ project, allProjects }: ProjectDetailViewPro
 
               <div className="flex items-center justify-between pb-3 border-b border-theme-border/60">
                 <span className="text-theme-muted">Deployment</span>
-                <span className="text-emerald-500 font-medium">Production Verified</span>
+                <span className="text-theme-primary font-medium">Production Verified</span>
               </div>
 
               <div className="flex items-center justify-between">

@@ -152,7 +152,7 @@ export function ProjectsCatalog() {
                 {/* Card Content */}
                 <div className="p-4 sm:p-6">
                   {project.metrics && (
-                    <div className="inline-flex max-w-full items-center gap-1.5 px-2.5 py-1 rounded-md bg-theme-surface-elevated border border-theme-border text-[10px] sm:text-[11px] font-mono text-emerald-500 mb-2.5 sm:mb-3">
+                    <div className="inline-flex max-w-full items-center gap-1.5 px-2.5 py-1 rounded-md bg-theme-accent-subtle border border-theme-border text-[10px] sm:text-[11px] font-mono text-theme-accent mb-2.5 sm:mb-3 font-medium">
                       <Sparkles size={11} className="flex-shrink-0" />
                       <span className="truncate">{project.metrics}</span>
                     </div>

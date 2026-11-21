@@ -59,9 +59,9 @@ export function CareerSection() {
       <div className="career-container">
         {/* Header */}
         <div className="flex flex-col items-center text-center mb-12 sm:mb-16">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-theme-border bg-theme-accent-subtle text-theme-accent text-xs font-mono uppercase tracking-wider mb-4">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-theme-border bg-theme-accent-subtle text-theme-accent text-xs font-mono uppercase tracking-wider mb-4 font-medium">
             <Compass size={13} className="flex-shrink-0" />
-            <span>TELEMETRY // CAREER_CHRONOLOGY</span>
+            <span>Professional Experience &amp; Chronology</span>
           </div>
 
           <h2 className="text-2xl sm:text-4xl md:text-5xl font-black font-sans text-theme-primary tracking-tight mb-3 sm:mb-4 break-words">

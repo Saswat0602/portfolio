@@ -233,40 +233,8 @@ h2,
   background-image: 
     linear-gradient(to right, var(--hairline-grid-color) 1px, transparent 1px),
     linear-gradient(to bottom, var(--hairline-grid-color) 1px, transparent 1px);
-}
-
-/* Subtle crosshair watermarks for Blueprint mode */
-.blueprint-crosshair {
-  position: relative;
-}
-.blueprint-crosshair::before {
-  content: "+";
-  position: absolute;
-  top: -10px;
-  left: -10px;
-  font-family: var(--font-mono), monospace;
-  font-size: 14px;
-  line-height: 1;
-  color: var(--hairline-crosshair-color);
-  pointer-events: none;
-}
-.blueprint-crosshair::after {
-  content: "+";
-  position: absolute;
-  bottom: -10px;
-  right: -10px;
-  font-family: var(--font-mono), monospace;
-  font-size: 14px;
-  line-height: 1;
-  color: var(--hairline-crosshair-color);
-  pointer-events: none;
-}
-
-/* Telemetry Badge styling */
-.blueprint-tag {
-  font-family: var(--font-mono), monospace;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  mask-image: radial-gradient(ellipse 85% 75% at 50% 40%, #000 35%, transparent 95%);
+  -webkit-mask-image: radial-gradient(ellipse 85% 75% at 50% 40%, #000 35%, transparent 95%);
 }
 
 /* ==========================================================================

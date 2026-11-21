@@ -5,8 +5,8 @@ export default function NotFound() {
   return (
     <main className="w-full min-h-[80vh] flex flex-col items-center justify-center px-6 py-24 text-center bg-theme-base text-theme-primary transition-colors duration-300">
       <div className="max-w-md mx-auto p-8 sm:p-10 rounded-3xl border border-theme-border bg-theme-surface/90 backdrop-blur-xl shadow-xl">
-        <span className="text-xs font-mono uppercase tracking-widest text-theme-accent font-bold block mb-3">
-          404 // Not Found
+        <span className="text-xs font-mono uppercase tracking-wider text-theme-accent font-bold block mb-3">
+          Error 404 • Page Not Found
         </span>
 
         <h1 className="text-3xl sm:text-4xl font-bold text-theme-primary tracking-tight mb-3 heading-display">

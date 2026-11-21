@@ -70,12 +70,12 @@ export function TechMarquee() {
   return (
     <section className="w-full py-12 overflow-hidden border-y border-theme-border bg-theme-surface/40 backdrop-blur-sm relative z-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-4 sm:mb-6 flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2 text-[10px] xs:text-xs font-mono tracking-wider sm:tracking-widest text-theme-accent uppercase min-w-0">
+        <div className="flex items-center gap-2 text-[11px] xs:text-xs font-mono tracking-wider text-theme-accent uppercase min-w-0 font-medium">
           <Workflow size={13} className="flex-shrink-0" />
-          <span className="truncate">PRODUCTION TECH STACK &amp; CAPABILITIES</span>
+          <span className="truncate">Production Tech Stack &amp; Capabilities</span>
         </div>
-        <span className="text-[10px] sm:text-[11px] font-mono text-theme-muted hidden sm:inline flex-shrink-0">
-          [HOVER TO PAUSE STREAM]
+        <span className="text-[11px] font-mono text-theme-muted/70 hidden sm:inline flex-shrink-0">
+          Hover to pause stream
         </span>
       </div>
 

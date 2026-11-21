@@ -13,6 +13,11 @@ import {
   Clock,
   MapPin,
   Compass,
+  Briefcase,
+  Cpu,
+  Smartphone,
+  MessageSquare,
+  Globe,
 } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/icons";
 
@@ -24,6 +29,7 @@ interface TopicPreset {
   id: string;
   label: string;
   badge: string;
+  icon: React.ElementType;
   subject: string;
   starterBody: string;
 }
@@ -32,28 +38,32 @@ const TOPIC_PRESETS: TopicPreset[] = [
   {
     id: "fullstack",
     label: "Full Stack & AI Role",
-    badge: "💼 Hiring",
+    badge: "Hiring Opportunity",
+    icon: Briefcase,
     subject: "Full Stack & AI Engineer Opportunity",
     starterBody: `Hi Saswat,\n\nI reviewed your portfolio and would like to speak with you regarding an engineering opportunity.\n\nCompany / Team: \nRole Scope: \nTimeline: \n\nLooking forward to connecting!`,
   },
   {
     id: "bedrock",
     label: "AWS Bedrock / RAG",
-    badge: "🤖 Generative AI",
+    badge: "Generative AI & RAG",
+    icon: Cpu,
     subject: "AWS Bedrock & Enterprise RAG Pipeline Project",
     starterBody: `Hi Saswat,\n\nWe are looking to architect a generative AI solution with AWS Bedrock, vector search, and agentic workflows.\n\nProject Scope: \nKey Objectives: \n\nBest regards,`,
   },
   {
     id: "mobile",
     label: "Mobile App Development",
-    badge: "📱 React Native",
+    badge: "React Native Mobile",
+    icon: Smartphone,
     subject: "Mobile Application Engineering (React Native)",
     starterBody: `Hi Saswat,\n\nI would like to discuss building a cross-platform mobile application with React Native.\n\nApp Concept: \nTarget Platforms: iOS & Android\n\nThanks!`,
   },
   {
     id: "collab",
     label: "Technical Advisory / Chat",
-    badge: "⚡ Technical Chat",
+    badge: "Engineering Discussion",
+    icon: MessageSquare,
     subject: "Technical Architecture & Collaboration",
     starterBody: `Hi Saswat,\n\nI would love to connect and chat about technical architecture, system design, or engineering collaboration.\n\nDiscussion Topic: \n\nCheers,`,
   },
@@ -175,7 +185,7 @@ export function ContactSection({ isStandalone = false }: ContactSectionProps) {
       >
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-theme-border bg-theme-accent-subtle text-theme-accent text-xs font-mono uppercase tracking-wider mb-4">
           <Compass size={13} />
-          <span>TELEMETRY // DIRECT_CONNECTION</span>
+          <span>Direct Communication</span>
         </div>
 
         {isStandalone ? (
@@ -206,7 +216,7 @@ export function ContactSection({ isStandalone = false }: ContactSectionProps) {
         }`}
       >
         <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 rounded-full border border-theme-border bg-theme-surface/80 backdrop-blur-md text-theme-secondary shadow-xs text-[11px] sm:text-xs">
-          <MapPin size={13} className="text-amber-500 flex-shrink-0" />
+          <MapPin size={13} className="text-theme-accent flex-shrink-0" />
           <span>Bhubaneswar, India</span>
         </div>
 
@@ -215,8 +225,8 @@ export function ContactSection({ isStandalone = false }: ContactSectionProps) {
           <span>{localTime || "IST (UTC+5:30)"}</span>
         </div>
 
-        <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-500 shadow-xs text-[11px] sm:text-xs">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0" />
+        <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 rounded-full border border-theme-border bg-theme-surface/80 backdrop-blur-md text-theme-secondary shadow-xs text-[11px] sm:text-xs">
+          <Globe size={13} className="text-theme-accent flex-shrink-0" />
           <span>Worldwide Remote &amp; Relocation Ready</span>
         </div>
       </div>
@@ -242,9 +252,8 @@ export function ContactSection({ isStandalone = false }: ContactSectionProps) {
                 </div>
               </div>
 
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-theme-border bg-theme-accent-subtle text-theme-accent text-[10px] font-mono font-medium flex-shrink-0">
-                <span className="w-1.5 h-1.5 rounded-full bg-theme-accent" />
-                <span>Inbox Ready</span>
+              <span className="inline-flex items-center px-2.5 py-1 rounded-full border border-theme-border bg-theme-accent-subtle text-theme-accent text-[10px] font-mono font-medium flex-shrink-0">
+                Inbox Monitored
               </span>
             </div>
 
@@ -279,8 +288,8 @@ export function ContactSection({ isStandalone = false }: ContactSectionProps) {
                   {userData.about.phone}
                 </a>
               </div>
-              <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                Active
+              <span className="px-2 py-0.5 rounded-md text-[10px] font-mono bg-theme-accent-subtle text-theme-accent border border-theme-border font-medium">
+                Direct Line
               </span>
             </div>
 
@@ -300,15 +309,15 @@ export function ContactSection({ isStandalone = false }: ContactSectionProps) {
                 onClick={handleCopyEmail}
                 className={`inline-flex items-center justify-center gap-2 px-4 py-3 sm:py-3.5 rounded-xl border text-xs font-mono transition-all active:scale-[0.98] cursor-pointer w-full min-h-[44px] ${
                   copied
-                    ? "border-emerald-500/40 bg-emerald-500/15 text-emerald-500 shadow-xs"
+                    ? "border-theme-accent bg-theme-accent-subtle text-theme-accent shadow-xs"
                     : "border-theme-border bg-theme-surface-elevated hover:bg-theme-hover hover:border-theme-accent text-theme-primary"
                 }`}
                 aria-label="Copy email address"
               >
                 {copied ? (
                   <>
-                    <Check size={15} className="text-emerald-500" />
-                    <span className="font-semibold text-emerald-500">Copied to Clipboard!</span>
+                    <Check size={15} className="text-theme-accent" />
+                    <span className="font-semibold text-theme-accent">Copied to Clipboard!</span>
                   </>
                 ) : (
                   <>
@@ -333,6 +342,7 @@ export function ContactSection({ isStandalone = false }: ContactSectionProps) {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {TOPIC_PRESETS.map((topic) => {
                   const isSelected = selectedTopicId === topic.id;
+                  const Icon = topic.icon;
                   return (
                     <button
                       key={topic.id}
@@ -344,10 +354,11 @@ export function ContactSection({ isStandalone = false }: ContactSectionProps) {
                           : "border-theme-border bg-theme-surface-elevated/40 hover:bg-theme-hover text-theme-secondary"
                       }`}
                     >
-                      <div className="text-[10px] text-theme-accent font-semibold mb-0.5">
-                        {topic.badge}
+                      <div className="flex items-center gap-1.5 text-[10px] text-theme-accent font-semibold mb-1">
+                        <Icon size={12} className="flex-shrink-0" />
+                        <span>{topic.badge}</span>
                       </div>
-                      <div className="truncate text-[11px] font-medium">{topic.label}</div>
+                      <div className="truncate text-[11px] font-medium text-theme-primary">{topic.label}</div>
                     </button>
                   );
                 })}
@@ -409,8 +420,9 @@ export function ContactSection({ isStandalone = false }: ContactSectionProps) {
             <div className="mb-5 p-3 rounded-xl border border-theme-border bg-theme-accent-subtle flex items-center justify-between text-xs font-mono">
               <div className="flex items-center gap-2 text-theme-secondary">
                 <span className="text-theme-accent font-semibold">Active Topic:</span>
-                <span className="text-theme-primary font-medium">
-                  {selectedTopic.badge} {selectedTopic.label}
+                <span className="text-theme-primary font-medium inline-flex items-center gap-1.5">
+                  <selectedTopic.icon size={13} className="text-theme-accent flex-shrink-0" />
+                  <span>{selectedTopic.badge} • {selectedTopic.label}</span>
                 </span>
               </div>
               <span className="text-[10px] text-theme-muted hidden sm:inline">
@@ -420,7 +432,7 @@ export function ContactSection({ isStandalone = false }: ContactSectionProps) {
 
             {status === "success" ? (
               <div className="flex flex-col items-center justify-center py-12 text-center">
-                <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-500 mb-4 shadow-sm">
+                <div className="w-14 h-14 rounded-2xl bg-theme-accent-subtle border border-theme-border flex items-center justify-center text-theme-accent mb-4 shadow-sm">
                   <CheckCircle2 size={28} />
                 </div>
                 <h4 className="text-xl font-bold font-sans text-theme-primary mb-2">

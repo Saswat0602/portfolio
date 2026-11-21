@@ -41,9 +41,9 @@ export function TechStack() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex flex-col items-center text-center mb-12 sm:mb-16">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-theme-border bg-theme-accent-subtle text-theme-accent text-xs font-mono uppercase tracking-wider mb-4">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-theme-border bg-theme-accent-subtle text-theme-accent text-xs font-mono uppercase tracking-wider mb-4 font-medium">
             <Compass size={13} className="flex-shrink-0" />
-            <span>TELEMETRY // TECHNICAL_CAPABILITIES</span>
+            <span>Technical Capabilities &amp; Stack</span>
           </div>
 
           <h2 className="text-2xl sm:text-4xl md:text-5xl font-black font-sans text-theme-primary tracking-tight mb-3 sm:mb-4 break-words">
@@ -157,7 +157,7 @@ export function TechStack() {
           </div>
 
           <div className="flex flex-col items-center">
-            <span className="text-lg xs:text-xl sm:text-2xl md:text-3xl font-black mb-1 text-emerald-500 break-words font-mono">
+            <span className="text-lg xs:text-xl sm:text-2xl md:text-3xl font-black mb-1 text-theme-primary break-words font-mono">
               Bhubaneswar, IN
             </span>
             <span className="text-[11px] sm:text-xs font-mono text-theme-muted">Software Engineer at NetTantra Technologies</span>
