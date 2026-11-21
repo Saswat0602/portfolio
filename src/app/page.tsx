@@ -25,9 +25,7 @@ export default function Home() {
         </ScrollReveal>
 
         {/* 4. Selected Production Projects (VSA, Taskosaur, Shomes, Mad-UI, etc.) */}
-        <ScrollReveal>
-          <WorkSection />
-        </ScrollReveal>
+        <WorkSection />
 
         {/* 5. Career Chronology at NetTantra Technologies */}
         <ScrollReveal>

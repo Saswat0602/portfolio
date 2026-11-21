@@ -1,89 +1,75 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ExternalLink, Code2, ArrowRight, Sparkles, Layers, Compass } from "lucide-react";
 import { userData } from "@/lib/data";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
+
 export function WorkSection() {
-  const flexRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
-  const [isDesktop, setIsDesktop] = useState(false);
+  const trackRef = useRef<HTMLDivElement>(null);
   const projects = userData.Projects.slice(0, 5);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined" || !sectionRef.current || !trackRef.current) return;
 
-    const flex = flexRef.current;
-    const section = sectionRef.current;
+    const mm = gsap.matchMedia();
 
-    const updateState = () => {
-      const desktop = window.innerWidth > 1024;
-      setIsDesktop(desktop);
-      if (!desktop && flex) {
-        flex.style.transform = "";
-      }
-    };
+    // Desktop & Tablet Landscape: Pinned horizontal scroll-drive
+    mm.add("(min-width: 769px)", () => {
+      const section = sectionRef.current;
+      const track = trackRef.current;
+      if (!section || !track) return;
 
-    updateState();
+      const getScrollAmount = () => {
+        return Math.max(0, track.scrollWidth - window.innerWidth + 80);
+      };
 
-    let translateX = 0;
+      const tween = gsap.to(track, {
+        x: () => -getScrollAmount(),
+        ease: "none",
+        scrollTrigger: {
+          trigger: section,
+          pin: true,
+          scrub: 1,
+          start: "top top",
+          end: () => `+=${getScrollAmount()}`,
+          invalidateOnRefresh: true,
+          anticipatePin: 1,
+        },
+      });
 
-    const calcTranslate = () => {
-      if (!section || !flex || window.innerWidth <= 1024) return;
-      const containerRect = section.getBoundingClientRect();
-      translateX = flex.scrollWidth - containerRect.width + 120;
-    };
+      return () => {
+        tween.kill();
+      };
+    });
 
-    calcTranslate();
-
-    const onScroll = () => {
-      if (!section || !flex || window.innerWidth <= 1024) return;
-      const sectionTop = section.getBoundingClientRect().top;
-      if (sectionTop > 0) {
-        flex.style.transform = "translateX(0px)";
-        return;
-      }
-      const scrolled = Math.min(Math.abs(sectionTop), translateX);
-      flex.style.transform = `translateX(-${scrolled}px)`;
-    };
-
-    const handleResize = () => {
-      updateState();
-      calcTranslate();
-    };
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", handleResize);
-    };
+    return () => mm.revert();
   }, []);
 
   return (
     <section
+      id="projects"
       ref={sectionRef}
-      className="relative w-full border-t border-theme-border bg-theme-base text-theme-primary py-16 lg:py-0 transition-colors duration-300"
-      style={{ height: isDesktop ? "calc(100vh + 2400px)" : "auto" }}
+      className="relative w-full border-t border-theme-border bg-theme-base text-theme-primary transition-colors duration-300 overflow-hidden py-16 md:py-0 md:h-screen md:flex md:flex-col md:justify-center"
     >
-      {/* Viewport: Sticky on desktop, natural flow on mobile/tablet */}
-      <div className="relative lg:sticky lg:top-0 lg:h-screen w-full lg:overflow-hidden flex flex-col justify-center bg-theme-base">
-        {/* Top & Bottom Fade (Desktop) */}
-        <div className="hidden lg:block absolute top-0 left-0 w-full h-28 bg-gradient-to-b from-theme-base to-transparent z-10 pointer-events-none" />
-        <div className="hidden lg:block absolute bottom-0 left-0 w-full h-28 bg-gradient-to-t from-theme-base to-transparent z-10 pointer-events-none" />
-
+      <div className="w-full">
         {/* Section Header */}
-        <div className="px-4 sm:px-8 md:px-14 lg:px-20 mb-4 sm:mb-6 lg:mb-8 relative z-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6 md:mb-8">
           <div className="flex items-center gap-2 text-xs font-mono tracking-widest text-theme-accent uppercase mb-2">
             <Compass size={14} className="flex-shrink-0" />
             <span>CATALOG // ARCHITECTURAL SYSTEMS &amp; CASE STUDIES</span>
           </div>
 
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 sm:gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 sm:gap-4">
             <div>
               <h2 className="text-2xl sm:text-3xl md:text-5xl font-black font-sans tracking-tight text-theme-primary">
                 Selected{" "}
@@ -91,30 +77,32 @@ export function WorkSection() {
                   Production Systems
                 </span>
               </h2>
+              <p className="text-xs sm:text-sm text-theme-secondary mt-1 font-light max-w-xl">
+                Scroll vertically to inspect live architecture, multi-modal avatar pipelines, and agentic copilots.
+              </p>
             </div>
 
             <Link
               href="/projects"
-              className="inline-flex items-center gap-1.5 text-xs font-mono text-theme-secondary hover:text-theme-accent transition-colors group self-start md:self-auto"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-theme-border bg-theme-surface hover:bg-theme-hover hover:border-theme-accent text-xs font-mono text-theme-primary transition-colors group shadow-xs self-start sm:self-auto"
             >
-              <span>Browse All {userData.Projects.length} Projects</span>
-              <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+              <span>Browse All ({userData.Projects.length})</span>
+              <ArrowRight size={13} className="group-hover:translate-x-0.5 transition-transform text-theme-accent" />
             </Link>
           </div>
         </div>
 
-        {/* Mobile Swipe Hint */}
-        <div className="lg:hidden flex items-center justify-between text-[11px] font-mono text-theme-muted mb-3 px-4 sm:px-8 md:px-14">
+        {/* Mobile Swipe Notice */}
+        <div className="md:hidden flex items-center justify-between text-[11px] font-mono text-theme-muted mb-3 px-4 sm:px-6">
           <span className="text-theme-accent">← Swipe horizontally to explore</span>
           <span>{projects.length + 1} Systems</span>
         </div>
 
-        {/* Cards Strip: Scrollable swipe on mobile, Pinned translation on desktop */}
+        {/* Horizontal Card Reel (Pinned translation on desktop, Native touch scroll on mobile) */}
         <div
-          ref={flexRef}
-          className="flex gap-4 sm:gap-6 px-4 sm:px-8 md:px-14 lg:px-20 overflow-x-auto lg:overflow-visible snap-x snap-mandatory lg:snap-none items-stretch pb-6 lg:pb-0 will-change-transform scrollbar-none"
+          ref={trackRef}
+          className="flex gap-4 sm:gap-6 px-4 sm:px-6 lg:px-8 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none items-stretch pb-4 md:pb-0 scrollbar-none will-change-transform"
           style={{
-            width: isDesktop ? "max-content" : "100%",
             WebkitOverflowScrolling: "touch",
           }}
         >
@@ -122,9 +110,9 @@ export function WorkSection() {
             <SpotlightCard
               as="article"
               key={project.slug || project.project_name}
-              className="relative flex-shrink-0 snap-center w-[85vw] xs:w-[80vw] sm:w-[60vw] md:w-[480px] lg:w-[540px] min-h-[460px] sm:min-h-[480px] md:h-[490px] rounded-2xl overflow-hidden border border-theme-border bg-theme-surface group flex flex-col justify-between shadow-xl transition-all duration-300 hover:border-theme-accent"
+              className="relative flex-shrink-0 snap-center w-[85vw] xs:w-[80vw] sm:w-[60vw] md:w-[480px] lg:w-[540px] min-h-[460px] sm:min-h-[480px] md:h-[490px] rounded-2xl overflow-hidden border border-theme-border bg-theme-surface group flex flex-col justify-between shadow-lg transition-all duration-300 hover:border-theme-accent"
             >
-              {/* Background Cover Image with Sophisticated Mask */}
+              {/* Background Cover Image with Mask */}
               <div className="absolute inset-0 z-0">
                 <Image
                   src={project.image}
@@ -184,15 +172,17 @@ export function WorkSection() {
                   {/* Links */}
                   <div className="flex items-center justify-between pt-3 sm:pt-4 border-t border-theme-border flex-wrap gap-2">
                     <div className="flex items-center gap-3 sm:gap-4">
-                      <a
-                        href={project.code_link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 text-xs font-mono text-theme-muted hover:text-theme-primary transition-colors"
-                      >
-                        <Code2 size={14} />
-                        <span>Code</span>
-                      </a>
+                      {project.code_link && (
+                        <a
+                          href={project.code_link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-1.5 text-xs font-mono text-theme-muted hover:text-theme-primary transition-colors"
+                        >
+                          <Code2 size={14} />
+                          <span>Code</span>
+                        </a>
+                      )}
 
                       {project.demo_link && (
                         <a
@@ -202,7 +192,7 @@ export function WorkSection() {
                           className="flex items-center gap-1.5 text-xs font-mono text-theme-accent hover:brightness-125 transition-colors"
                         >
                           <ExternalLink size={14} />
-                          <span>Live System</span>
+                          <span>Live Demo</span>
                         </a>
                       )}
                     </div>
@@ -211,7 +201,7 @@ export function WorkSection() {
                       href={`/projects/${project.slug}`}
                       className="inline-flex items-center gap-1 text-xs font-mono text-theme-secondary hover:text-theme-accent transition-colors"
                     >
-                      <span>Case Study</span>
+                      <span>Deep Dive</span>
                       <ArrowRight size={12} />
                     </Link>
                   </div>
@@ -220,8 +210,8 @@ export function WorkSection() {
             </SpotlightCard>
           ))}
 
-          {/* CTA Card */}
-          <div className="flex-shrink-0 snap-center w-[85vw] xs:w-[80vw] sm:w-[50vw] md:w-[320px] lg:w-[320px] min-h-[460px] sm:min-h-[480px] md:h-[490px] rounded-2xl border border-dashed border-theme-border bg-theme-surface/50 flex flex-col items-center justify-center gap-5 sm:gap-6 p-6 sm:p-8 text-center group hover:border-theme-accent transition-all duration-300">
+          {/* Explore All Card */}
+          <div className="flex-shrink-0 snap-center w-[85vw] xs:w-[80vw] sm:w-[50vw] md:w-[320px] min-h-[460px] sm:min-h-[480px] md:h-[490px] rounded-2xl border border-dashed border-theme-border bg-theme-surface/60 flex flex-col items-center justify-center gap-5 sm:gap-6 p-6 sm:p-8 text-center group hover:border-theme-accent transition-all duration-300">
             <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl border border-theme-border bg-theme-surface-elevated flex items-center justify-center text-theme-accent group-hover:scale-110 transition-transform">
               <Layers size={22} />
             </div>
@@ -239,7 +229,7 @@ export function WorkSection() {
               href="/projects"
               className="btn-sheen inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-theme-accent text-white dark:text-zinc-950 text-xs font-semibold hover:brightness-110 transition-all shadow-sm"
             >
-              <span>View All Projects</span>
+              <span>View All ({userData.Projects.length})</span>
               <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
@@ -248,3 +238,5 @@ export function WorkSection() {
     </section>
   );
 }
+
+export default WorkSection;
