@@ -55,7 +55,7 @@
     {
       "slug": "virtual-scholar-academy",
       "project_name": "Virtual Scholar Academy (VSA)",
-      "code_link": "https://github.com/Saswat0602",
+      "code_link": "https://github.com/Saswat0602/research-agent",
       "demo_link": "https://github.com/Saswat0602",
       "description": "Institutional AI-powered Learning Management System featuring automated HeyGen and FFmpeg video generation pipelines, dynamic curriculum sequencing, and real-time WebRTC AI tutoring rooms.",
       "long_description": "Architected and implemented Virtual Scholar Academy (VSA), an institutional AI LMS that automates course generation and interactive tutoring. Built a distributed media rendering pipeline integrating HeyGen API and FFmpeg to generate photorealistic AI video lectures from markdown lecture scripts, reducing batch turnaround times by 60%. Integrated WebRTC peer mesh with an applied AI reasoning backend, allowing students to receive real-time voice, video, and whiteboard guidance.",
@@ -89,7 +89,7 @@
     {
       "slug": "taskosaur-any",
       "project_name": "Taskosaur Any — Agentic AI Copilot",
-      "code_link": "https://github.com/Saswat0602",
+      "code_link": "https://github.com/Saswat0602/research-agent",
       "demo_link": "https://github.com/Saswat0602",
       "description": "Agentic AI copilot delivered via a zero-dependency Shadow DOM SDK. Features autonomous tool execution, hybrid pgvector RAG, deterministic guardrails, and streaming multi-step task execution.",
       "long_description": "Developed Taskosaur Any, an embeddable enterprise agentic AI copilot engineered to execute complex multi-step workflows directly within client applications. Designed a ultra-lightweight zero-dependency Shadow DOM SDK (<15kB gzipped) that isolates styles and scripts from host websites. Built the backend with autonomous agent integration and Python FastAPI, executing hybrid semantic search on pgvector, autonomous tool calling, and deterministic output validation with a 98% action execution success rate and 384ms P95 latency.",
@@ -121,7 +121,7 @@
     {
       "slug": "shomes",
       "project_name": "Shomes — Real Estate Marketplace (shomes.in)",
-      "code_link": "https://github.com/Saswat0602",
+      "code_link": "https://github.com/Saswat0602/Real-estate-management",
       "demo_link": "https://shomes.in",
       "description": "Live production real estate marketplace featuring high-performance spatial geolocation search, real-time boundary polygon filtering, responsive property tours, and instant inquiry dispatch.",
       "long_description": "Engineered core frontend and backend subsystems for Shomes (shomes.in), an active real estate portal serving property seekers and agents. Implemented geospatial query pipelines leveraging PostgreSQL and PostGIS to support sub-50ms bounding-box queries, interactive clustering maps, radius filtering, and automated lead routing with instant notifications.",
@@ -153,7 +153,7 @@
     {
       "slug": "mad-ui",
       "project_name": "Mad-UI Component System",
-      "code_link": "https://github.com/Saswat0602",
+      "code_link": "https://github.com/Saswat0602/oryn-ui",
       "demo_link": "https://github.com/Saswat0602",
       "description": "Accessible, high-performance React 19 UI primitive library and design system built with zero runtime CSS overhead, full keyboard navigation, and strict WAI-ARIA compliance.",
       "long_description": "Created Mad-UI, a reusable component library engineered for modern web applications. Built on top of accessible primitives and Tailwind CSS, Mad-UI provides 40+ composable components including dialogs, tooltips, data tables, command palettes, and animated feedback states. Tested against WCAG AAA standards with full keyboard focus management and screen-reader announcements.",
@@ -182,7 +182,7 @@
     {
       "slug": "foodshare-network",
       "project_name": "FoodShare Network & Redistribution Platform",
-      "code_link": "https://github.com/Saswat0602",
+      "code_link": "https://github.com/Saswat0602/MealsApp",
       "demo_link": "https://github.com/Saswat0602",
       "description": "Community food surplus redistribution network connecting commercial kitchens, food banks, and volunteer drivers with real-time route optimization and donation tracking.",
       "long_description": "Developed FoodShare Network to combat urban food waste by connecting corporate cafeterias and restaurants with local non-profits and volunteer couriers. Built cross-platform mobile apps for couriers with live GPS route calculation and a centralized coordination portal featuring real-time Socket.io dispatch and inventory matching.",
@@ -212,7 +212,7 @@
     {
       "slug": "biometric-attendance-suite",
       "project_name": "Enterprise Biometric Attendance Suite",
-      "code_link": "https://github.com/Saswat0602",
+      "code_link": "https://github.com/Saswat0602/attendance-app",
       "demo_link": "https://github.com/Saswat0602",
       "description": "Multi-tenant workplace attendance and personnel verification platform combining facial biometric recognition with hardware IoT terminal telemetry and compliance auditing.",
       "long_description": "Engineered an enterprise biometric attendance and access management platform. Integrated facial verification inference pipelines with edge camera feeds and biometric terminal hardware. Features multi-tenant enterprise administration, live shift roster management, automated overtime calculations, and encrypted biometric template storage.",

@@ -226,7 +226,7 @@ const userData: UserData = {
     {
       slug: "virtual-scholar-academy",
       project_name: "Virtual Scholar Academy (VSA)",
-      code_link: "https://github.com/Saswat0602",
+      code_link: "https://github.com/Saswat0602/research-agent",
       demo_link: "https://github.com/Saswat0602",
       description:
         "Institutional AI-powered Learning Management System featuring automated HeyGen and FFmpeg video generation pipelines, dynamic curriculum sequencing, and real-time WebRTC AI tutoring rooms.",
@@ -262,7 +262,7 @@ const userData: UserData = {
     {
       slug: "taskosaur-any",
       project_name: "Taskosaur Any — Agentic AI Copilot",
-      code_link: "https://github.com/Saswat0602",
+      code_link: "https://github.com/Saswat0602/research-agent",
       demo_link: "https://github.com/Saswat0602",
       description:
         "Agentic AI copilot delivered via a zero-dependency Shadow DOM SDK. Features autonomous tool execution, hybrid pgvector RAG, deterministic guardrails, and streaming multi-step task execution.",
@@ -296,7 +296,7 @@ const userData: UserData = {
     {
       slug: "shomes",
       project_name: "Shomes — Real Estate Marketplace (shomes.in)",
-      code_link: "https://github.com/Saswat0602",
+      code_link: "https://github.com/Saswat0602/Real-estate-management",
       demo_link: "https://shomes.in",
       description:
         "Live production real estate marketplace featuring high-performance spatial geolocation search, real-time boundary polygon filtering, responsive property tours, and instant inquiry dispatch.",
@@ -330,7 +330,7 @@ const userData: UserData = {
     {
       slug: "mad-ui",
       project_name: "Mad-UI Component System",
-      code_link: "https://github.com/Saswat0602",
+      code_link: "https://github.com/Saswat0602/oryn-ui",
       demo_link: "https://github.com/Saswat0602",
       description:
         "Accessible, high-performance React 19 UI primitive library and design system built with zero runtime CSS overhead, full keyboard navigation, and strict WAI-ARIA compliance.",
@@ -361,7 +361,7 @@ const userData: UserData = {
     {
       slug: "foodshare-network",
       project_name: "FoodShare Network & Redistribution Platform",
-      code_link: "https://github.com/Saswat0602",
+      code_link: "https://github.com/Saswat0602/MealsApp",
       demo_link: "https://github.com/Saswat0602",
       description:
         "Community food surplus redistribution network connecting commercial kitchens, food banks, and volunteer drivers with real-time route optimization and donation tracking.",
@@ -393,7 +393,7 @@ const userData: UserData = {
     {
       slug: "biometric-attendance-suite",
       project_name: "Enterprise Biometric Attendance Suite",
-      code_link: "https://github.com/Saswat0602",
+      code_link: "https://github.com/Saswat0602/attendance-app",
       demo_link: "https://github.com/Saswat0602",
       description:
         "Multi-tenant workplace attendance and personnel verification platform combining facial biometric recognition with hardware IoT terminal telemetry and compliance auditing.",

@@ -5,9 +5,10 @@ import Image from "next/image";
 import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ExternalLink, Code2, ArrowRight, Sparkles, Layers, Compass } from "lucide-react";
+import { ExternalLink, ArrowRight, Sparkles, Layers, Compass } from "lucide-react";
 import { userData } from "@/lib/data";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import { GitHubRepoBadge } from "./GitHubRepoBadge";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -169,19 +170,11 @@ export function WorkSection() {
                     ))}
                   </div>
 
-                  {/* Links */}
+                  {/* Links & GitHub Telemetry */}
                   <div className="flex items-center justify-between pt-3 sm:pt-4 border-t border-theme-border flex-wrap gap-2">
-                    <div className="flex items-center gap-3 sm:gap-4">
+                    <div className="flex items-center gap-2 flex-wrap">
                       {project.code_link && (
-                        <a
-                          href={project.code_link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-1.5 text-xs font-mono text-theme-muted hover:text-theme-primary transition-colors"
-                        >
-                          <Code2 size={14} />
-                          <span>Code</span>
-                        </a>
+                        <GitHubRepoBadge repoUrl={project.code_link} />
                       )}
 
                       {project.demo_link && (
@@ -189,10 +182,10 @@ export function WorkSection() {
                           href={project.demo_link}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-1.5 text-xs font-mono text-theme-accent hover:brightness-125 transition-colors"
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-theme-border bg-theme-accent-subtle text-theme-accent hover:brightness-125 transition-all text-xs font-mono shadow-2xs"
                         >
-                          <ExternalLink size={14} />
-                          <span>Live Demo</span>
+                          <ExternalLink size={12} />
+                          <span>Demo</span>
                         </a>
                       )}
                     </div>

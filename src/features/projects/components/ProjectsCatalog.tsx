@@ -4,9 +4,10 @@ import { useState, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { userData } from "@/lib/data";
-import { Search, ExternalLink, Code2, ArrowRight, Sparkles, Filter } from "lucide-react";
+import { Search, ExternalLink, ArrowRight, Sparkles, Filter } from "lucide-react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
+import { GitHubRepoBadge } from "./GitHubRepoBadge";
 
 export function ProjectsCatalog() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
@@ -187,18 +188,12 @@ export function ProjectsCatalog() {
                 </div>
               </div>
 
-              {/* Bottom Actions */}
+              {/* Bottom Actions & Live GitHub Telemetry */}
               <div className="px-4 sm:px-6 pb-4 sm:pb-6 pt-3 border-t border-theme-border flex items-center justify-between text-xs font-mono flex-wrap gap-2">
-                <div className="flex items-center gap-3">
-                  <a
-                    href={project.code_link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1 text-theme-muted hover:text-theme-primary transition-colors"
-                  >
-                    <Code2 size={13} />
-                    <span>Code</span>
-                  </a>
+                <div className="flex items-center gap-2 flex-wrap">
+                  {project.code_link && (
+                    <GitHubRepoBadge repoUrl={project.code_link} />
+                  )}
 
                   {project.demo_link && (
                     <a

@@ -6,7 +6,6 @@ import { type ProjectData } from "@/lib/data";
 import {
   ArrowLeft,
   ExternalLink,
-  Code2,
   Sparkles,
   CheckCircle2,
   Cpu,
@@ -15,6 +14,7 @@ import {
   ShieldCheck,
   Zap,
 } from "lucide-react";
+import { GitHubRepoBadge } from "./GitHubRepoBadge";
 
 interface ProjectDetailViewProps {
   project: ProjectData;
@@ -79,15 +79,12 @@ export function ProjectDetailView({ project, allProjects }: ProjectDetailViewPro
               </a>
             )}
 
-            <a
-              href={project.code_link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl border border-theme-border bg-theme-surface hover:bg-theme-hover text-theme-primary text-xs font-mono transition-all w-full sm:w-auto"
-            >
-              <Code2 size={14} />
-              <span>Source Repository</span>
-            </a>
+            {project.code_link && (
+              <GitHubRepoBadge
+                repoUrl={project.code_link}
+                className="py-3 px-5 rounded-xl border border-theme-border bg-theme-surface hover:bg-theme-hover text-theme-primary text-xs font-mono transition-all w-full sm:w-auto justify-center"
+              />
+            )}
           </div>
         </div>
 

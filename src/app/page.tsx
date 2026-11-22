@@ -1,6 +1,7 @@
 import { Hero } from "@/features/home/components/Hero";
 import { TechMarquee } from "@/components/ui/TechMarquee";
 import { WorkSection } from "@/features/projects/components/WorkSection";
+import { GitHubRepositoriesSection } from "@/features/projects/components/GitHubRepositoriesSection";
 import { CareerSection } from "@/features/about/components/CareerSection";
 import { TechStack } from "@/features/about/components/TechStack";
 import { ContactSection } from "@/features/contact/components/ContactSection";
@@ -26,6 +27,11 @@ export default function Home() {
 
         {/* 4. Selected Production Projects (VSA, Taskosaur, Shomes, Mad-UI, etc.) */}
         <WorkSection />
+
+        {/* 4b. Live GitHub Open-Source Repositories Preview */}
+        <ScrollReveal>
+          <GitHubRepositoriesSection preview={true} />
+        </ScrollReveal>
 
         {/* 5. Career Chronology at NetTantra Technologies */}
         <ScrollReveal>

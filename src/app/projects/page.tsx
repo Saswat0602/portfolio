@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { ProjectsCatalog } from "@/features/projects/components/ProjectsCatalog";
+import { GitHubRepositoriesSection } from "@/features/projects/components/GitHubRepositoriesSection";
 import { Cpu } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Production Projects & AI Case Studies | Saswat Ranjan Mohanty",
+  title: "Production Projects & GitHub Repositories | Saswat Ranjan Mohanty",
   description:
-    "Applied AI video pipelines, Taskosaur Any agentic copilot, Shomes real estate spatial search, Mad-UI, and scalable full-stack platforms engineered by Saswat Ranjan Mohanty.",
+    "Applied AI video pipelines, Taskosaur Any agentic copilot, Shomes real estate spatial search, Mad-UI, and 55+ open-source GitHub repositories engineered by Saswat Ranjan Mohanty.",
 };
 
 export default function ProjectsPage() {
@@ -30,6 +31,9 @@ export default function ProjectsPage() {
 
         {/* Catalog Feature */}
         <ProjectsCatalog />
+
+        {/* Live GitHub Public Repositories Section */}
+        <GitHubRepositoriesSection />
       </div>
     </main>
   );
