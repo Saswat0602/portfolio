@@ -21,6 +21,43 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Smooth in-page scrolling when navigating to hash sections
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.location.hash) {
+      const id = window.location.hash.replace("#", "");
+      const timer = setTimeout(() => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 150);
+      return () => clearTimeout(timer);
+    }
+  }, [pathname]);
+
+  const handleNavClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href: string
+  ) => {
+    if (href.startsWith("/#") && pathname === "/") {
+      e.preventDefault();
+      const targetId = href.replace("/#", "");
+      const elem = document.getElementById(targetId);
+      if (elem) {
+        elem.scrollIntoView({ behavior: "smooth" });
+        window.history.pushState(null, "", href);
+      }
+      setMobileMenuOpen(false);
+    } else if (href === "/" && pathname === "/") {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.history.pushState(null, "", "/");
+      setMobileMenuOpen(false);
+    } else {
+      setMobileMenuOpen(false);
+    }
+  };
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
@@ -33,6 +70,7 @@ export function Navbar() {
         {/* Brand / Logo */}
         <Link
           href="/"
+          onClick={(e) => handleNavClick(e, "/")}
           className="group flex items-center gap-2.5 sm:gap-3 transition-transform hover:scale-[1.02] min-w-0 flex-shrink"
         >
           <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-theme-accent p-[1px] shadow-sm transition-colors duration-300 flex-shrink-0">
@@ -67,6 +105,7 @@ export function Navbar() {
               <Link
                 key={link.label}
                 href={link.href}
+                onClick={(e) => handleNavClick(e, link.href)}
                 className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all ${
                   isActive
                     ? "bg-theme-accent-subtle text-theme-accent font-semibold shadow-xs"
@@ -107,6 +146,7 @@ export function Navbar() {
 
           <Link
             href="/#contact"
+            onClick={(e) => handleNavClick(e, "/#contact")}
             className="btn-sheen group flex items-center gap-1.5 px-4 py-2 rounded-lg bg-theme-accent text-white dark:text-zinc-950 text-xs font-semibold hover:brightness-110 shadow-sm hover:shadow-md transition-all flex-shrink-0"
           >
             <span>Let&apos;s Connect</span>
@@ -152,7 +192,7 @@ export function Navbar() {
               <Link
                 key={link.label}
                 href={link.href}
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={(e) => handleNavClick(e, link.href)}
                 className="px-4 py-3 rounded-xl text-sm font-medium text-theme-secondary hover:text-theme-primary hover:bg-theme-hover active:bg-theme-accent-subtle transition-colors flex items-center justify-between min-h-[44px] touch-manipulation"
               >
                 <span>{link.label}</span>
@@ -185,7 +225,7 @@ export function Navbar() {
 
             <Link
               href="/#contact"
-              onClick={() => setMobileMenuOpen(false)}
+              onClick={(e) => handleNavClick(e, "/#contact")}
               className="flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-xl bg-theme-accent text-white dark:text-zinc-950 text-xs font-semibold shadow-sm min-h-[44px]"
             >
               <span>Let&apos;s Connect</span>

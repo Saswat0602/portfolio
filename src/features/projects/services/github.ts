@@ -21,6 +21,8 @@ export interface GitHubContributionsData {
   maxStreak: number;
   currentStreak: number;
   activeDays: number;
+  publicRepos: number;
+  languages: LanguageStat[];
   contributions: ContributionDay[];
 }
 
@@ -192,11 +194,18 @@ export async function getGitHubContributions(username = "Saswat0602"): Promise<G
 
     const totalContributions = data.total?.lastYear ?? contributions.reduce((acc, c) => acc + c.count, 0);
 
+    // Compute public repos and language distribution on the server in one cached pass
+    const reposMap = await getGitHubReposMap(username);
+    const publicRepos = Object.keys(reposMap).length || 55;
+    const languages = computeLanguageDistribution(reposMap);
+
     return {
       totalContributions,
       maxStreak,
       currentStreak,
       activeDays,
+      publicRepos,
+      languages,
       contributions,
     };
   } catch {

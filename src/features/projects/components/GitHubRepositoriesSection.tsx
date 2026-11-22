@@ -1,15 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import {
-  Star,
-  GitFork,
   ExternalLink,
   Code2,
   ArrowRight,
 } from "lucide-react";
 import { GithubIcon } from "@/components/ui/icons";
-import { getLanguageColor, type GitHubRepoStats } from "../services/github";
+import { getLanguageColor } from "../services/github";
 
 interface GitHubRepositoriesSectionProps {
   preview?: boolean;
@@ -61,25 +58,6 @@ const CURATED_REPOS: Array<{
 ];
 
 export function GitHubRepositoriesSection({ preview = false }: GitHubRepositoriesSectionProps) {
-  const [reposMap, setReposMap] = useState<Record<string, GitHubRepoStats>>({});
-
-  useEffect(() => {
-    let isMounted = true;
-
-    fetch("/api/github")
-      .then((res) => (res.ok ? res.json() : {}))
-      .then((data: Record<string, GitHubRepoStats>) => {
-        if (isMounted && data && typeof data === "object") {
-          setReposMap(data);
-        }
-      })
-      .catch(() => {});
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
   const displayedList = preview ? CURATED_REPOS.slice(0, 4) : CURATED_REPOS;
 
   return (
@@ -117,11 +95,8 @@ export function GitHubRepositoriesSection({ preview = false }: GitHubRepositorie
         {/* Curated Repositories Grid (Only 6 Featured - No 55-repo dump) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 mb-8">
           {displayedList.map((curated) => {
-            const liveData = reposMap[curated.name.toLowerCase()];
-            const lang = liveData?.language || curated.defaultLang;
-            const stars = liveData?.stars ?? 0;
-            const forks = liveData?.forks ?? 0;
-            const desc = liveData?.description || curated.tagline;
+            const lang = curated.defaultLang;
+            const desc = curated.tagline;
 
             return (
               <a
@@ -142,20 +117,6 @@ export function GitHubRepositoriesSection({ preview = false }: GitHubRepositorie
                     </div>
 
                     <div className="flex items-center gap-2 flex-shrink-0">
-                      {stars > 0 && (
-                        <span className="inline-flex items-center gap-1 text-[11px] font-mono text-amber-400">
-                          <Star size={11} className="fill-amber-400/20" />
-                          <span>{stars}</span>
-                        </span>
-                      )}
-
-                      {forks > 0 && (
-                        <span className="inline-flex items-center gap-1 text-[11px] font-mono text-theme-muted">
-                          <GitFork size={11} />
-                          <span>{forks}</span>
-                        </span>
-                      )}
-
                       <ExternalLink size={13} className="text-theme-muted group-hover:text-theme-accent transition-colors" />
                     </div>
                   </div>

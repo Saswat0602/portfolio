@@ -13,6 +13,9 @@ interface PreloaderProps {
 
 const emptySubscribe = () => () => {};
 
+// Global in-memory flag: intro loader must only run ONCE per browser session, NEVER on page transitions
+let hasRunLoaderOnce = false;
+
 export function Preloader({ children }: PreloaderProps) {
   // Safe client-side mount detection without cascading renders
   const isMounted = useSyncExternalStore(
@@ -22,9 +25,25 @@ export function Preloader({ children }: PreloaderProps) {
   );
 
   const [selectedVariant] = useState<LoaderVariant>(siteConfig.defaultLoader);
-  const [isLoading, setIsLoading] = useState(true);
+
+  // Initialize isLoading based on whether the loader has already completed in this session
+  const [isLoading, setIsLoading] = useState(() => {
+    if (typeof window === "undefined") return true;
+    if (hasRunLoaderOnce) return false;
+    try {
+      if (sessionStorage.getItem("portfolio_intro_seen") === "true") {
+        hasRunLoaderOnce = true;
+        return false;
+      }
+    } catch {}
+    return true;
+  });
 
   const handleComplete = () => {
+    hasRunLoaderOnce = true;
+    try {
+      sessionStorage.setItem("portfolio_intro_seen", "true");
+    } catch {}
     setIsLoading(false);
   };
 
@@ -61,9 +80,9 @@ export function Preloader({ children }: PreloaderProps) {
         </>
       )}
 
-      {/* Main App Content */}
+      {/* Main App Content - immediately visible with zero delay if loader already ran */}
       <div
-        className={`transition-opacity duration-700 ${
+        className={`transition-opacity duration-500 ${
           isMounted && isLoading ? "opacity-0 pointer-events-none" : "opacity-100"
         }`}
       >

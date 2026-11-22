@@ -12,27 +12,15 @@ import {
 } from "lucide-react";
 import {
   type GitHubContributionsData,
-  type GitHubRepoStats,
-  type LanguageStat,
-  computeLanguageDistribution,
 } from "../services/github";
-
-interface GitHubContributionGraphProps {
-  repos?: Record<string, GitHubRepoStats>;
-}
 
 type PaletteMode = "slate" | "emerald" | "graphite";
 
-export function GitHubContributionGraph({ repos }: GitHubContributionGraphProps) {
+export function GitHubContributionGraph() {
   const [data, setData] = useState<GitHubContributionsData | null>(null);
-  const [fetchedRepos, setFetchedRepos] = useState<Record<string, GitHubRepoStats>>({});
   const [loading, setLoading] = useState(true);
   const [palette, setPalette] = useState<PaletteMode>("slate");
   const [hoveredDay, setHoveredDay] = useState<{ date: string; count: number } | null>(null);
-
-  const activeRepos = useMemo(() => {
-    return repos && Object.keys(repos).length > 0 ? repos : fetchedRepos;
-  }, [repos, fetchedRepos]);
 
   useEffect(() => {
     let isMounted = true;
@@ -58,31 +46,7 @@ export function GitHubContributionGraph({ repos }: GitHubContributionGraphProps)
     };
   }, []);
 
-  // Fetch repos internally if not passed via props
-  useEffect(() => {
-    if (repos && Object.keys(repos).length > 0) {
-      return;
-    }
-
-    let isMounted = true;
-    fetch("/api/github")
-      .then((res) => (res.ok ? res.json() : {}))
-      .then((resMap: Record<string, GitHubRepoStats>) => {
-        if (isMounted && resMap && typeof resMap === "object") {
-          setFetchedRepos(resMap);
-        }
-      })
-      .catch(() => {});
-
-    return () => {
-      isMounted = false;
-    };
-  }, [repos]);
-
-  // Compute language distribution from activeRepos
-  const languages: LanguageStat[] = useMemo(() => {
-    return computeLanguageDistribution(activeRepos);
-  }, [activeRepos]);
+  const languages = data?.languages || [];
 
   // Group contributions into 7-day columns (weeks)
   const { weeks, monthLabels } = useMemo(() => {
@@ -296,7 +260,7 @@ export function GitHubContributionGraph({ repos }: GitHubContributionGraphProps)
             </div>
           </div>
           <div className="text-2xl sm:text-3xl font-bold font-sans text-slate-100 tracking-tight">
-            {Object.keys(activeRepos).length > 0 ? Object.keys(activeRepos).length : "55"}
+            {data ? data.publicRepos : "55"}
           </div>
           <p className="text-[11px] font-mono text-slate-500 mt-1">AI, web &amp; mobile codebases</p>
         </div>
