@@ -4,50 +4,50 @@ import { useState } from "react";
 import Link from "next/link";
 import {
   Sparkles,
-  Waves,
-  Radio,
-  Radar,
+  Flame,
+  FileText,
+  GitBranch,
+  Activity,
   Terminal,
-  Layers,
   Zap,
+  Layers,
   ArrowLeft,
   Compass,
-  Cpu,
 } from "lucide-react";
-import { FluidFlowFieldCanvas } from "./FluidFlowFieldCanvas";
-import { AudioSpectrumVisualizer } from "./AudioSpectrumVisualizer";
-import { RadarTelemetryScanner } from "./RadarTelemetryScanner";
-import { MagneticSpringDock } from "./MagneticSpringDock";
-import { NeuralParticleCanvas } from "./NeuralParticleCanvas";
+import { NeoBrutalistKineticStudio } from "./NeoBrutalistKineticStudio";
+import { SwissEditorialSpec } from "./SwissEditorialSpec";
+import { GitDiffVisualizer } from "./GitDiffVisualizer";
+import { ApiBenchmarkSandbox } from "./ApiBenchmarkSandbox";
 import { DevTerminalRunner } from "./DevTerminalRunner";
+import { NeuralParticleCanvas } from "./NeuralParticleCanvas";
 import { TiltCardShowcase } from "./TiltCardShowcase";
 
 type LabTab =
   | "all"
-  | "flowfield"
-  | "audio"
-  | "radar"
-  | "dock"
-  | "canvas"
+  | "brutalist"
+  | "swiss"
+  | "git"
+  | "benchmark"
   | "terminal"
+  | "mesh"
   | "tilt";
 
 export function PlaygroundHub() {
   const [activeTab, setActiveTab] = useState<LabTab>("all");
 
   const tabs: Array<{ id: LabTab; label: string; icon: React.ElementType; badge: string }> = [
-    { id: "all", label: "All Showcase (6)", icon: Sparkles, badge: "Full Suite" },
-    { id: "flowfield", label: "Fluid Flowfield", icon: Waves, badge: "Generative Waves" },
-    { id: "audio", label: "Web Audio Spectrum", icon: Radio, badge: "Oscilloscope" },
-    { id: "radar", label: "Sonar Edge Radar", icon: Radar, badge: "360° HUD" },
-    { id: "dock", label: "Magnetic Spring Dock", icon: Cpu, badge: "Gaussian Physics" },
-    { id: "canvas", label: "Neural Particle Mesh", icon: Zap, badge: "60fps Mesh" },
-    { id: "terminal", label: "Dev Terminal Runner", icon: Terminal, badge: "Interactive CLI" },
-    { id: "tilt", label: "3D Perspective Tilt", icon: Layers, badge: "3D Gyroscope" },
+    { id: "all", label: "All Styles (7)", icon: Sparkles, badge: "Full Suite" },
+    { id: "brutalist", label: "Neo-Brutalist Kinetic", icon: Flame, badge: "Raw & Kinetic" },
+    { id: "swiss", label: "Swiss Architectural", icon: FileText, badge: "Light Editorial" },
+    { id: "git", label: "Git DAG & Code Diff", icon: GitBranch, badge: "Dev Inspector" },
+    { id: "benchmark", label: "API Benchmark Sandbox", icon: Activity, badge: "SLA Stress" },
+    { id: "terminal", label: "Dev Zsh Terminal", icon: Terminal, badge: "Interactive CLI" },
+    { id: "mesh", label: "Neural Particle Mesh", icon: Zap, badge: "60fps Canvas" },
+    { id: "tilt", label: "3D Perspective Tilt", icon: Layers, badge: "Gyroscope" },
   ];
 
   return (
-    <div className="w-full flex flex-col gap-12 sm:gap-16">
+    <div className="w-full flex flex-col gap-10 sm:gap-14">
       {/* Top Navigation & Breadcrumb */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-theme-border pb-6">
         <Link
@@ -60,7 +60,7 @@ export function PlaygroundHub() {
 
         <div className="flex items-center gap-2 text-xs font-mono text-theme-secondary">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          <span>Graphics &amp; Animation Laboratory • Next.js 16</span>
+          <span>Developer Graphics &amp; Engineering Laboratory</span>
         </div>
       </div>
 
@@ -68,15 +68,15 @@ export function PlaygroundHub() {
       <div className="flex flex-col items-start max-w-3xl">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-theme-border bg-theme-accent-subtle text-theme-accent text-xs font-mono uppercase tracking-wider mb-4 font-medium">
           <Compass size={13} className="flex-shrink-0" />
-          <span>Creative Engineering &amp; Interactive Graphics</span>
+          <span>Engineering Aesthetics &amp; Interaction Laboratory</span>
         </div>
 
         <h1 className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl font-black font-sans text-theme-primary tracking-tight mb-4 break-words">
-          The Engineering <span className="text-theme-accent">Playground</span>
+          Developer <span className="text-theme-accent">Style Playground</span>
         </h1>
 
         <p className="text-sm sm:text-base md:text-lg text-theme-secondary font-light leading-relaxed">
-          A collection of real-time interactive graphic styles: mathematical vector flowfields, WebRTC audio spectrums, 360° sonar edge radars, Apple-grade magnetic spring docks, and 3D perspective physics.
+          Explore production-grade developer graphic styles: from raw Neo-Brutalist kinetic physics and Swiss architectural minimalism to interactive Git DAG diff inspectors and live API benchmark stress testers.
         </p>
       </div>
 
@@ -112,97 +112,118 @@ export function PlaygroundHub() {
         })}
       </div>
 
-      {/* Module 1: Fluid Vector Flowfield Canvas */}
-      {(activeTab === "all" || activeTab === "flowfield") && (
-        <section id="flowfield" className="flex flex-col gap-4 pt-4">
+      {/* Module 1: Neo-Brutalist Kinetic Studio */}
+      {(activeTab === "all" || activeTab === "brutalist") && (
+        <section id="brutalist" className="flex flex-col gap-4 pt-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-theme-border/60 pb-3">
             <div>
-              <span className="text-[11px] font-mono uppercase tracking-widest text-theme-accent font-semibold block mb-0.5">
-                Graphic Style 01 • Generative Math Art
+              <span className="text-[11px] font-mono uppercase tracking-widest text-amber-500 font-semibold block mb-0.5">
+                Developer Style 01 • High-Impact Brutalism
               </span>
-              <h2 className="text-xl sm:text-2xl font-bold font-sans text-theme-primary">
-                Fluid Vector Flowfield &amp; Vortex Ripples
+              <h2 className="text-xl sm:text-2xl font-black font-sans text-theme-primary">
+                Neo-Brutalist Kinetic Canvas
               </h2>
             </div>
             <span className="text-xs font-mono text-theme-muted">
-              Multiscale trigonometric force fields with interactive cursor vortex
+              Solid 3px borders, 0-blur offset shadows, draggable stack badges &amp; ticker
             </span>
           </div>
 
-          <FluidFlowFieldCanvas />
+          <NeoBrutalistKineticStudio />
         </section>
       )}
 
-      {/* Module 2: Audio Spectrum & Oscilloscope Visualizer */}
-      {(activeTab === "all" || activeTab === "audio") && (
-        <section id="audio" className="flex flex-col gap-4 pt-8">
+      {/* Module 2: Swiss Editorial & Architectural Minimalism */}
+      {(activeTab === "all" || activeTab === "swiss") && (
+        <section id="swiss" className="flex flex-col gap-4 pt-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-theme-border/60 pb-3">
             <div>
               <span className="text-[11px] font-mono uppercase tracking-widest text-theme-accent font-semibold block mb-0.5">
-                Graphic Style 02 • Web Audio &amp; WebRTC
+                Developer Style 02 • Senior Engineering Restraint
               </span>
               <h2 className="text-xl sm:text-2xl font-bold font-sans text-theme-primary">
-                Real-Time Audio Spectrum &amp; Waveform Oscilloscope
+                Swiss Editorial &amp; Architectural Minimalism
               </h2>
             </div>
             <span className="text-xs font-mono text-theme-muted">
-              Frequency equalizer bars, multi-layer sine waves &amp; radial radar
+              1px structural grids, masked text reveal, live coordinates &amp; SLA simulator
             </span>
           </div>
 
-          <AudioSpectrumVisualizer />
+          <SwissEditorialSpec />
         </section>
       )}
 
-      {/* Module 3: Global Edge Sonar Telemetry Radar */}
-      {(activeTab === "all" || activeTab === "radar") && (
-        <section id="radar" className="flex flex-col gap-4 pt-8">
+      {/* Module 3: Git Branch DAG & Live Code Diff Inspector */}
+      {(activeTab === "all" || activeTab === "git") && (
+        <section id="git" className="flex flex-col gap-4 pt-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-theme-border/60 pb-3">
             <div>
-              <span className="text-[11px] font-mono uppercase tracking-widest text-theme-accent font-semibold block mb-0.5">
-                Graphic Style 03 • Sci-Fi Telemetry HUD
+              <span className="text-[11px] font-mono uppercase tracking-widest text-cyan-400 font-semibold block mb-0.5">
+                Developer Style 03 • Codebase Telemetry
               </span>
               <h2 className="text-xl sm:text-2xl font-bold font-sans text-theme-primary">
-                Global Edge Sonar &amp; Network Radar Scanner
+                Interactive Git Branch DAG &amp; Real Code Diff Inspector
               </h2>
             </div>
             <span className="text-xs font-mono text-theme-muted">
-              360° sweeping beam with expanding shockwave pings &amp; latency inspector
+              Unified and split code diffs with line changes for Bedrock, FFmpeg &amp; WebRTC
             </span>
           </div>
 
-          <RadarTelemetryScanner />
+          <GitDiffVisualizer />
         </section>
       )}
 
-      {/* Module 4: Magnetic Spring Dock */}
-      {(activeTab === "all" || activeTab === "dock") && (
-        <section id="dock" className="flex flex-col gap-4 pt-8">
+      {/* Module 4: API Benchmark & Latency Stress Sandbox */}
+      {(activeTab === "all" || activeTab === "benchmark") && (
+        <section id="benchmark" className="flex flex-col gap-4 pt-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-theme-border/60 pb-3">
             <div>
-              <span className="text-[11px] font-mono uppercase tracking-widest text-theme-accent font-semibold block mb-0.5">
-                Graphic Style 04 • Micro-Interaction Physics
+              <span className="text-[11px] font-mono uppercase tracking-widest text-emerald-400 font-semibold block mb-0.5">
+                Developer Style 04 • Backend Performance
               </span>
               <h2 className="text-xl sm:text-2xl font-bold font-sans text-theme-primary">
-                Apple-Grade Magnetic Spring Magnification Dock
+                Production API Benchmark &amp; Latency Stress Sandbox
               </h2>
             </div>
             <span className="text-xs font-mono text-theme-muted">
-              Gaussian distance magnification with silky spring return
+              Live p50/p90/p99 latency distribution, concurrent worker simulation &amp; JSON payload
             </span>
           </div>
 
-          <MagneticSpringDock />
+          <ApiBenchmarkSandbox />
         </section>
       )}
 
-      {/* Module 5: Neural Particle Mesh */}
-      {(activeTab === "all" || activeTab === "canvas") && (
-        <section id="canvas" className="flex flex-col gap-4 pt-8">
+      {/* Module 5: Dev Terminal Runner */}
+      {(activeTab === "all" || activeTab === "terminal") && (
+        <section id="terminal" className="flex flex-col gap-4 pt-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-theme-border/60 pb-3">
             <div>
               <span className="text-[11px] font-mono uppercase tracking-widest text-theme-accent font-semibold block mb-0.5">
-                Graphic Style 05 • 60fps Canvas
+                Developer Style 05 • Interactive CLI
+              </span>
+              <h2 className="text-xl sm:text-2xl font-bold font-sans text-theme-primary">
+                Developer Terminal &amp; AI Command Runner
+              </h2>
+            </div>
+            <span className="text-xs font-mono text-theme-muted">
+              Zsh CLI environment with interactive commands &amp; easter eggs
+            </span>
+          </div>
+
+          <DevTerminalRunner />
+        </section>
+      )}
+
+      {/* Module 6: Neural Particle Mesh */}
+      {(activeTab === "all" || activeTab === "mesh") && (
+        <section id="mesh" className="flex flex-col gap-4 pt-8">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-theme-border/60 pb-3">
+            <div>
+              <span className="text-[11px] font-mono uppercase tracking-widest text-theme-accent font-semibold block mb-0.5">
+                Developer Style 06 • 60fps Canvas
               </span>
               <h2 className="text-xl sm:text-2xl font-bold font-sans text-theme-primary">
                 Interactive Neural Particle Mesh
@@ -217,34 +238,13 @@ export function PlaygroundHub() {
         </section>
       )}
 
-      {/* Module 6: Dev Terminal Runner */}
-      {(activeTab === "all" || activeTab === "terminal") && (
-        <section id="terminal" className="flex flex-col gap-4 pt-8">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-theme-border/60 pb-3">
-            <div>
-              <span className="text-[11px] font-mono uppercase tracking-widest text-theme-accent font-semibold block mb-0.5">
-                Graphic Style 06 • Interactive CLI
-              </span>
-              <h2 className="text-xl sm:text-2xl font-bold font-sans text-theme-primary">
-                Developer Terminal &amp; AI Command Runner
-              </h2>
-            </div>
-            <span className="text-xs font-mono text-theme-muted">
-              Zsh CLI environment with command history &amp; easter eggs
-            </span>
-          </div>
-
-          <DevTerminalRunner />
-        </section>
-      )}
-
       {/* Module 7: 3D Perspective Tilt Showcase */}
       {(activeTab === "all" || activeTab === "tilt") && (
         <section id="tilt" className="flex flex-col gap-4 pt-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-theme-border/60 pb-3">
             <div>
               <span className="text-[11px] font-mono uppercase tracking-widest text-theme-accent font-semibold block mb-0.5">
-                Graphic Style 07 • 3D Physics
+                Developer Style 07 • 3D Physics
               </span>
               <h2 className="text-xl sm:text-2xl font-bold font-sans text-theme-primary">
                 3D Spring-Physics Gyroscopic Tilt &amp; Glare
