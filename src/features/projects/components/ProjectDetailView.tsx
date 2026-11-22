@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { type ProjectData } from "@/lib/data";
@@ -14,8 +15,11 @@ import {
   ShieldCheck,
   Zap,
   Package,
+  Split,
+  Image as ImageIcon,
 } from "lucide-react";
 import { GitHubRepoBadge } from "./GitHubRepoBadge";
+import { ProjectComparisonScrubber } from "./ProjectComparisonScrubber";
 
 interface ProjectDetailViewProps {
   project: ProjectData;
@@ -23,6 +27,8 @@ interface ProjectDetailViewProps {
 }
 
 export function ProjectDetailView({ project, allProjects }: ProjectDetailViewProps) {
+  const [showcaseMode, setShowcaseMode] = useState<"scrubber" | "image">("scrubber");
+
   // Find next project
   const currentIndex = allProjects.findIndex((p) => p.slug === project.slug);
   const nextProject =
@@ -109,18 +115,62 @@ export function ProjectDetailView({ project, allProjects }: ProjectDetailViewPro
           </div>
         </div>
 
-        {/* Hero Cover Image */}
-        <div className="relative w-full h-[220px] xs:h-[280px] sm:h-[400px] md:h-[460px] rounded-2xl overflow-hidden border border-theme-border bg-black/40 mb-8 sm:mb-12 shadow-xl">
-          <Image
-            src={project.image}
-            alt={project.project_name}
-            fill
-            sizes="(max-width: 768px) 100vw, 1200px"
-            className="object-cover opacity-85"
-            priority
-            unoptimized
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-theme-base via-transparent to-transparent" />
+        {/* Interactive Comparison Scrubber / Project Showcase Frame */}
+        <div className="flex flex-col gap-3 mb-8 sm:mb-12">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-1">
+            <div className="flex items-center gap-2 text-xs font-mono">
+              <span className="text-theme-muted font-medium">Showcase View:</span>
+              <div className="inline-flex items-center rounded-xl border border-theme-border bg-theme-surface p-1">
+                <button
+                  type="button"
+                  onClick={() => setShowcaseMode("scrubber")}
+                  className={`flex items-center gap-1.5 px-3 py-1 rounded-lg transition-colors cursor-pointer ${
+                    showcaseMode === "scrubber"
+                      ? "bg-theme-accent text-white dark:text-zinc-950 font-bold"
+                      : "text-theme-secondary hover:text-theme-primary"
+                  }`}
+                >
+                  <Split size={12} />
+                  <span>⚡ Before / After Engineering Scrubber</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowcaseMode("image")}
+                  className={`flex items-center gap-1.5 px-3 py-1 rounded-lg transition-colors cursor-pointer ${
+                    showcaseMode === "image"
+                      ? "bg-theme-accent text-white dark:text-zinc-950 font-bold"
+                      : "text-theme-secondary hover:text-theme-primary"
+                  }`}
+                >
+                  <ImageIcon size={12} />
+                  <span>UI Screen</span>
+                </button>
+              </div>
+            </div>
+
+            <span className="text-[11px] font-mono text-theme-muted hidden sm:inline">
+              {showcaseMode === "scrubber"
+                ? "Drag vertical divider handle left/right to inspect engineering impact"
+                : "Product visual screen capture"}
+            </span>
+          </div>
+
+          {showcaseMode === "scrubber" ? (
+            <ProjectComparisonScrubber project={project} />
+          ) : (
+            <div className="relative w-full h-[220px] xs:h-[280px] sm:h-[400px] md:h-[460px] rounded-2xl overflow-hidden border border-theme-border bg-black/40 shadow-xl">
+              <Image
+                src={project.image}
+                alt={project.project_name}
+                fill
+                sizes="(max-width: 768px) 100vw, 1200px"
+                className="object-cover opacity-85"
+                priority
+                unoptimized
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-theme-base via-transparent to-transparent" />
+            </div>
+          )}
         </div>
 
         {/* Detailed Case Study Sections */}

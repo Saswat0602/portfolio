@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import {
   Sparkles,
+  Split,
   Flame,
   FileText,
   GitBranch,
@@ -14,6 +15,7 @@ import {
   ArrowLeft,
   Compass,
 } from "lucide-react";
+import { EngineeringComparisonSandbox } from "./EngineeringComparisonSandbox";
 import { NeoBrutalistKineticStudio } from "./NeoBrutalistKineticStudio";
 import { SwissEditorialSpec } from "./SwissEditorialSpec";
 import { GitDiffVisualizer } from "./GitDiffVisualizer";
@@ -24,6 +26,7 @@ import { TiltCardShowcase } from "./TiltCardShowcase";
 
 type LabTab =
   | "all"
+  | "scrubber"
   | "brutalist"
   | "swiss"
   | "git"
@@ -36,7 +39,8 @@ export function PlaygroundHub() {
   const [activeTab, setActiveTab] = useState<LabTab>("all");
 
   const tabs: Array<{ id: LabTab; label: string; icon: React.ElementType; badge: string }> = [
-    { id: "all", label: "All Styles (7)", icon: Sparkles, badge: "Full Suite" },
+    { id: "all", label: "All Styles (8)", icon: Sparkles, badge: "Full Suite" },
+    { id: "scrubber", label: "Before / After Scrubber", icon: Split, badge: "UX & Engineering" },
     { id: "brutalist", label: "Neo-Brutalist Kinetic", icon: Flame, badge: "Raw & Kinetic" },
     { id: "swiss", label: "Swiss Architectural", icon: FileText, badge: "Light Editorial" },
     { id: "git", label: "Git DAG & Code Diff", icon: GitBranch, badge: "Dev Inspector" },
@@ -76,7 +80,7 @@ export function PlaygroundHub() {
         </h1>
 
         <p className="text-sm sm:text-base md:text-lg text-theme-secondary font-light leading-relaxed">
-          Explore production-grade developer graphic styles: from raw Neo-Brutalist kinetic physics and Swiss architectural minimalism to interactive Git DAG diff inspectors and live API benchmark stress testers.
+          Explore production-grade developer graphic styles: from razor-sharp Before/After comparison scrubbers and raw Neo-Brutalist kinetic physics to Swiss architectural minimalism, Git DAG diff inspectors, and live API benchmark stress testers.
         </p>
       </div>
 
@@ -112,13 +116,34 @@ export function PlaygroundHub() {
         })}
       </div>
 
-      {/* Module 1: Neo-Brutalist Kinetic Studio */}
+      {/* Module 1: Clean Before / After Draggable Scrubber */}
+      {(activeTab === "all" || activeTab === "scrubber") && (
+        <section id="scrubber" className="flex flex-col gap-4 pt-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-theme-border/60 pb-3">
+            <div>
+              <span className="text-[11px] font-mono uppercase tracking-widest text-emerald-400 font-semibold block mb-0.5">
+                Developer Style 01 • Engineering Impact Scrubber
+              </span>
+              <h2 className="text-xl sm:text-2xl font-bold font-sans text-theme-primary">
+                Clean Before / After Draggable Scrubber
+              </h2>
+            </div>
+            <span className="text-xs font-mono text-theme-muted">
+              Hairline vertical divider handle with pure CSS clip-path &amp; pointer drag
+            </span>
+          </div>
+
+          <EngineeringComparisonSandbox />
+        </section>
+      )}
+
+      {/* Module 2: Neo-Brutalist Kinetic Studio */}
       {(activeTab === "all" || activeTab === "brutalist") && (
-        <section id="brutalist" className="flex flex-col gap-4 pt-4">
+        <section id="brutalist" className="flex flex-col gap-4 pt-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-theme-border/60 pb-3">
             <div>
               <span className="text-[11px] font-mono uppercase tracking-widest text-amber-500 font-semibold block mb-0.5">
-                Developer Style 01 • High-Impact Brutalism
+                Developer Style 02 • High-Impact Brutalism
               </span>
               <h2 className="text-xl sm:text-2xl font-black font-sans text-theme-primary">
                 Neo-Brutalist Kinetic Canvas
@@ -133,13 +158,13 @@ export function PlaygroundHub() {
         </section>
       )}
 
-      {/* Module 2: Swiss Editorial & Architectural Minimalism */}
+      {/* Module 3: Swiss Editorial & Architectural Minimalism */}
       {(activeTab === "all" || activeTab === "swiss") && (
         <section id="swiss" className="flex flex-col gap-4 pt-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-theme-border/60 pb-3">
             <div>
               <span className="text-[11px] font-mono uppercase tracking-widest text-theme-accent font-semibold block mb-0.5">
-                Developer Style 02 • Senior Engineering Restraint
+                Developer Style 03 • Senior Engineering Restraint
               </span>
               <h2 className="text-xl sm:text-2xl font-bold font-sans text-theme-primary">
                 Swiss Editorial &amp; Architectural Minimalism
@@ -154,13 +179,13 @@ export function PlaygroundHub() {
         </section>
       )}
 
-      {/* Module 3: Git Branch DAG & Live Code Diff Inspector */}
+      {/* Module 4: Git Branch DAG & Live Code Diff Inspector */}
       {(activeTab === "all" || activeTab === "git") && (
         <section id="git" className="flex flex-col gap-4 pt-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-theme-border/60 pb-3">
             <div>
               <span className="text-[11px] font-mono uppercase tracking-widest text-cyan-400 font-semibold block mb-0.5">
-                Developer Style 03 • Codebase Telemetry
+                Developer Style 04 • Codebase Telemetry
               </span>
               <h2 className="text-xl sm:text-2xl font-bold font-sans text-theme-primary">
                 Interactive Git Branch DAG &amp; Real Code Diff Inspector
@@ -175,13 +200,13 @@ export function PlaygroundHub() {
         </section>
       )}
 
-      {/* Module 4: API Benchmark & Latency Stress Sandbox */}
+      {/* Module 5: API Benchmark & Latency Stress Sandbox */}
       {(activeTab === "all" || activeTab === "benchmark") && (
         <section id="benchmark" className="flex flex-col gap-4 pt-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-theme-border/60 pb-3">
             <div>
               <span className="text-[11px] font-mono uppercase tracking-widest text-emerald-400 font-semibold block mb-0.5">
-                Developer Style 04 • Backend Performance
+                Developer Style 05 • Backend Performance
               </span>
               <h2 className="text-xl sm:text-2xl font-bold font-sans text-theme-primary">
                 Production API Benchmark &amp; Latency Stress Sandbox
@@ -196,13 +221,13 @@ export function PlaygroundHub() {
         </section>
       )}
 
-      {/* Module 5: Dev Terminal Runner */}
+      {/* Module 6: Dev Terminal Runner */}
       {(activeTab === "all" || activeTab === "terminal") && (
         <section id="terminal" className="flex flex-col gap-4 pt-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-theme-border/60 pb-3">
             <div>
               <span className="text-[11px] font-mono uppercase tracking-widest text-theme-accent font-semibold block mb-0.5">
-                Developer Style 05 • Interactive CLI
+                Developer Style 06 • Interactive CLI
               </span>
               <h2 className="text-xl sm:text-2xl font-bold font-sans text-theme-primary">
                 Developer Terminal &amp; AI Command Runner
@@ -217,13 +242,13 @@ export function PlaygroundHub() {
         </section>
       )}
 
-      {/* Module 6: Neural Particle Mesh */}
+      {/* Module 7: Neural Particle Mesh */}
       {(activeTab === "all" || activeTab === "mesh") && (
         <section id="mesh" className="flex flex-col gap-4 pt-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-theme-border/60 pb-3">
             <div>
               <span className="text-[11px] font-mono uppercase tracking-widest text-theme-accent font-semibold block mb-0.5">
-                Developer Style 06 • 60fps Canvas
+                Developer Style 07 • 60fps Canvas
               </span>
               <h2 className="text-xl sm:text-2xl font-bold font-sans text-theme-primary">
                 Interactive Neural Particle Mesh
@@ -238,13 +263,13 @@ export function PlaygroundHub() {
         </section>
       )}
 
-      {/* Module 7: 3D Perspective Tilt Showcase */}
+      {/* Module 8: 3D Perspective Tilt Showcase */}
       {(activeTab === "all" || activeTab === "tilt") && (
         <section id="tilt" className="flex flex-col gap-4 pt-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-theme-border/60 pb-3">
             <div>
               <span className="text-[11px] font-mono uppercase tracking-widest text-theme-accent font-semibold block mb-0.5">
-                Developer Style 07 • 3D Physics
+                Developer Style 08 • 3D Physics
               </span>
               <h2 className="text-xl sm:text-2xl font-bold font-sans text-theme-primary">
                 3D Spring-Physics Gyroscopic Tilt &amp; Glare
