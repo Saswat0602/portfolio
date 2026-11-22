@@ -20,6 +20,12 @@ const CURATED_REPOS: Array<{
   url: string;
 }> = [
   {
+    name: "Orbito",
+    tagline: "Enterprise task & project management platform with conversational AI and browser automation.",
+    defaultLang: "TypeScript",
+    url: "https://github.com/Saswat0602/Orbito",
+  },
+  {
     name: "research-agent",
     tagline: "Autonomous multi-agent research and reasoning copilot with dynamic search & synthesis.",
     defaultLang: "TypeScript",
@@ -38,22 +44,16 @@ const CURATED_REPOS: Array<{
     url: "https://github.com/Saswat0602/Real-estate-management",
   },
   {
+    name: "FoodShare-Network",
+    tagline: "Mobile community food-sharing network and donation management system in React Native.",
+    defaultLang: "TypeScript",
+    url: "https://github.com/Saswat0602/FoodShare-Network",
+  },
+  {
     name: "attendance-app",
     tagline: "Cross-platform mobile biometric attendance tracker built with React Native & Expo.",
     defaultLang: "TypeScript",
     url: "https://github.com/Saswat0602/attendance-app",
-  },
-  {
-    name: "MealsApp",
-    tagline: "Mobile community food-sharing network and pantry management system in React Native.",
-    defaultLang: "JavaScript",
-    url: "https://github.com/Saswat0602/MealsApp",
-  },
-  {
-    name: "spotify-clone",
-    tagline: "High-performance full-stack music streaming platform with real-time audio playback.",
-    defaultLang: "TypeScript",
-    url: "https://github.com/Saswat0602/spotify-clone",
   },
 ];
 

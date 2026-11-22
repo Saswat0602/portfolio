@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { userData } from "@/lib/data";
-import { Search, ExternalLink, ArrowRight, Sparkles, Filter } from "lucide-react";
+import { Search, ExternalLink, ArrowRight, Sparkles, Filter, Package } from "lucide-react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { GitHubRepoBadge } from "./GitHubRepoBadge";
@@ -205,6 +205,25 @@ export function ProjectsCatalog() {
                       <ExternalLink size={13} />
                       <span>Live</span>
                     </a>
+                  )}
+
+                  {project.npm_link && (
+                    <a
+                      href={project.npm_link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1 text-red-400 hover:brightness-125 transition-colors"
+                      title="View on npm"
+                    >
+                      <Package size={13} />
+                      <span>npm</span>
+                    </a>
+                  )}
+
+                  {!project.code_link && !project.demo_link && !project.npm_link && (
+                    <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded border border-theme-border bg-theme-surface-elevated text-theme-muted text-[10px] font-mono">
+                      Enterprise Architecture
+                    </span>
                   )}
                 </div>
 

@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ExternalLink, ArrowRight, Sparkles, Layers, Compass } from "lucide-react";
+import { ExternalLink, ArrowRight, Sparkles, Layers, Compass, Package } from "lucide-react";
 import { userData } from "@/lib/data";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { GitHubRepoBadge } from "./GitHubRepoBadge";
@@ -187,6 +187,25 @@ export function WorkSection() {
                           <ExternalLink size={12} />
                           <span>Demo</span>
                         </a>
+                      )}
+
+                      {project.npm_link && (
+                        <a
+                          href={project.npm_link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all text-xs font-mono shadow-2xs"
+                          title="View on npm"
+                        >
+                          <Package size={12} />
+                          <span>npm</span>
+                        </a>
+                      )}
+
+                      {!project.code_link && !project.demo_link && !project.npm_link && (
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-theme-border bg-theme-surface-elevated text-theme-muted text-[11px] font-mono">
+                          Enterprise System
+                        </span>
                       )}
                     </div>
 

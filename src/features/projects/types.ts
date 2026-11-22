@@ -1,8 +1,9 @@
 export interface Project {
   slug: string;
   project_name: string;
-  code_link: string;
+  code_link?: string;
   demo_link?: string;
+  npm_link?: string;
   description: string;
   long_description?: string;
   image: string;

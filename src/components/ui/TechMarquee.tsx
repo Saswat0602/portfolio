@@ -22,33 +22,33 @@ interface TechItem {
 }
 
 const TRACK_1: TechItem[] = [
-  { name: "Next.js 15", category: "Framework", icon: Layers },
-  { name: "React 19", category: "Frontend", icon: Code2 },
-  { name: "AWS Bedrock", category: "Applied AI", icon: Cpu },
-  { name: "Claude 3.5 Sonnet", category: "LLM", icon: Sparkles },
-  { name: "pgvector", category: "Vector DB", icon: Database },
-  { name: "Agent Integration", category: "GenAI", icon: Workflow },
-  { name: "Python FastAPI", category: "Backend", icon: Zap },
-  { name: "WebRTC", category: "Streaming", icon: Radio },
-  { name: "FFmpeg Pipeline", category: "Media Processing", icon: FileVideo },
+  { name: "Next.js", category: "Framework", icon: Layers },
+  { name: "React.js", category: "Frontend", icon: Code2 },
+  { name: "NestJS", category: "Backend", icon: Zap },
   { name: "TypeScript", category: "Language", icon: Code2 },
-  { name: "HeyGen AI API", category: "Generative Video", icon: Sparkles },
-  { name: "Redis Caching", category: "State & Cache", icon: Database },
+  { name: "Claude Code", category: "Agentic AI", icon: Sparkles },
+  { name: "AWS Bedrock", category: "Applied AI", icon: Cpu },
+  { name: "pgvector", category: "Vector DB", icon: Database },
+  { name: "Python", category: "Language", icon: Code2 },
+  { name: "Node.js", category: "Runtime", icon: Zap },
+  { name: "WebRTC", category: "Streaming", icon: Radio },
+  { name: "FFmpeg", category: "Media Processing", icon: FileVideo },
+  { name: "Redis", category: "Cache & State", icon: Database },
 ];
 
 const TRACK_2: TechItem[] = [
-  { name: "React Native", category: "Cross-Platform", icon: Layers },
-  { name: "PostgreSQL & PostGIS", category: "Spatial DB", icon: Database },
-  { name: "Shadow DOM SDK", category: "SDK Architecture", icon: Box },
-  { name: "Docker & Containers", category: "DevOps", icon: Box },
-  { name: "Node.js & Express", category: "Microservices", icon: Zap },
+  { name: "React Native", category: "Mobile", icon: Layers },
+  { name: "PostgreSQL", category: "Database", icon: Database },
+  { name: "Prisma ORM", category: "ORM", icon: Database },
+  { name: "Docker", category: "DevOps", icon: Box },
+  { name: "Express.js", category: "Backend", icon: Zap },
   { name: "Socket.io", category: "WebSockets", icon: Radio },
-  { name: "Tailwind CSS", category: "Design System", icon: Layers },
+  { name: "Tailwind CSS", category: "Styling", icon: Layers },
   { name: "MongoDB", category: "NoSQL", icon: Database },
   { name: "Redux Toolkit", category: "State Store", icon: Workflow },
-  { name: "Web Audio DSP", category: "Audio Engine", icon: Radio },
-  { name: "HNSW Vector Indexing", category: "Retrieval", icon: Compass },
-  { name: "WAI-ARIA Accessibility", category: "Standards", icon: Sparkles },
+  { name: "Jest Testing", category: "QA Testing", icon: Sparkles },
+  { name: "shadcn/ui", category: "Components", icon: Layers },
+  { name: "RESTful APIs", category: "API Design", icon: Compass },
 ];
 
 function TechCard({ item }: { item: TechItem }) {

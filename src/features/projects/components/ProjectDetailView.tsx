@@ -13,6 +13,7 @@ import {
   ArrowRight,
   ShieldCheck,
   Zap,
+  Package,
 } from "lucide-react";
 import { GitHubRepoBadge } from "./GitHubRepoBadge";
 
@@ -79,11 +80,31 @@ export function ProjectDetailView({ project, allProjects }: ProjectDetailViewPro
               </a>
             )}
 
+            {project.npm_link && (
+              <a
+                href={project.npm_link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl border border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/20 text-xs font-mono font-semibold transition-all w-full sm:w-auto"
+              >
+                <Package size={14} />
+                <span>npm: oryn-ui</span>
+                <ExternalLink size={12} className="opacity-70" />
+              </a>
+            )}
+
             {project.code_link && (
               <GitHubRepoBadge
                 repoUrl={project.code_link}
                 className="py-3 px-5 rounded-xl border border-theme-border bg-theme-surface hover:bg-theme-hover text-theme-primary text-xs font-mono transition-all w-full sm:w-auto justify-center"
               />
+            )}
+
+            {!project.demo_link && !project.code_link && !project.npm_link && (
+              <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-theme-border bg-theme-surface-elevated/80 text-theme-secondary text-xs font-mono">
+                <span className="w-2 h-2 rounded-full bg-theme-accent/80 animate-pulse" />
+                <span>Enterprise Architecture • Proprietary Internal Platform</span>
+              </div>
             )}
           </div>
         </div>

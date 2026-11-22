@@ -24,7 +24,7 @@ export default function Home() {
           <TechStack />
         </ScrollReveal>
 
-        {/* 4. Selected Production Projects (VSA, Taskosaur, Shomes, Mad-UI, etc.) */}
+        {/* 4. Selected Production Projects (Orbito, ReviewSage AI, Shomes, Oryn UI, etc.) */}
         <WorkSection />
 
         {/* 5. Career Chronology at NetTantra Technologies */}

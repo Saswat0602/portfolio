@@ -75,9 +75,14 @@ export function AboutOverview() {
       skills: ["PostgreSQL", "MongoDB", "Prisma ORM", "Redis", "SQLite", "AWS (S3, EC2, ELB)", "Firebase"],
     },
     {
+      title: "Applied AI & Agentic Systems",
+      icon: Brain,
+      skills: ["Claude Code", "Multi-Agent Co-work", "AWS Bedrock", "Agentic Copilots", "MCP Integration", "pgvector RAG", "LangGraph"],
+    },
+    {
       title: "Tools & DevOps",
       icon: Cpu,
-      skills: ["Git", "Docker", "Jest", "React Testing Library", "WebRTC", "Postman", "FFmpeg", "AWS Bedrock"],
+      skills: ["Git", "Docker", "Jest", "React Testing Library", "WebRTC", "Postman", "FFmpeg"],
     },
   ];
 

@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { userData } from "@/lib/data";
 import {
   Brain,
@@ -14,8 +13,6 @@ import {
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 
 export function TechStack() {
-  const [activeCategory, setActiveCategory] = useState<string>("all");
-
   const categoryIcons: Record<string, React.ElementType> = {
     "ai-rag": Brain,
     "fullstack-web": Layers,
@@ -23,18 +20,7 @@ export function TechStack() {
     "cloud-databases": Database,
   };
 
-  const tabs = [
-    { id: "all", label: "All Capabilities" },
-    { id: "ai-rag", label: "Modern AI & RAG" },
-    { id: "fullstack-web", label: "Full Stack & Web" },
-    { id: "mobile-realtime", label: "Mobile & Real-Time" },
-    { id: "cloud-databases", label: "Cloud & Databases" },
-  ];
-
-  const displayedCategories =
-    activeCategory === "all"
-      ? userData.about.skill_categories
-      : userData.about.skill_categories.filter((cat) => cat.id === activeCategory);
+  const categories = userData.about.skill_categories;
 
   return (
     <section id="skills" className="w-full py-16 sm:py-24 px-4 sm:px-6 md:px-8 bg-theme-base text-theme-primary relative z-10 border-t border-theme-border transition-colors duration-300 max-w-full overflow-hidden">
@@ -53,31 +39,11 @@ export function TechStack() {
           <p className="max-w-2xl text-xs sm:text-sm md:text-base text-theme-secondary font-light leading-relaxed px-2">
             Combining 3+ years of full-stack web and mobile engineering with production-grade AI systems, AWS Bedrock integrations, and high-performance vector search pipelines.
           </p>
-
-          {/* Interactive Category Filter Tabs */}
-          <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 mt-6 sm:mt-8 p-1 sm:p-1.5 rounded-2xl border border-theme-border bg-theme-surface/80 backdrop-blur-xl max-w-full">
-            {tabs.map((tab) => {
-              const isActive = activeCategory === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveCategory(tab.id)}
-                  className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-[11px] sm:text-xs font-mono transition-all cursor-pointer ${
-                    isActive
-                      ? "bg-theme-accent text-white dark:text-zinc-950 font-bold shadow-sm"
-                      : "text-theme-secondary hover:text-theme-primary hover:bg-theme-hover"
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              );
-            })}
-          </div>
         </div>
 
         {/* Clean Capability Cards Grid with 60fps Spotlight */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6 lg:gap-8">
-          {displayedCategories.map((cat) => {
+          {categories.map((cat) => {
             const Icon = categoryIcons[cat.id] || Cpu;
 
             return (

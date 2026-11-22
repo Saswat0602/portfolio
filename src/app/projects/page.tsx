@@ -6,7 +6,7 @@ import { Cpu } from "lucide-react";
 export const metadata: Metadata = {
   title: "Production Projects & AI Systems | Saswat Ranjan Mohanty",
   description:
-    "Applied AI video pipelines, Taskosaur Any agentic copilot, Shomes real estate spatial search, Mad-UI, and scalable engineering systems by Saswat Ranjan Mohanty.",
+    "Production engineering systems by Saswat Ranjan Mohanty: Orbito enterprise AI platform, AI Learning Platform, ReviewSage autonomous research agent, Oryn UI component library, and Shomes geospatial marketplace.",
 };
 
 export default function ProjectsPage() {
