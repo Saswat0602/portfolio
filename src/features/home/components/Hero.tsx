@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, MapPin, Layers, Cpu, Mail, Compass, Workflow, Smartphone } from "lucide-react";
+import { ArrowRight, MapPin, Layers, Cpu, Mail, Compass, Workflow, Smartphone, FileText } from "lucide-react";
 import Link from "next/link";
 import { userData } from "@/lib/data";
 
@@ -139,6 +139,16 @@ export function Hero() {
               className="transition-transform duration-200 group-hover:translate-x-1"
             />
           </Link>
+
+          <a
+            href="/saswat_ranjan_mohanty.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-2 px-6 sm:px-7 py-3 sm:py-3.5 rounded-xl border border-theme-border bg-theme-surface/70 backdrop-blur-md text-theme-secondary font-medium text-sm transition-all hover:bg-theme-hover hover:border-theme-accent hover:text-theme-primary w-full sm:w-auto font-mono"
+          >
+            <FileText size={15} className="text-theme-accent" />
+            <span>Resume (PDF)</span>
+          </a>
 
           <a
             href="#contact"

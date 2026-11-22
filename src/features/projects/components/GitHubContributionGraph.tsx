@@ -16,13 +16,20 @@ import {
 
 type PaletteMode = "slate" | "emerald" | "graphite";
 
+// In-memory module cache to eliminate duplicate network calls across page transitions
+let cachedContributionsData: GitHubContributionsData | null = null;
+
 export function GitHubContributionGraph() {
-  const [data, setData] = useState<GitHubContributionsData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState<GitHubContributionsData | null>(cachedContributionsData);
+  const [loading, setLoading] = useState(!cachedContributionsData);
   const [palette, setPalette] = useState<PaletteMode>("slate");
   const [hoveredDay, setHoveredDay] = useState<{ date: string; count: number } | null>(null);
 
   useEffect(() => {
+    if (cachedContributionsData) {
+      return;
+    }
+
     let isMounted = true;
     fetch("/api/github/contributions")
       .then((res) => {
@@ -30,6 +37,7 @@ export function GitHubContributionGraph() {
         return res.json();
       })
       .then((resData: GitHubContributionsData) => {
+        cachedContributionsData = resData;
         if (isMounted) {
           setData(resData);
           setLoading(false);

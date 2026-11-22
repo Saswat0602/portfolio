@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { siteConfig } from "@/config/site";
-import { Menu, X, ArrowUpRight } from "lucide-react";
+import { Menu, X, ArrowUpRight, FileText } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/icons";
 import { ThemeToggle } from "./ThemeToggle";
 
@@ -118,9 +118,20 @@ export function Navbar() {
           })}
         </nav>
 
-        {/* Right Controls: Theme Toggle + Socials + CTA */}
+        {/* Right Controls: Theme Toggle + Resume + Socials + CTA */}
         <div className="hidden md:flex items-center gap-2.5 flex-shrink-0">
           <ThemeToggle />
+
+          <a
+            href="/saswat_ranjan_mohanty.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-theme-border bg-theme-surface hover:bg-theme-hover hover:border-theme-accent text-theme-secondary hover:text-theme-primary text-xs font-mono font-medium transition-all"
+            aria-label="View Resume (PDF)"
+          >
+            <FileText size={14} className="text-theme-accent" />
+            <span>Resume</span>
+          </a>
 
           <div className="h-4 w-px bg-theme-border mx-1" />
 
@@ -199,6 +210,20 @@ export function Navbar() {
                 <ArrowUpRight size={14} className="text-theme-muted" />
               </Link>
             ))}
+
+            <a
+              href="/saswat_ranjan_mohanty.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setMobileMenuOpen(false)}
+              className="px-4 py-3 rounded-xl text-sm font-medium text-theme-accent bg-theme-accent-subtle border border-theme-border flex items-center justify-between min-h-[44px] touch-manipulation font-mono"
+            >
+              <span className="flex items-center gap-2">
+                <FileText size={15} />
+                <span>Resume (PDF)</span>
+              </span>
+              <ArrowUpRight size={14} />
+            </a>
           </div>
 
           <div className="flex flex-col xs:flex-row items-stretch xs:items-center justify-between gap-3 pt-4 border-t border-theme-border">

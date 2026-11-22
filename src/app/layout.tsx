@@ -93,6 +93,7 @@ export default function RootLayout({
       lang="en"
       suppressHydrationWarning
       data-theme="dark"
+      data-scroll-behavior="smooth"
       className={`${outfit.variable} ${plusJakartaSans.variable} ${jetbrainsMono.variable} dark antialiased`}
     >
       <head>
