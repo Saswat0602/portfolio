@@ -12,13 +12,12 @@ import {
   Compass,
   Briefcase,
   Cpu,
-  Smartphone,
   MessageSquare,
   Globe,
   Terminal,
   MessageCircle,
-  Sparkles,
   FileText,
+  Rocket,
 } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/icons";
 
@@ -37,12 +36,20 @@ interface TopicPreset {
 
 const TOPIC_PRESETS: TopicPreset[] = [
   {
-    id: "fullstack",
-    label: "Full-Stack & Applied AI Role",
-    badge: "Hiring Opportunity",
+    id: "fulltime",
+    label: "Full-Time Engineering Role",
+    badge: "Full-Time / SDE",
     icon: Briefcase,
     subject: "Full-Stack & Applied AI Engineer Opportunity",
-    starterBody: `Hi Saswat,\n\nI reviewed your portfolio and would like to speak with you regarding an engineering opportunity.\n\nCompany / Team: \nRole Scope: Full-Stack & Applied AI (SDE)\nLocation: Remote / Hybrid\nTimeline: \n\nLooking forward to connecting!`,
+    starterBody: `Hi Saswat,\n\nI reviewed your portfolio and would like to speak with you regarding an engineering opportunity with our team.\n\nCompany / Team: \nRole Scope: Full-Stack & Applied AI (SDE)\nLocation / Setup: Remote / Hybrid\nTimeline: \n\nLooking forward to connecting!`,
+  },
+  {
+    id: "freelance",
+    label: "Freelance & Contract Project",
+    badge: "Freelance / MVP / Contract",
+    icon: Rocket,
+    subject: "Freelance Project & Contract Development Inquiry",
+    starterBody: `Hi Saswat,\n\nI would like to hire you for a freelance project / contract development.\n\nProject Scope: (Web Platform / Mobile App / AI Integration / MVP)\nKey Deliverables: \nTarget Timeline & Budget: \n\nLet me know your availability!`,
   },
   {
     id: "ai-agents",
@@ -53,27 +60,19 @@ const TOPIC_PRESETS: TopicPreset[] = [
     starterBody: `Hi Saswat,\n\nI am interested in your work with Claude Code, multi-agent co-work architectures, AWS Bedrock, and pgvector RAG.\n\nProject Scope: \nKey Requirements: \nTarget Timeline: \n\nBest regards,`,
   },
   {
-    id: "mobile",
-    label: "Mobile & Real-Time Comms",
-    badge: "React Native & WebRTC",
-    icon: Smartphone,
-    subject: "Mobile & Real-Time Application Project",
-    starterBody: `Hi Saswat,\n\nI would like to discuss building a cross-platform mobile application with React Native and real-time WebRTC audio/video.\n\nApp Concept: \nTarget Platforms: iOS & Android\n\nThanks!`,
-  },
-  {
     id: "advisory",
-    label: "Technical Advisory & Chat",
-    badge: "Engineering Discussion",
+    label: "Technical Advisory & Consultation",
+    badge: "Advisory & Consultation",
     icon: MessageSquare,
-    subject: "Technical Architecture & Collaboration",
-    starterBody: `Hi Saswat,\n\nI would love to connect and chat about software architecture, distributed systems, or potential engineering collaboration.\n\nDiscussion Topic: \n\nCheers,`,
+    subject: "Technical Architecture & Advisory Consultation",
+    starterBody: `Hi Saswat,\n\nI would love to connect and chat about software architecture, system design, or engineering advisory.\n\nDiscussion Topic: \n\nCheers,`,
   },
 ];
 
 export function ContactSection({ isStandalone = false }: ContactSectionProps) {
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [copiedDraft, setCopiedDraft] = useState(false);
-  const [selectedTopicId, setSelectedTopicId] = useState<string>("fullstack");
+  const [selectedTopicId, setSelectedTopicId] = useState<string>("fulltime");
   const [localTime, setLocalTime] = useState<string>("");
 
   const selectedTopic =
@@ -206,7 +205,7 @@ export function ContactSection({ isStandalone = false }: ContactSectionProps) {
 
         <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 rounded-full border border-theme-border bg-theme-surface/80 backdrop-blur-md text-theme-secondary shadow-xs text-[11px] sm:text-xs">
           <Globe size={13} className="text-theme-accent flex-shrink-0" />
-          <span>Worldwide Remote &amp; Relocation Ready</span>
+          <span>Worldwide Remote • Full-Time &amp; Freelance Ready</span>
         </div>
       </div>
 
@@ -227,7 +226,7 @@ export function ContactSection({ isStandalone = false }: ContactSectionProps) {
                   <span className="text-[11px] font-mono uppercase tracking-widest text-theme-accent font-bold block truncate">
                     Direct Email
                   </span>
-                  <span className="text-xs text-theme-muted font-light">Primary Inbound Channel</span>
+                  <span className="text-xs text-theme-muted font-light">Full-Time &amp; Freelance Inbound</span>
                 </div>
               </div>
 
@@ -377,18 +376,10 @@ export function ContactSection({ isStandalone = false }: ContactSectionProps) {
           <div className="p-5 sm:p-7 md:p-8 rounded-2xl sm:rounded-3xl border border-theme-border bg-theme-surface/95 backdrop-blur-xl shadow-xl relative">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 sm:mb-6">
               <div>
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-theme-accent-subtle border border-theme-border text-[10px] font-mono text-theme-accent mb-1.5 font-medium">
-                  <Sparkles size={11} className="flex-shrink-0" />
-                  <span>1-Click Interactive Composer</span>
-                </div>
                 <h3 className="text-xl sm:text-2xl font-bold font-sans text-theme-primary tracking-tight">
                   Draft &amp; Launch a Message
                 </h3>
               </div>
-
-              <span className="text-[11px] font-mono text-theme-muted hidden sm:block">
-                No slow web forms • Opens in your mail app
-              </span>
             </div>
 
             {/* Conversation Topic Selector */}

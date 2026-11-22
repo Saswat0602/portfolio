@@ -591,8 +591,8 @@ const userData: UserData = {
   ],
   contact: {
     message:
-      "Whether you are looking to hire for Full-Stack & Applied AI engineering roles, architect automated video pipelines or agentic copilots, or scale cross-platform mobile apps, let's connect.",
-    availability: "Available for Full-Stack & Applied AI Engineering roles (Remote, Hybrid, or On-site).",
+      "Whether you are looking to hire for full-time engineering roles, build a freelance or contract project, architect automated video pipelines or agentic copilots, or scale cross-platform mobile apps, let's connect.",
+    availability: "Available for Full-Time Roles & Freelance / Contract Projects (Worldwide Remote).",
   },
   footer: {
     title: "Saswat Ranjan Mohanty",
@@ -614,7 +614,7 @@ const userData: UserData = {
       location: "Bhubaneswar, Odisha, India",
       email: "saswatranjan0602@gmail.com",
       phone: "+91 91788 42947",
-      availability: "Available for new opportunities",
+      availability: "Available for Full-Time & Freelance Projects",
     },
     copyright: "© 2025 Saswat Ranjan Mohanty. All rights reserved.",
   },
