@@ -1,20 +1,20 @@
 import type { Metadata } from "next";
 import { ProjectsCatalog } from "@/features/projects/components/ProjectsCatalog";
-import { GitHubRepositoriesSection } from "@/features/projects/components/GitHubRepositoriesSection";
+import { GitHubContributionGraph } from "@/features/projects/components/GitHubContributionGraph";
 import { Cpu } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Production Projects & GitHub Repositories | Saswat Ranjan Mohanty",
+  title: "Production Projects & AI Systems | Saswat Ranjan Mohanty",
   description:
-    "Applied AI video pipelines, Taskosaur Any agentic copilot, Shomes real estate spatial search, Mad-UI, and 55+ open-source GitHub repositories engineered by Saswat Ranjan Mohanty.",
+    "Applied AI video pipelines, Taskosaur Any agentic copilot, Shomes real estate spatial search, Mad-UI, and scalable engineering systems by Saswat Ranjan Mohanty.",
 };
 
 export default function ProjectsPage() {
   return (
     <main className="w-full min-h-screen py-10 sm:py-16 px-4 sm:px-6 md:px-8 bg-theme-base text-theme-primary transition-colors duration-300">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto flex flex-col gap-10 sm:gap-14">
         {/* Page Header */}
-        <div className="flex flex-col items-start mb-8 sm:mb-14">
+        <div className="flex flex-col items-start">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-theme-border bg-theme-accent-subtle text-theme-accent text-xs font-mono uppercase tracking-wider mb-4">
             <Cpu size={13} className="flex-shrink-0" />
             <span>Architecture &amp; Engineering Showcase</span>
@@ -29,11 +29,15 @@ export default function ProjectsPage() {
           </p>
         </div>
 
-        {/* Catalog Feature */}
-        <ProjectsCatalog />
+        {/* 1. TOP: Live GitHub Analytics & 365-Day Contributions Heatmap */}
+        <section aria-label="GitHub Engineering Analytics">
+          <GitHubContributionGraph />
+        </section>
 
-        {/* Live GitHub Public Repositories Section */}
-        <GitHubRepositoriesSection />
+        {/* 2. Flagship Production Projects Catalog */}
+        <section aria-label="Production Systems Catalog">
+          <ProjectsCatalog />
+        </section>
       </div>
     </main>
   );
