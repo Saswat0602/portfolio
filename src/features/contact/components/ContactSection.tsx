@@ -6,9 +6,6 @@ import {
   Mail,
   Copy,
   Check,
-  Send,
-  CheckCircle2,
-  AlertCircle,
   ArrowUpRight,
   Clock,
   MapPin,
@@ -18,6 +15,10 @@ import {
   Smartphone,
   MessageSquare,
   Globe,
+  Terminal,
+  MessageCircle,
+  Sparkles,
+  FileText,
 } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/icons";
 
@@ -37,57 +38,51 @@ interface TopicPreset {
 const TOPIC_PRESETS: TopicPreset[] = [
   {
     id: "fullstack",
-    label: "Full Stack & AI Role",
+    label: "Full-Stack & Applied AI Role",
     badge: "Hiring Opportunity",
     icon: Briefcase,
-    subject: "Full Stack & AI Engineer Opportunity",
-    starterBody: `Hi Saswat,\n\nI reviewed your portfolio and would like to speak with you regarding an engineering opportunity.\n\nCompany / Team: \nRole Scope: \nTimeline: \n\nLooking forward to connecting!`,
+    subject: "Full-Stack & Applied AI Engineer Opportunity",
+    starterBody: `Hi Saswat,\n\nI reviewed your portfolio and would like to speak with you regarding an engineering opportunity.\n\nCompany / Team: \nRole Scope: Full-Stack & Applied AI (SDE)\nLocation: Remote / Hybrid\nTimeline: \n\nLooking forward to connecting!`,
   },
   {
-    id: "bedrock",
-    label: "AWS Bedrock / RAG",
-    badge: "Generative AI & RAG",
+    id: "ai-agents",
+    label: "Claude Code & Agentic Systems",
+    badge: "Applied AI & Copilots",
     icon: Cpu,
-    subject: "AWS Bedrock & Enterprise RAG Pipeline Project",
-    starterBody: `Hi Saswat,\n\nWe are looking to architect a generative AI solution with AWS Bedrock, vector search, and agentic workflows.\n\nProject Scope: \nKey Objectives: \n\nBest regards,`,
+    subject: "Agentic AI & LLM Systems Collaboration",
+    starterBody: `Hi Saswat,\n\nI am interested in your work with Claude Code, multi-agent co-work architectures, AWS Bedrock, and pgvector RAG.\n\nProject Scope: \nKey Requirements: \nTarget Timeline: \n\nBest regards,`,
   },
   {
     id: "mobile",
-    label: "Mobile App Development",
-    badge: "React Native Mobile",
+    label: "Mobile & Real-Time Comms",
+    badge: "React Native & WebRTC",
     icon: Smartphone,
-    subject: "Mobile Application Engineering (React Native)",
-    starterBody: `Hi Saswat,\n\nI would like to discuss building a cross-platform mobile application with React Native.\n\nApp Concept: \nTarget Platforms: iOS & Android\n\nThanks!`,
+    subject: "Mobile & Real-Time Application Project",
+    starterBody: `Hi Saswat,\n\nI would like to discuss building a cross-platform mobile application with React Native and real-time WebRTC audio/video.\n\nApp Concept: \nTarget Platforms: iOS & Android\n\nThanks!`,
   },
   {
-    id: "collab",
-    label: "Technical Advisory / Chat",
+    id: "advisory",
+    label: "Technical Advisory & Chat",
     badge: "Engineering Discussion",
     icon: MessageSquare,
     subject: "Technical Architecture & Collaboration",
-    starterBody: `Hi Saswat,\n\nI would love to connect and chat about technical architecture, system design, or engineering collaboration.\n\nDiscussion Topic: \n\nCheers,`,
+    starterBody: `Hi Saswat,\n\nI would love to connect and chat about software architecture, distributed systems, or potential engineering collaboration.\n\nDiscussion Topic: \n\nCheers,`,
   },
 ];
 
 export function ContactSection({ isStandalone = false }: ContactSectionProps) {
-  const [copied, setCopied] = useState(false);
+  const [copiedEmail, setCopiedEmail] = useState(false);
+  const [copiedDraft, setCopiedDraft] = useState(false);
   const [selectedTopicId, setSelectedTopicId] = useState<string>("fullstack");
   const [localTime, setLocalTime] = useState<string>("");
 
   const selectedTopic =
     TOPIC_PRESETS.find((t) => t.id === selectedTopicId) || TOPIC_PRESETS[0];
 
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    subject: TOPIC_PRESETS[0].subject,
-    message: "",
-  });
+  const [draftSubject, setDraftSubject] = useState(selectedTopic.subject);
+  const [draftBody, setDraftBody] = useState(selectedTopic.starterBody);
 
-  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
-  const [errorMessage, setErrorMessage] = useState("");
-
-  // Live Indian Standard Time (IST) clock for clean location widget
+  // Live Indian Standard Time (IST) clock for location widget
   useEffect(() => {
     const updateLocalTime = () => {
       try {
@@ -108,6 +103,12 @@ export function ContactSection({ isStandalone = false }: ContactSectionProps) {
     return () => clearInterval(timer);
   }, []);
 
+  const handleSelectTopic = (topic: TopicPreset) => {
+    setSelectedTopicId(topic.id);
+    setDraftSubject(topic.subject);
+    setDraftBody(topic.starterBody);
+  };
+
   const handleCopyEmail = async () => {
     try {
       if (navigator?.clipboard?.writeText) {
@@ -120,60 +121,42 @@ export function ContactSection({ isStandalone = false }: ContactSectionProps) {
         document.execCommand("copy");
         document.body.removeChild(textArea);
       }
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2400);
+      setCopiedEmail(true);
+      setTimeout(() => setCopiedEmail(false), 2400);
     } catch {
       // Fallback handled gracefully
     }
   };
 
-  const handleSelectTopic = (topic: TopicPreset) => {
-    setSelectedTopicId(topic.id);
-    setFormData((prev) => ({
-      ...prev,
-      subject: topic.subject,
-    }));
-  };
-
-  // Structured mailto with topic subject and starter template body
-  const mailtoSubject = encodeURIComponent(formData.subject || selectedTopic.subject);
-  const mailtoBody = encodeURIComponent(
-    formData.message ? formData.message : selectedTopic.starterBody
-  );
-  const mailtoUrl = `mailto:${userData.about.email}?subject=${mailtoSubject}&body=${mailtoBody}`;
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setStatus("submitting");
-    setErrorMessage("");
-
+  const handleCopyDraft = async () => {
     try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to submit message");
+      const fullText = `Subject: ${draftSubject}\n\n${draftBody}`;
+      if (navigator?.clipboard?.writeText) {
+        await navigator.clipboard.writeText(fullText);
+      } else {
+        const textArea = document.createElement("textarea");
+        textArea.value = fullText;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textArea);
       }
-
-      setStatus("success");
-      setFormData({
-        name: "",
-        email: "",
-        subject: selectedTopic.subject,
-        message: "",
-      });
-    } catch (err) {
-      setStatus("error");
-      setErrorMessage(
-        err instanceof Error ? err.message : "Something went wrong. Please email directly."
-      );
+      setCopiedDraft(true);
+      setTimeout(() => setCopiedDraft(false), 2400);
+    } catch {
+      // Fallback handled gracefully
     }
   };
+
+  // Structured mailto URL with user-edited subject and message
+  const mailtoSubject = encodeURIComponent(draftSubject || selectedTopic.subject);
+  const mailtoBody = encodeURIComponent(draftBody || selectedTopic.starterBody);
+  const mailtoUrl = `mailto:${userData.about.email}?subject=${mailtoSubject}&body=${mailtoBody}`;
+
+  // Direct WhatsApp chat link
+  const whatsappUrl = `https://wa.me/919178842947?text=${encodeURIComponent(
+    `Hi Saswat,\n\nRegarding ${draftSubject}:`
+  )}`;
 
   const content = (
     <div className="max-w-7xl mx-auto">
@@ -183,24 +166,20 @@ export function ContactSection({ isStandalone = false }: ContactSectionProps) {
           isStandalone ? "items-start text-left" : "items-center text-center"
         }`}
       >
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-theme-border bg-theme-accent-subtle text-theme-accent text-xs font-mono uppercase tracking-wider mb-4">
-          <Compass size={13} />
-          <span>Direct Communication</span>
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-theme-border bg-theme-accent-subtle text-theme-accent text-xs font-mono uppercase tracking-wider mb-4 font-medium">
+          <Compass size={13} className="flex-shrink-0" />
+          <span>Direct Communication Hub</span>
         </div>
 
         {isStandalone ? (
           <h1 className="text-3xl sm:text-5xl md:text-6xl font-black font-sans text-theme-primary tracking-tight mb-3 sm:mb-4 break-words">
             Let&apos;s Build{" "}
-            <span className="text-theme-accent">
-              Something Great
-            </span>
+            <span className="text-theme-accent">Something Great</span>
           </h1>
         ) : (
           <h2 className="text-2xl sm:text-4xl md:text-5xl font-black font-sans text-theme-primary tracking-tight mb-3 sm:mb-4 break-words">
             Let&apos;s Build{" "}
-            <span className="text-theme-accent">
-              Something Great
-            </span>
+            <span className="text-theme-accent">Something Great</span>
           </h2>
         )}
 
@@ -209,7 +188,7 @@ export function ContactSection({ isStandalone = false }: ContactSectionProps) {
         </p>
       </div>
 
-      {/* Modern Location & Status Bar */}
+      {/* Location & Status Bar */}
       <div
         className={`flex flex-wrap items-center gap-2 sm:gap-3 text-xs font-mono mb-8 sm:mb-12 max-w-full ${
           isStandalone ? "justify-start" : "justify-center"
@@ -231,24 +210,24 @@ export function ContactSection({ isStandalone = false }: ContactSectionProps) {
         </div>
       </div>
 
+      {/* Main 2-Column Command Hub */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-10 items-start">
-        {/* Left Column: Flagship "Email Me" Command Center */}
-        <div className="lg:col-span-5 flex flex-col gap-6">
-          <div className="p-5 sm:p-7 md:p-8 rounded-2xl sm:rounded-3xl border border-theme-border bg-theme-surface/95 backdrop-blur-xl relative overflow-hidden shadow-xl">
-            {/* Ambient blur */}
+        {/* Left Column: Direct Verified Channels (5 cols) */}
+        <div className="lg:col-span-5 flex flex-col gap-5 sm:gap-6">
+          {/* Direct Email Card */}
+          <div className="p-5 sm:p-7 rounded-2xl sm:rounded-3xl border border-theme-border bg-theme-surface/95 backdrop-blur-xl relative overflow-hidden shadow-xl">
             <div className="absolute -top-12 -right-12 w-48 h-48 bg-theme-accent/15 blur-[60px] pointer-events-none rounded-full" />
 
-            {/* Header */}
             <div className="flex items-center justify-between gap-3 mb-5">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-theme-accent-subtle border border-theme-border flex items-center justify-center text-theme-accent shadow-xs flex-shrink-0">
-                  <Mail size={16} />
+                <div className="w-9 h-9 rounded-xl bg-theme-accent-subtle border border-theme-border flex items-center justify-center text-theme-accent shadow-xs flex-shrink-0">
+                  <Mail size={17} />
                 </div>
                 <div className="min-w-0">
                   <span className="text-[11px] font-mono uppercase tracking-widest text-theme-accent font-bold block truncate">
                     Direct Email
                   </span>
-                  <span className="text-xs text-theme-muted font-light">Primary Contact Method</span>
+                  <span className="text-xs text-theme-muted font-light">Primary Inbound Channel</span>
                 </div>
               </div>
 
@@ -257,8 +236,8 @@ export function ContactSection({ isStandalone = false }: ContactSectionProps) {
               </span>
             </div>
 
-            {/* Prominent Email Address */}
-            <div className="mb-4 sm:mb-5 p-3 sm:p-3.5 rounded-xl border border-theme-border bg-theme-surface-elevated/70 backdrop-blur-md">
+            {/* Email Address Link */}
+            <div className="mb-4 sm:mb-5 p-3.5 rounded-xl border border-theme-border bg-theme-surface-elevated/70 backdrop-blur-md">
               <span className="text-[10px] font-mono uppercase text-theme-muted block mb-1">
                 Direct Inbox Address
               </span>
@@ -267,7 +246,7 @@ export function ContactSection({ isStandalone = false }: ContactSectionProps) {
                 className="text-sm sm:text-base md:text-lg font-mono font-bold text-theme-primary hover:text-theme-accent transition-colors break-all flex items-center gap-2 group"
                 title="Click to write an email"
               >
-                <span>{userData.about.email}</span>
+                <span className="truncate">{userData.about.email}</span>
                 <ArrowUpRight
                   size={16}
                   className="text-theme-muted group-hover:text-theme-accent group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all flex-shrink-0"
@@ -275,29 +254,11 @@ export function ContactSection({ isStandalone = false }: ContactSectionProps) {
               </a>
             </div>
 
-            {/* Direct Phone & WhatsApp */}
-            <div className="mb-4 sm:mb-5 p-3 sm:p-3.5 rounded-xl border border-theme-border bg-theme-surface-elevated/70 backdrop-blur-md flex items-center justify-between">
-              <div>
-                <span className="text-[10px] font-mono uppercase text-theme-muted block mb-1">
-                  Direct Line &amp; WhatsApp
-                </span>
-                <a
-                  href={`tel:${userData.about.phone}`}
-                  className="text-sm sm:text-base font-mono font-bold text-theme-primary hover:text-theme-accent transition-colors"
-                >
-                  {userData.about.phone}
-                </a>
-              </div>
-              <span className="px-2 py-0.5 rounded-md text-[10px] font-mono bg-theme-accent-subtle text-theme-accent border border-theme-border font-medium">
-                Direct Line
-              </span>
-            </div>
-
-            {/* Action Buttons: Email Me & Copy Email */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 mb-6">
+            {/* 1-Click Primary Actions */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 mb-5">
               <a
                 href={mailtoUrl}
-                className="btn-sheen inline-flex items-center justify-center gap-2 px-4 py-3 sm:py-3.5 rounded-xl bg-theme-accent text-white dark:text-zinc-950 text-xs font-bold font-mono hover:brightness-110 active:scale-[0.98] transition-all shadow-sm w-full min-h-[44px]"
+                className="btn-sheen inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-theme-accent text-white dark:text-zinc-950 text-xs font-bold font-mono hover:brightness-110 active:scale-[0.98] transition-all shadow-sm w-full min-h-[44px]"
               >
                 <Mail size={15} />
                 <span>Email Me</span>
@@ -307,39 +268,136 @@ export function ContactSection({ isStandalone = false }: ContactSectionProps) {
               <button
                 type="button"
                 onClick={handleCopyEmail}
-                className={`inline-flex items-center justify-center gap-2 px-4 py-3 sm:py-3.5 rounded-xl border text-xs font-mono transition-all active:scale-[0.98] cursor-pointer w-full min-h-[44px] ${
-                  copied
+                className={`inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl border text-xs font-mono transition-all active:scale-[0.98] cursor-pointer w-full min-h-[44px] ${
+                  copiedEmail
                     ? "border-theme-accent bg-theme-accent-subtle text-theme-accent shadow-xs"
                     : "border-theme-border bg-theme-surface-elevated hover:bg-theme-hover hover:border-theme-accent text-theme-primary"
                 }`}
                 aria-label="Copy email address"
               >
-                {copied ? (
+                {copiedEmail ? (
                   <>
                     <Check size={15} className="text-theme-accent" />
-                    <span className="font-semibold text-theme-accent">Copied to Clipboard!</span>
+                    <span className="font-semibold text-theme-accent">Copied Email!</span>
                   </>
                 ) : (
                   <>
                     <Copy size={15} className="text-theme-muted" />
-                    <span>Copy Email Address</span>
+                    <span>Copy Address</span>
                   </>
                 )}
               </button>
             </div>
 
-            {/* Conversation Starter Chips */}
-            <div className="pt-5 border-t border-theme-border">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-[11px] font-mono uppercase tracking-wider text-theme-secondary font-semibold block">
-                  Select a Conversation Topic:
+            {/* Direct Line & WhatsApp Card */}
+            <div className="p-3.5 rounded-xl border border-theme-border bg-theme-surface-elevated/70 backdrop-blur-md flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
+              <div>
+                <span className="text-[10px] font-mono uppercase text-theme-muted block mb-0.5">
+                  Direct Line &amp; WhatsApp
                 </span>
-                <span className="text-[10px] font-mono text-theme-muted">
-                  Pre-fills subject &amp; starter
-                </span>
+                <a
+                  href={`tel:${userData.about.phone}`}
+                  className="text-sm font-mono font-bold text-theme-primary hover:text-theme-accent transition-colors"
+                >
+                  {userData.about.phone}
+                </a>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div className="flex items-center gap-2">
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 text-xs font-mono font-medium transition-colors"
+                  title="Chat directly on WhatsApp"
+                >
+                  <MessageCircle size={13} />
+                  <span>WhatsApp</span>
+                  <ArrowUpRight size={10} className="opacity-70" />
+                </a>
+
+                <a
+                  href={`tel:${userData.about.phone}`}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-theme-border bg-theme-surface hover:bg-theme-hover text-theme-primary text-xs font-mono transition-colors"
+                >
+                  <span>Call</span>
+                </a>
+              </div>
+            </div>
+
+            {/* Verified External Profiles */}
+            <div className="pt-4 border-t border-theme-border">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-theme-muted font-semibold block mb-2.5">
+                Verified Professional Networks
+              </span>
+
+              <div className="grid grid-cols-3 gap-2">
+                <a
+                  href="https://github.com/Saswat0602"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-1.5 p-2.5 rounded-xl border border-theme-border bg-theme-surface-elevated/40 hover:bg-theme-hover hover:border-theme-accent text-xs font-mono text-theme-secondary hover:text-theme-primary transition-all group"
+                  title="View GitHub Profile"
+                >
+                  <GithubIcon size={13} />
+                  <span className="truncate">GitHub</span>
+                  <ArrowUpRight size={10} className="text-theme-muted group-hover:text-theme-primary transition-colors flex-shrink-0" />
+                </a>
+
+                <a
+                  href="https://www.linkedin.com/in/saswat0602"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-1.5 p-2.5 rounded-xl border border-theme-border bg-theme-surface-elevated/40 hover:bg-theme-hover hover:border-theme-accent text-xs font-mono text-theme-secondary hover:text-theme-primary transition-all group"
+                  title="Connect on LinkedIn"
+                >
+                  <LinkedinIcon size={13} />
+                  <span className="truncate">LinkedIn</span>
+                  <ArrowUpRight size={10} className="text-theme-muted group-hover:text-theme-primary transition-colors flex-shrink-0" />
+                </a>
+
+                <a
+                  href="/saswat_ranjan_mohanty.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-1.5 p-2.5 rounded-xl border border-theme-border bg-theme-surface-elevated/40 hover:bg-theme-hover hover:border-theme-accent text-xs font-mono text-theme-secondary hover:text-theme-primary transition-all group"
+                  title="View Resume PDF"
+                >
+                  <FileText size={13} />
+                  <span className="truncate">Resume</span>
+                  <ArrowUpRight size={10} className="text-theme-muted group-hover:text-theme-primary transition-colors flex-shrink-0" />
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column: Smart Mail & Message Composer (7 cols) */}
+        <div className="lg:col-span-7">
+          <div className="p-5 sm:p-7 md:p-8 rounded-2xl sm:rounded-3xl border border-theme-border bg-theme-surface/95 backdrop-blur-xl shadow-xl relative">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 sm:mb-6">
+              <div>
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-theme-accent-subtle border border-theme-border text-[10px] font-mono text-theme-accent mb-1.5 font-medium">
+                  <Sparkles size={11} className="flex-shrink-0" />
+                  <span>1-Click Interactive Composer</span>
+                </div>
+                <h3 className="text-xl sm:text-2xl font-bold font-sans text-theme-primary tracking-tight">
+                  Draft &amp; Launch a Message
+                </h3>
+              </div>
+
+              <span className="text-[11px] font-mono text-theme-muted hidden sm:block">
+                No slow web forms • Opens in your mail app
+              </span>
+            </div>
+
+            {/* Conversation Topic Selector */}
+            <div className="mb-5 sm:mb-6">
+              <span className="text-[11px] font-mono uppercase tracking-wider text-theme-secondary font-semibold block mb-2.5">
+                1. Select Conversation Topic:
+              </span>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5">
                 {TOPIC_PRESETS.map((topic) => {
                   const isSelected = selectedTopicId === topic.id;
                   const Icon = topic.icon;
@@ -348,7 +406,7 @@ export function ContactSection({ isStandalone = false }: ContactSectionProps) {
                       key={topic.id}
                       type="button"
                       onClick={() => handleSelectTopic(topic)}
-                      className={`text-left p-2.5 rounded-xl text-xs font-mono transition-all border cursor-pointer ${
+                      className={`text-left p-3 rounded-xl text-xs font-mono transition-all border cursor-pointer ${
                         isSelected
                           ? "border-theme-accent bg-theme-accent-subtle text-theme-accent font-semibold shadow-xs"
                           : "border-theme-border bg-theme-surface-elevated/40 hover:bg-theme-hover text-theme-secondary"
@@ -358,196 +416,126 @@ export function ContactSection({ isStandalone = false }: ContactSectionProps) {
                         <Icon size={12} className="flex-shrink-0" />
                         <span>{topic.badge}</span>
                       </div>
-                      <div className="truncate text-[11px] font-medium text-theme-primary">{topic.label}</div>
+                      <div className="truncate text-xs font-medium text-theme-primary">
+                        {topic.label}
+                      </div>
                     </button>
                   );
                 })}
               </div>
             </div>
 
-            {/* Verified Engineering Profiles */}
-            <div className="mt-6 pt-5 border-t border-theme-border">
-              <span className="text-[10px] font-mono uppercase tracking-widest text-theme-muted font-semibold block mb-3">
-                Verified Engineering Profiles
-              </span>
+            {/* Interactive Terminal / Editor Draft Window */}
+            <div className="mb-5 sm:mb-6 rounded-xl border border-theme-border bg-theme-surface-elevated/90 overflow-hidden shadow-inner">
+              {/* Window Header */}
+              <div className="px-4 py-2.5 border-b border-theme-border bg-theme-surface/80 flex items-center justify-between text-xs font-mono text-theme-muted">
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-red-500/70 inline-block" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-500/70 inline-block" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/70 inline-block" />
+                  </div>
+                  <span className="text-[11px] font-mono text-theme-secondary font-medium ml-2 flex items-center gap-1">
+                    <Terminal size={12} className="text-theme-accent" />
+                    <span>message_draft.eml</span>
+                  </span>
+                </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <a
-                  href="https://github.com/Saswat0602"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 p-2.5 rounded-xl border border-theme-border bg-theme-surface-elevated/40 hover:bg-theme-hover hover:border-theme-accent text-xs font-mono text-theme-secondary hover:text-theme-primary transition-all group"
-                >
-                  <GithubIcon size={14} />
-                  <span>GitHub</span>
-                  <ArrowUpRight
-                    size={11}
-                    className="text-theme-muted group-hover:text-theme-primary transition-colors"
-                  />
-                </a>
-
-                <a
-                  href="https://www.linkedin.com/in/saswat0602"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 p-2.5 rounded-xl border border-theme-border bg-theme-surface-elevated/40 hover:bg-theme-hover hover:border-theme-accent text-xs font-mono text-theme-secondary hover:text-theme-primary transition-all group"
-                >
-                  <LinkedinIcon size={14} />
-                  <span>LinkedIn</span>
-                  <ArrowUpRight
-                    size={11}
-                    className="text-theme-muted group-hover:text-theme-primary transition-colors"
-                  />
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Right Column: Direct Note Console (Form) */}
-        <div className="lg:col-span-7">
-          <div className="p-5 sm:p-7 md:p-9 rounded-2xl sm:rounded-3xl border border-theme-border bg-theme-surface/95 backdrop-blur-xl shadow-xl relative">
-            <div className="mb-5 sm:mb-6">
-              <h3 className="text-xl sm:text-2xl font-bold font-sans text-theme-primary mb-2">
-                Send a Direct Note
-              </h3>
-              <p className="text-xs sm:text-sm text-theme-secondary font-light">
-                Prefer to write right here? Leave your message below and it will land straight in my inbox.
-              </p>
-            </div>
-
-            {/* Selected Topic Synchronizer Banner */}
-            <div className="mb-5 p-3 rounded-xl border border-theme-border bg-theme-accent-subtle flex items-center justify-between text-xs font-mono">
-              <div className="flex items-center gap-2 text-theme-secondary">
-                <span className="text-theme-accent font-semibold">Active Topic:</span>
-                <span className="text-theme-primary font-medium inline-flex items-center gap-1.5">
-                  <selectedTopic.icon size={13} className="text-theme-accent flex-shrink-0" />
-                  <span>{selectedTopic.badge} • {selectedTopic.label}</span>
+                <span className="text-[10px] text-theme-muted font-mono">
+                  Live Synced
                 </span>
               </div>
-              <span className="text-[10px] text-theme-muted hidden sm:inline">
-                Synced with topic chips
-              </span>
-            </div>
 
-            {status === "success" ? (
-              <div className="flex flex-col items-center justify-center py-12 text-center">
-                <div className="w-14 h-14 rounded-2xl bg-theme-accent-subtle border border-theme-border flex items-center justify-center text-theme-accent mb-4 shadow-sm">
-                  <CheckCircle2 size={28} />
+              {/* Draft Content Fields */}
+              <div className="p-4 sm:p-5 flex flex-col gap-3.5">
+                {/* To: Destination */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-3 text-xs font-mono">
+                  <span className="text-theme-muted uppercase tracking-wider text-[10px] sm:w-16">
+                    To:
+                  </span>
+                  <span className="px-2.5 py-1 rounded-md bg-theme-surface border border-theme-border text-theme-primary font-semibold text-xs inline-block">
+                    {userData.about.email}
+                  </span>
                 </div>
-                <h4 className="text-xl font-bold font-sans text-theme-primary mb-2">
-                  Note Received Successfully
-                </h4>
-                <p className="text-xs sm:text-sm text-theme-secondary max-w-sm mb-6 leading-relaxed">
-                  Thank you for reaching out! Your message has been safely delivered to my inbox and I will respond to you promptly.
-                </p>
-                <div className="flex flex-wrap items-center justify-center gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setStatus("idle")}
-                    className="px-5 py-2.5 rounded-xl bg-theme-surface-elevated hover:bg-theme-hover border border-theme-border text-xs font-mono text-theme-primary transition-colors cursor-pointer"
-                  >
-                    Send Another Note
-                  </button>
-                  <a
-                    href={mailtoUrl}
-                    className="px-5 py-2.5 rounded-xl border border-theme-accent/40 bg-theme-accent-subtle hover:bg-theme-accent/20 text-xs font-mono text-theme-accent transition-colors inline-flex items-center gap-1.5"
-                  >
-                    <Mail size={13} />
-                    <span>Email Me Directly</span>
-                  </a>
+
+                {/* Subject Line */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-3 text-xs font-mono">
+                  <span className="text-theme-muted uppercase tracking-wider text-[10px] sm:w-16">
+                    Subject:
+                  </span>
+                  <input
+                    type="text"
+                    value={draftSubject}
+                    onChange={(e) => setDraftSubject(e.target.value)}
+                    placeholder="Subject line"
+                    className="flex-1 px-3 py-1.5 rounded-lg border border-theme-border bg-theme-surface text-xs font-mono text-theme-primary focus:outline-none focus:border-theme-accent focus:ring-1 focus:ring-theme-accent/30 transition-colors"
+                  />
+                </div>
+
+                {/* Message Body */}
+                <div className="flex flex-col gap-1.5 text-xs font-mono">
+                  <div className="flex items-center justify-between text-[10px] text-theme-muted uppercase tracking-wider">
+                    <span>Message Body (Editable):</span>
+                    <span className="text-theme-secondary lowercase font-mono">
+                      {draftBody.length} characters
+                    </span>
+                  </div>
+                  <textarea
+                    rows={7}
+                    value={draftBody}
+                    onChange={(e) => setDraftBody(e.target.value)}
+                    className="w-full px-3.5 py-3 rounded-lg border border-theme-border bg-theme-surface text-xs font-mono text-theme-primary focus:outline-none focus:border-theme-accent focus:ring-1 focus:ring-theme-accent/30 transition-colors resize-none leading-relaxed"
+                  />
                 </div>
               </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="flex flex-col gap-4 sm:gap-5">
-                {status === "error" && (
-                  <div className="p-3.5 rounded-xl border border-rose-500/30 bg-rose-500/10 text-rose-500 text-xs flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2">
-                      <AlertCircle size={15} className="flex-shrink-0" />
-                      <span>{errorMessage}</span>
-                    </div>
-                    <a
-                      href={mailtoUrl}
-                      className="text-xs font-mono text-theme-accent underline hover:brightness-125"
-                    >
-                      Email directly
-                    </a>
-                  </div>
+            </div>
+
+            {/* Action CTAs: Launch in Email / Copy Draft */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+              <a
+                href={mailtoUrl}
+                className="btn-sheen flex-1 inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-theme-accent text-white dark:text-zinc-950 text-xs font-bold font-mono hover:brightness-110 active:scale-[0.99] transition-all shadow-sm min-h-[46px]"
+              >
+                <Mail size={15} />
+                <span>Launch in Your Email App</span>
+                <ArrowUpRight size={13} />
+              </a>
+
+              <button
+                type="button"
+                onClick={handleCopyDraft}
+                className={`inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl border text-xs font-mono transition-all active:scale-[0.99] cursor-pointer min-h-[46px] ${
+                  copiedDraft
+                    ? "border-theme-accent bg-theme-accent-subtle text-theme-accent shadow-xs"
+                    : "border-theme-border bg-theme-surface-elevated hover:bg-theme-hover text-theme-primary"
+                }`}
+                title="Copy drafted text to clipboard"
+              >
+                {copiedDraft ? (
+                  <>
+                    <Check size={14} className="text-theme-accent" />
+                    <span className="font-semibold text-theme-accent">Copied to Clipboard!</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy size={14} className="text-theme-muted" />
+                    <span>Copy Draft</span>
+                  </>
                 )}
+              </button>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
-                  <div className="flex flex-col gap-1.5">
-                    <label htmlFor="contact-name" className="text-xs font-mono text-theme-muted">
-                      Your Name *
-                    </label>
-                    <input
-                      id="contact-name"
-                      type="text"
-                      required
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      placeholder="e.g. Jane Doe"
-                      className="px-4 py-3 rounded-xl border border-theme-border bg-theme-surface-elevated text-xs font-mono text-theme-primary placeholder:text-theme-muted focus:outline-none focus:border-theme-accent focus:ring-1 focus:ring-theme-accent/30 transition-colors"
-                    />
-                  </div>
-
-                  <div className="flex flex-col gap-1.5">
-                    <label htmlFor="contact-email" className="text-xs font-mono text-theme-muted">
-                      Email Address *
-                    </label>
-                    <input
-                      id="contact-email"
-                      type="email"
-                      required
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      placeholder="e.g. jane@company.com"
-                      className="px-4 py-3 rounded-xl border border-theme-border bg-theme-surface-elevated text-xs font-mono text-theme-primary placeholder:text-theme-muted focus:outline-none focus:border-theme-accent focus:ring-1 focus:ring-theme-accent/30 transition-colors"
-                    />
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <label htmlFor="contact-subject" className="text-xs font-mono text-theme-muted">
-                    Subject Line
-                  </label>
-                  <input
-                    id="contact-subject"
-                    type="text"
-                    value={formData.subject}
-                    onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                    placeholder="Subject of your message"
-                    className="px-4 py-3 rounded-xl border border-theme-border bg-theme-surface-elevated text-xs font-mono text-theme-primary placeholder:text-theme-muted focus:outline-none focus:border-theme-accent focus:ring-1 focus:ring-theme-accent/30 transition-colors"
-                  />
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <label htmlFor="contact-message" className="text-xs font-mono text-theme-muted">
-                    Message Details *
-                  </label>
-                  <textarea
-                    id="contact-message"
-                    required
-                    rows={5}
-                    value={formData.message}
-                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    placeholder="Tell me about your project, role, or technical objectives..."
-                    className="px-4 py-3 rounded-xl border border-theme-border bg-theme-surface-elevated text-xs font-mono text-theme-primary placeholder:text-theme-muted focus:outline-none focus:border-theme-accent focus:ring-1 focus:ring-theme-accent/30 transition-colors resize-none leading-relaxed"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={status === "submitting"}
-                  className="btn-sheen mt-2 flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-theme-accent text-white dark:text-zinc-950 text-xs font-bold font-mono hover:brightness-110 disabled:opacity-50 active:scale-[0.99] transition-all shadow-sm cursor-pointer w-full min-h-[44px]"
-                >
-                  <Send size={14} />
-                  <span>
-                    {status === "submitting" ? "Delivering Message..." : "Send Message Note"}
-                  </span>
-                </button>
-              </form>
-            )}
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 text-xs font-mono transition-colors min-h-[46px]"
+                title="Send as WhatsApp chat"
+              >
+                <MessageCircle size={15} />
+                <span className="hidden sm:inline">WhatsApp</span>
+                <ArrowUpRight size={11} className="opacity-70" />
+              </a>
+            </div>
           </div>
         </div>
       </div>
