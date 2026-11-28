@@ -6,9 +6,11 @@ import Link from "next/link";
 import { userData } from "@/lib/data";
 
 import { useRef, useCallback } from "react";
+import { useCompanionReaction } from "@/features/companion/context/CompanionReactionContext";
 
 export function Hero() {
   const heroRef = useRef<HTMLDivElement>(null);
+  const { notifyHover, notifyAction } = useCompanionReaction();
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     if (!heroRef.current) return;
@@ -131,6 +133,8 @@ export function Hero() {
         >
           <Link
             href="/projects"
+            onMouseEnter={() => notifyHover("projects", "Let's inspect the shipped systems!")}
+            onMouseLeave={() => notifyHover(null)}
             className="btn-sheen group flex items-center justify-center gap-2 px-6 sm:px-7 py-3 sm:py-3.5 rounded-xl bg-theme-accent text-white dark:text-zinc-950 font-semibold text-sm transition-all hover:brightness-110 shadow-md hover:shadow-lg active:scale-[0.98] w-full sm:w-auto"
           >
             <span>Explore Shipped Projects</span>
@@ -144,6 +148,8 @@ export function Hero() {
             href="/saswat_ranjan_mohanty.pdf"
             target="_blank"
             rel="noopener noreferrer"
+            onMouseEnter={() => notifyHover("resume", "Clean engineering track record. Zero fluff.")}
+            onMouseLeave={() => notifyHover(null)}
             className="flex items-center justify-center gap-2 px-6 sm:px-7 py-3 sm:py-3.5 rounded-xl border border-theme-border bg-theme-surface/70 backdrop-blur-md text-theme-secondary font-medium text-sm transition-all hover:bg-theme-hover hover:border-theme-accent hover:text-theme-primary w-full sm:w-auto font-mono"
           >
             <FileText size={15} className="text-theme-accent" />
@@ -152,6 +158,9 @@ export function Hero() {
 
           <a
             href="#contact"
+            onMouseEnter={() => notifyHover("hire", "YES! Let's build something awesome together!")}
+            onMouseLeave={() => notifyHover(null)}
+            onClick={() => notifyAction("backflip", "Incoming message! Doing a celebratory flip!")}
             className="flex items-center justify-center gap-2 px-6 sm:px-7 py-3 sm:py-3.5 rounded-xl border border-theme-border bg-theme-surface/70 backdrop-blur-md text-theme-secondary font-medium text-sm transition-all hover:bg-theme-hover hover:border-theme-border-strong hover:text-theme-primary w-full sm:w-auto"
           >
             <Mail size={15} />

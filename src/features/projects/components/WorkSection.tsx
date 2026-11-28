@@ -9,6 +9,7 @@ import { ExternalLink, ArrowRight, Sparkles, Layers, Compass, Package } from "lu
 import { userData } from "@/lib/data";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { GitHubRepoBadge } from "./GitHubRepoBadge";
+import { useCompanionReaction } from "@/features/companion/context/CompanionReactionContext";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -17,6 +18,7 @@ if (typeof window !== "undefined") {
 export function WorkSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
+  const { notifyHover } = useCompanionReaction();
   const projects = userData.Projects.slice(0, 5);
 
   useEffect(() => {
@@ -111,6 +113,13 @@ export function WorkSection() {
             <SpotlightCard
               as="article"
               key={project.slug || project.project_name}
+              onMouseEnter={() =>
+                notifyHover(
+                  "projects",
+                  project.metrics || `Inspecting ${project.project_name.split(" — ")[0]}!`
+                )
+              }
+              onMouseLeave={() => notifyHover(null)}
               className="relative flex-shrink-0 snap-center w-[85vw] xs:w-[80vw] sm:w-[60vw] md:w-[480px] lg:w-[540px] min-h-[460px] sm:min-h-[480px] md:h-[490px] rounded-2xl overflow-hidden border border-theme-border bg-theme-surface group flex flex-col justify-between shadow-lg transition-all duration-300 hover:border-theme-accent"
             >
               {/* Background Cover Image with Mask */}

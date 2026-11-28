@@ -1,0 +1,98 @@
+.font-serif-it {
+  font-family: "Instrument Serif", Georgia, serif;
+  font-style: italic;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@keyframes mochiQuake {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  15% {
+    transform: translate3d(-9px, 5px, 0) rotate(-0.5deg);
+  }
+  30% {
+    transform: translate3d(9px, -6px, 0) rotate(0.5deg);
+  }
+  45% {
+    transform: translate3d(-7px, -4px, 0);
+  }
+  60% {
+    transform: translate3d(8px, 6px, 0);
+  }
+  75% {
+    transform: translate3d(-5px, 3px, 0);
+  }
+  90% {
+    transform: translate3d(4px, -3px, 0);
+  }
+}
+
+.mochi-quake {
+  animation: mochiQuake 320ms linear infinite;
+}
+
+@keyframes mochiPop {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.mochi-pop {
+  animation: mochiPop 190ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes mochiZzz {
+  0% {
+    transform: translate3d(0, 6px, 0);
+    opacity: 0;
+  }
+  35% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate3d(14px, -28px, 0);
+    opacity: 0;
+  }
+}
+
+.mochi-zzz-1 {
+  animation: mochiZzz 2.2s ease-in-out infinite;
+}
+
+.mochi-zzz-2 {
+  animation: mochiZzz 2.2s ease-in-out 0.7s infinite;
+}
+
+.mochi-zzz-3 {
+  animation: mochiZzz 2.2s ease-in-out 1.4s infinite;
+}
+
+@keyframes mochiTear {
+  0%,
+  100% {
+    transform: scaleY(0.92);
+  }
+  50% {
+    transform: scaleY(1.08);
+  }
+}
+
+.mochi-tear-flow {
+  transform-origin: center top;
+  animation: mochiTear 420ms ease-in-out infinite;
+}

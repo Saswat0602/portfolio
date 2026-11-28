@@ -6,37 +6,42 @@ import { TechStack } from "@/features/about/components/TechStack";
 import { ContactSection } from "@/features/contact/components/ContactSection";
 import { Preloader } from "@/components/loaders";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
+import { CompanionReactionProvider } from "@/features/companion/context/CompanionReactionContext";
+import { CompanionCornerWidget } from "@/features/companion/components/CompanionCornerWidget";
 
 export default function Home() {
   return (
     <Preloader>
-      <main className="bg-theme-base text-theme-primary min-h-screen transition-colors duration-300">
-        {/* 1. Hero with Interactive 32px Dot Grid Drift & Animated Metric Counters */}
-        <Hero />
+      <CompanionReactionProvider>
+        <main className="bg-theme-base text-theme-primary min-h-screen transition-colors duration-300">
+          {/* 1. Hero with Interactive 32px Dot Grid Drift & Animated Metric Counters */}
+          <Hero />
 
-        {/* 2. Infinite Dual-Track Tech Marquee */}
-        <ScrollReveal>
-          <TechMarquee />
-        </ScrollReveal>
+          {/* 2. Infinite Dual-Track Tech Marquee */}
+          <ScrollReveal>
+            <TechMarquee />
+          </ScrollReveal>
 
-        {/* 3. Full-Stack & Applied AI Capabilities */}
-        <ScrollReveal>
-          <TechStack />
-        </ScrollReveal>
+          {/* 3. Full-Stack & Applied AI Capabilities */}
+          <ScrollReveal>
+            <TechStack />
+          </ScrollReveal>
 
-        {/* 4. Selected Production Projects (Orbito, ReviewSage AI, Shomes, Oryn UI, etc.) */}
-        <WorkSection />
+          {/* 4. Selected Production Projects (Orbito, ReviewSage AI, Shomes, Oryn UI, etc.) */}
+          <WorkSection />
 
-        {/* 5. Career Chronology at NetTantra Technologies */}
-        <ScrollReveal>
-          <CareerSection />
-        </ScrollReveal>
+          {/* 5. Career Chronology at NetTantra Technologies */}
+          <ScrollReveal>
+            <CareerSection />
+          </ScrollReveal>
 
-        {/* 6. Contact Section */}
-        <ScrollReveal>
-          <ContactSection />
-        </ScrollReveal>
-      </main>
+          {/* 6. Contact Section */}
+          <ScrollReveal>
+            <ContactSection />
+          </ScrollReveal>
+        </main>
+        <CompanionCornerWidget />
+      </CompanionReactionProvider>
     </Preloader>
   );
 }

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import {
   Sparkles,
   Split,
@@ -14,18 +15,17 @@ import {
   Layers,
   ArrowLeft,
   Compass,
+  Bot,
 } from "lucide-react";
 import { EngineeringComparisonSandbox } from "./EngineeringComparisonSandbox";
-import { NeoBrutalistKineticStudio } from "./NeoBrutalistKineticStudio";
-import { SwissEditorialSpec } from "./SwissEditorialSpec";
-import { GitDiffVisualizer } from "./GitDiffVisualizer";
-import { ApiBenchmarkSandbox } from "./ApiBenchmarkSandbox";
 import { DevTerminalRunner } from "./DevTerminalRunner";
 import { NeuralParticleCanvas } from "./NeuralParticleCanvas";
 import { TiltCardShowcase } from "./TiltCardShowcase";
+import { CompanionStudio } from "@/features/companion/components/CompanionStudio";
 
 type LabTab =
   | "all"
+  | "companion"
   | "scrubber"
   | "brutalist"
   | "swiss"
@@ -35,11 +35,29 @@ type LabTab =
   | "mesh"
   | "tilt";
 
+const VALID_TABS = new Set<LabTab>([
+  "all",
+  "companion",
+  "scrubber",
+  "brutalist",
+  "swiss",
+  "git",
+  "benchmark",
+  "terminal",
+  "mesh",
+  "tilt",
+]);
+
 export function PlaygroundHub() {
-  const [activeTab, setActiveTab] = useState<LabTab>("all");
+  const searchParams = useSearchParams();
+  const tabParam = searchParams.get("tab") as LabTab | null;
+  const initialTab: LabTab = tabParam && VALID_TABS.has(tabParam) ? tabParam : "all";
+  const [selectedTab, setActiveTab] = useState<LabTab | null>(null);
+  const activeTab = selectedTab ?? initialTab;
 
   const tabs: Array<{ id: LabTab; label: string; icon: React.ElementType; badge: string }> = [
-    { id: "all", label: "All Styles (8)", icon: Sparkles, badge: "Full Suite" },
+    { id: "all", label: "All Styles", icon: Sparkles, badge: "Full Suite" },
+    { id: "companion", label: "MOCHI-04 Companion", icon: Bot, badge: "60fps Physics" },
     { id: "scrubber", label: "Before / After Scrubber", icon: Split, badge: "UX & Engineering" },
     { id: "brutalist", label: "Neo-Brutalist Kinetic", icon: Flame, badge: "Raw & Kinetic" },
     { id: "swiss", label: "Swiss Architectural", icon: FileText, badge: "Light Editorial" },
@@ -94,20 +112,18 @@ export function PlaygroundHub() {
               key={tab.id}
               type="button"
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs font-mono transition-all cursor-pointer ${
-                isSelected
-                  ? "bg-theme-accent text-white dark:text-zinc-950 font-bold shadow-sm"
-                  : "text-theme-secondary hover:text-theme-primary hover:bg-theme-hover"
-              }`}
+              className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs font-mono transition-all cursor-pointer ${isSelected
+                ? "bg-theme-accent text-white dark:text-zinc-950 font-bold shadow-sm"
+                : "text-theme-secondary hover:text-theme-primary hover:bg-theme-hover"
+                }`}
             >
               <Icon size={13} />
               <span>{tab.label}</span>
               <span
-                className={`text-[10px] hidden md:inline px-1.5 py-0.2 rounded ${
-                  isSelected
-                    ? "bg-black/20 text-white dark:text-zinc-950"
-                    : "bg-theme-surface text-theme-muted"
-                }`}
+                className={`text-[10px] hidden md:inline px-1.5 py-0.2 rounded ${isSelected
+                  ? "bg-black/20 text-white dark:text-zinc-950"
+                  : "bg-theme-surface text-theme-muted"
+                  }`}
               >
                 {tab.badge}
               </span>
@@ -115,6 +131,27 @@ export function PlaygroundHub() {
           );
         })}
       </div>
+
+      {/* Module 0: MOCHI-04 Interactive AI Companion Studio */}
+      {(activeTab === "all" || activeTab === "companion") && (
+        <section id="companion" className="flex flex-col gap-4 pt-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-theme-border/60 pb-3">
+            <div>
+              <span className="text-[11px] font-mono uppercase tracking-widest text-[#FF6B4A] font-semibold block mb-0.5">
+                Interactive Studio • 60fps RK4 Physics &amp; Canvas FX
+              </span>
+              <h2 className="text-xl sm:text-2xl font-bold font-sans text-theme-primary">
+                MOCHI-04 Playful Multi-Style AI Companion
+              </h2>
+            </div>
+            <span className="text-xs font-mono text-theme-muted">
+              4 chassis styles, 12 reactive moods, throwable snacks, portal gun &amp; Web Audio SFX
+            </span>
+          </div>
+
+          <CompanionStudio />
+        </section>
+      )}
 
       {/* Module 1: Clean Before / After Draggable Scrubber */}
       {(activeTab === "all" || activeTab === "scrubber") && (
@@ -137,89 +174,8 @@ export function PlaygroundHub() {
         </section>
       )}
 
-      {/* Module 2: Neo-Brutalist Kinetic Studio */}
-      {(activeTab === "all" || activeTab === "brutalist") && (
-        <section id="brutalist" className="flex flex-col gap-4 pt-8">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-theme-border/60 pb-3">
-            <div>
-              <span className="text-[11px] font-mono uppercase tracking-widest text-amber-500 font-semibold block mb-0.5">
-                Developer Style 02 • High-Impact Brutalism
-              </span>
-              <h2 className="text-xl sm:text-2xl font-black font-sans text-theme-primary">
-                Neo-Brutalist Kinetic Canvas
-              </h2>
-            </div>
-            <span className="text-xs font-mono text-theme-muted">
-              Solid 3px borders, 0-blur offset shadows, draggable stack badges &amp; ticker
-            </span>
-          </div>
 
-          <NeoBrutalistKineticStudio />
-        </section>
-      )}
 
-      {/* Module 3: Swiss Editorial & Architectural Minimalism */}
-      {(activeTab === "all" || activeTab === "swiss") && (
-        <section id="swiss" className="flex flex-col gap-4 pt-8">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-theme-border/60 pb-3">
-            <div>
-              <span className="text-[11px] font-mono uppercase tracking-widest text-theme-accent font-semibold block mb-0.5">
-                Developer Style 03 • Senior Engineering Restraint
-              </span>
-              <h2 className="text-xl sm:text-2xl font-bold font-sans text-theme-primary">
-                Swiss Editorial &amp; Architectural Minimalism
-              </h2>
-            </div>
-            <span className="text-xs font-mono text-theme-muted">
-              1px structural grids, masked text reveal, live coordinates &amp; SLA simulator
-            </span>
-          </div>
-
-          <SwissEditorialSpec />
-        </section>
-      )}
-
-      {/* Module 4: Git Branch DAG & Live Code Diff Inspector */}
-      {(activeTab === "all" || activeTab === "git") && (
-        <section id="git" className="flex flex-col gap-4 pt-8">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-theme-border/60 pb-3">
-            <div>
-              <span className="text-[11px] font-mono uppercase tracking-widest text-cyan-400 font-semibold block mb-0.5">
-                Developer Style 04 • Codebase Telemetry
-              </span>
-              <h2 className="text-xl sm:text-2xl font-bold font-sans text-theme-primary">
-                Interactive Git Branch DAG &amp; Real Code Diff Inspector
-              </h2>
-            </div>
-            <span className="text-xs font-mono text-theme-muted">
-              Unified and split code diffs with line changes for Bedrock, FFmpeg &amp; WebRTC
-            </span>
-          </div>
-
-          <GitDiffVisualizer />
-        </section>
-      )}
-
-      {/* Module 5: API Benchmark & Latency Stress Sandbox */}
-      {(activeTab === "all" || activeTab === "benchmark") && (
-        <section id="benchmark" className="flex flex-col gap-4 pt-8">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-theme-border/60 pb-3">
-            <div>
-              <span className="text-[11px] font-mono uppercase tracking-widest text-emerald-400 font-semibold block mb-0.5">
-                Developer Style 05 • Backend Performance
-              </span>
-              <h2 className="text-xl sm:text-2xl font-bold font-sans text-theme-primary">
-                Production API Benchmark &amp; Latency Stress Sandbox
-              </h2>
-            </div>
-            <span className="text-xs font-mono text-theme-muted">
-              Live p50/p90/p99 latency distribution, concurrent worker simulation &amp; JSON payload
-            </span>
-          </div>
-
-          <ApiBenchmarkSandbox />
-        </section>
-      )}
 
       {/* Module 6: Dev Terminal Runner */}
       {(activeTab === "all" || activeTab === "terminal") && (
