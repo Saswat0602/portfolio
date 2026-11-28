@@ -48,6 +48,7 @@ export const metadata: Metadata = {
 const themeInitScript = `
 (function() {
   try {
+    sessionStorage.removeItem('portfolio_intro_seen');
     localStorage.removeItem('portfolio_aesthetic');
     document.documentElement.removeAttribute('data-aesthetic');
     var theme = localStorage.getItem('portfolio_theme') || 'dark';

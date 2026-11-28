@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { CurtainLoader } from "./CurtainLoader";
 import { SpotlightLoader } from "./SpotlightLoader";
 import type { LoaderVariant } from "./types";
@@ -11,45 +11,41 @@ interface PreloaderProps {
   children: React.ReactNode;
 }
 
-const emptySubscribe = () => () => {};
-
-// Global in-memory flag: intro loader must only run ONCE per browser session, NEVER on page transitions
+// In-memory flag: only true during client-side SPA navigation within the same session.
+// Resets to false on every page refresh / full page load so the intro plays reliably.
 let hasRunLoaderOnce = false;
 
 export function Preloader({ children }: PreloaderProps) {
-  // Safe client-side mount detection without cascading renders
-  const isMounted = useSyncExternalStore(
-    emptySubscribe,
-    () => true,
-    () => false
-  );
-
   const [selectedVariant] = useState<LoaderVariant>(siteConfig.defaultLoader);
+  const [isLoading, setIsLoading] = useState(!hasRunLoaderOnce);
 
-  // Initialize isLoading based on whether the loader has already completed in this session
-  const [isLoading, setIsLoading] = useState(() => {
-    if (typeof window === "undefined") return true;
-    if (hasRunLoaderOnce) return false;
+  // Lock body scroll while loader is active to prevent scrolling hidden content
+  useEffect(() => {
+    if (isLoading) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isLoading]);
+
+  // Clean up any legacy sessionStorage flags from previous sessions
+  useEffect(() => {
     try {
-      if (sessionStorage.getItem("portfolio_intro_seen") === "true") {
-        hasRunLoaderOnce = true;
-        return false;
-      }
+      sessionStorage.removeItem("portfolio_intro_seen");
     } catch {}
-    return true;
-  });
+  }, []);
 
-  const handleComplete = () => {
+  const handleComplete = useCallback(() => {
     hasRunLoaderOnce = true;
-    try {
-      sessionStorage.setItem("portfolio_intro_seen", "true");
-    } catch {}
     setIsLoading(false);
-  };
+  }, []);
 
   return (
     <>
-      {isMounted && isLoading && (
+      {isLoading && (
         <>
           {selectedVariant === "spotlight" && (
             <SpotlightLoader
@@ -80,10 +76,10 @@ export function Preloader({ children }: PreloaderProps) {
         </>
       )}
 
-      {/* Main App Content - immediately visible with zero delay if loader already ran */}
+      {/* Main App Content - immediately visible if loader already ran, hidden during loading with zero FOUC */}
       <div
-        className={`transition-opacity duration-500 ${
-          isMounted && isLoading ? "opacity-0 pointer-events-none" : "opacity-100"
+        className={`transition-opacity duration-700 ease-out ${
+          isLoading ? "opacity-0 pointer-events-none select-none" : "opacity-100"
         }`}
       >
         {children}

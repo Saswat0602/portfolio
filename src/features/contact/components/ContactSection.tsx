@@ -157,7 +157,6 @@ export function ContactSection({ isStandalone = false }: ContactSectionProps) {
       {/* 1. Header (Open, typography-led, no boxes) */}
       <div className="mb-10 sm:mb-14">
         <div className="flex items-center gap-2 text-xs font-mono text-theme-accent uppercase tracking-wider mb-3 font-medium">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
           <span>Open for Full-Time Roles &amp; Freelance Projects</span>
         </div>
 

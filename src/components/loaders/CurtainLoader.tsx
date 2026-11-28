@@ -42,7 +42,7 @@ export function CurtainLoader({
   return (
     <div
       id="curtain-loader"
-      className="fixed inset-0 z-50 flex flex-col items-center justify-center overflow-hidden pointer-events-auto select-none"
+      className="fixed inset-0 z-[99999] flex flex-col items-center justify-center overflow-hidden pointer-events-auto select-none"
     >
       {/* Background Curtain 1: Primary Layer */}
       <motion.div

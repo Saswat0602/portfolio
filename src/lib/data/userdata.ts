@@ -590,9 +590,8 @@ const userData: UserData = {
     },
   ],
   contact: {
-    message:
-      "Whether you are looking to hire for full-time engineering roles, build a freelance or contract project, architect automated video pipelines or agentic copilots, or scale cross-platform mobile apps, let's connect.",
     availability: "Available for Full-Time Roles & Freelance / Contract Projects (Worldwide Remote).",
+    message: ""
   },
   footer: {
     title: "Saswat Ranjan Mohanty",
