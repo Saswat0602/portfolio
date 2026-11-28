@@ -39,7 +39,7 @@ const LANGUAGE_COLORS: Record<string, string> = {
   JavaScript: "#eab308", // Matte Amber Sand
   Python: "#2dd4bf", // Matte Sage Teal
   Rust: "#fb923c", // Matte Terracotta
-  Go: "#06b6d4", // Matte Cyan
+  Go: "#00ADD8", // Official Go Cyan
   HTML: "#f97316", // Matte Warm Ochre
   CSS: "#818cf8", // Matte Slate Indigo
   Swift: "#fb7185", // Matte Coral
@@ -48,6 +48,8 @@ const LANGUAGE_COLORS: Record<string, string> = {
   Shell: "#84cc16", // Matte Sage Lime
   Ruby: "#f43f5e", // Matte Rose
   "C++": "#6366f1", // Matte Iris
+  Docker: "#2496ED", // Docker Blue
+  Dockerfile: "#2496ED", // Docker Blue
 };
 
 export function getLanguageColor(language: string | null): string {
@@ -84,11 +86,13 @@ interface GitHubApiRawRepo {
 
 // Fallback curated distribution if GitHub API is rate-limited on serverless IP
 const FALLBACK_LANGUAGES: LanguageStat[] = [
-  { language: "TypeScript", count: 32, percentage: 58, color: "#38bdf8" },
-  { language: "JavaScript", count: 10, percentage: 18, color: "#eab308" },
-  { language: "Python", count: 7, percentage: 13, color: "#2dd4bf" },
-  { language: "Shell", count: 4, percentage: 7, color: "#84cc16" },
-  { language: "HTML", count: 2, percentage: 4, color: "#f97316" },
+  { language: "TypeScript", count: 11, percentage: 53, color: "#38bdf8" },
+  { language: "Go", count: 2, percentage: 14, color: "#00ADD8" },
+  { language: "JavaScript", count: 9, percentage: 10, color: "#eab308" },
+  { language: "Docker", count: 7, percentage: 8, color: "#2496ED" },
+  { language: "Python", count: 3, percentage: 8, color: "#2dd4bf" },
+  { language: "Shell", count: 5, percentage: 4, color: "#84cc16" },
+  { language: "HTML", count: 2, percentage: 3, color: "#f97316" },
 ];
 
 function getAuthHeaders(): HeadersInit {
@@ -439,7 +443,7 @@ export async function getGitHubContributions(
     const reposMap = await getGitHubReposMap(username);
     const reposCount = Object.keys(reposMap).length;
     const publicRepos = reposCount > 0 ? reposCount : 55;
-    const languages = computeLanguageDistribution(reposMap);
+    const languages = await computeLanguageDistribution(reposMap, username);
 
     const result: GitHubContributionsData = {
       totalContributions,
@@ -468,41 +472,87 @@ export async function getGitHubContributions(
 }
 
 /**
- * Compute language distribution statistics from repository map
- * Only counts repos updated within the last 365 days (matches heatmap range)
- * Falls back to curated distribution if reposMap is empty (e.g. rate limit)
+ * Compute multi-language distribution statistics across repos updated in the last 365 days.
+ * Queries per-repo language byte breakdowns to reveal secondary languages like Go, Docker,
+ * Python, Shell, and JavaScript that single primary tags otherwise hide.
  */
-export function computeLanguageDistribution(reposMap: Record<string, GitHubRepoStats>): LanguageStat[] {
+export async function computeLanguageDistribution(
+  reposMap: Record<string, GitHubRepoStats>,
+  username = "Saswat0602"
+): Promise<LanguageStat[]> {
   const oneYearAgo = new Date();
   oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
 
-  const counts: Record<string, number> = {};
-  let totalWithLanguage = 0;
-
-  for (const repo of Object.values(reposMap)) {
-    // Only include repos pushed/updated within the last 365 days
+  // Active repos updated within the last year
+  const activeRepos = Object.values(reposMap).filter((repo) => {
     const updatedAt = new Date(repo.updatedAt);
-    if (updatedAt < oneYearAgo) continue;
+    return updatedAt >= oneYearAgo;
+  });
 
-    if (repo.language) {
-      counts[repo.language] = (counts[repo.language] || 0) + 1;
-      totalWithLanguage++;
-    }
-  }
-
-  if (totalWithLanguage === 0) {
+  if (activeRepos.length === 0) {
     return FALLBACK_LANGUAGES;
   }
 
-  const list: LanguageStat[] = Object.entries(counts).map(([lang, count]) => ({
-    language: lang,
-    count,
-    percentage: Math.round((count / totalWithLanguage) * 100),
-    color: getLanguageColor(lang),
-  }));
+  const byteTotals: Record<string, number> = {};
+  const repoCounts: Record<string, number> = {};
 
-  // Sort descending by count
-  list.sort((a, b) => b.count - a.count);
+  try {
+    const promises = activeRepos.map(async (repo) => {
+      try {
+        const res = await fetch(`https://api.github.com/repos/${username}/${repo.name}/languages`, {
+          headers: getAuthHeaders(),
+          cache: "no-store",
+        });
+        if (res.ok) {
+          const data = (await res.json()) as Record<string, number>;
+          for (const [rawLang, bytes] of Object.entries(data)) {
+            let lang = rawLang;
+            if (lang === "Dockerfile") lang = "Docker";
+            if (lang === "Makefile" || lang === "TeX") continue;
+            byteTotals[lang] = (byteTotals[lang] || 0) + bytes;
+            repoCounts[lang] = (repoCounts[lang] || 0) + 1;
+          }
+        }
+      } catch {
+        // Ignore individual repo fetch failure
+      }
+    });
 
-  return list;
+    await Promise.all(promises);
+
+    const totalBytes = Object.values(byteTotals).reduce((a, b) => a + b, 0);
+    const totalRepos = Object.values(repoCounts).reduce((a, b) => a + b, 0);
+
+    if (totalBytes > 0 && totalRepos > 0) {
+      // Balanced hybrid: 55% byte volume + 45% repo usage breadth
+      const list = Object.keys(repoCounts).map((lang) => {
+        const byteShare = (byteTotals[lang] || 0) / totalBytes;
+        const repoShare = (repoCounts[lang] || 0) / totalRepos;
+        const hybrid = byteShare * 0.55 + repoShare * 0.45;
+        return {
+          language: lang,
+          count: repoCounts[lang],
+          rawPercentage: hybrid * 100,
+        };
+      });
+
+      const rawSum = list.reduce((a, b) => a + b.rawPercentage, 0);
+      const normalized: LanguageStat[] = list
+        .map((item) => ({
+          language: item.language,
+          count: item.count,
+          percentage: Math.max(1, Math.round((item.rawPercentage / rawSum) * 100)),
+          color: getLanguageColor(item.language),
+        }))
+        .sort((a, b) => b.percentage - a.percentage);
+
+      if (normalized.length > 0) {
+        return normalized;
+      }
+    }
+  } catch {
+    // Fall through to fallback
+  }
+
+  return FALLBACK_LANGUAGES;
 }
