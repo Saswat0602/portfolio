@@ -93,6 +93,7 @@ export function createInitialSimState(): SimState {
     rainDrops: INITIAL_RAIN_DROPS.map((d) => ({ ...d })),
     time: 0,
     lastInteractionAt: 0,
+    edgePeek: null,
   };
 }
 

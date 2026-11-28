@@ -30,6 +30,7 @@ export interface CompanionRigSvgProps {
   onPointerDown: (e: ReactPointerEvent<SVGSVGElement>) => void;
   onHeadPet: (e: ReactPointerEvent<SVGRectElement>) => void;
   onPokeKey: () => void;
+  onHighFive?: () => void;
   initialTransform?: string;
 }
 
@@ -51,6 +52,7 @@ export function CompanionRigSvg({
   onPointerDown,
   onHeadPet,
   onPokeKey,
+  onHighFive,
   initialTransform = "translate3d(500px, 380px, 0) translate(-50%, -50%)",
 }: CompanionRigSvgProps) {
   const charStyle = styleMeta.id;
@@ -318,7 +320,19 @@ export function CompanionRigSvg({
             )}
           </g>
 
-          <g data-mochi-el="handR" pointerEvents="none">
+          <g data-mochi-el="handR" className={onHighFive ? "pointer-events-auto cursor-pointer" : "pointer-events-none"}>
+            {onHighFive && (
+              <circle
+                cx="0"
+                cy="0"
+                r="22"
+                fill="transparent"
+                onPointerDown={(e) => {
+                  e.stopPropagation();
+                  onHighFive();
+                }}
+              />
+            )}
             {charStyle === "paper" ? (
               <polygon points="-14,0 0,-14 14,0 0,14" fill="#FFFFFF" stroke="#D4A037" strokeWidth="1.6" />
             ) : (

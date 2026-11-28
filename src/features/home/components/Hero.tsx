@@ -7,6 +7,7 @@ import { userData } from "@/lib/data";
 
 import { useRef, useCallback } from "react";
 import { useCompanionReaction } from "@/features/companion/context/CompanionReactionContext";
+import { ElasticHeroName } from "./ElasticHeroName";
 
 export function Hero() {
   const heroRef = useRef<HTMLDivElement>(null);
@@ -88,9 +89,10 @@ export function Hero() {
           transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
           className="mb-4 sm:mb-6 w-full px-2"
         >
-          <h1 className="text-4xl xs:text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black font-sans tracking-tight text-theme-primary mb-3 sm:mb-4 break-words">
-            {userData.name}
-          </h1>
+          <ElasticHeroName
+            name={userData.name}
+            onRippleClick={() => notifyAction("hearts", "WHOA—WOBBLY TYPOGRAPHY!!")}
+          />
           <p className="text-sm sm:text-lg md:text-xl font-mono font-medium tracking-tight text-theme-accent">
             Full-Stack Systems • Mobile Applications • Agent &amp; AI Integration • GenAI &amp; RAG
           </p>

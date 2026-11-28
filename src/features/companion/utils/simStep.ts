@@ -406,7 +406,15 @@ export function stepCharacterKinematics(
   const steeredByMode = !chaseSnack && applyPlayModeSteering(sim, live, minX, maxX, dt, callbacks);
 
   if (!steeredByMode) {
-    if (live.viewMode === "home" && !homeToyActive) {
+    if (sim.edgePeek && live.playMode === "interact" && !homeToyActive) {
+      const peekX = sim.edgePeek === "left" ? 22 : sim.w - 22;
+      const sx = stepRK4(sim.x, sim.vx, peekX, 48, 12, dt);
+      const sy = stepRK4(sim.y, sim.vy, sim.homeY, 34, 10, dt);
+      sim.x = sx.x;
+      sim.vx = sx.v;
+      sim.y = sy.x;
+      sim.vy = sy.v;
+    } else if (live.viewMode === "home" && !homeToyActive) {
       const floatX = sim.homeX + Math.cos(sim.time * 0.9) * 14;
       const floatY = sim.homeY + Math.sin(sim.time * 1.8) * 12 - sim.beatEnergy * 28;
       const sx = stepRK4(sim.x, sim.vx, floatX, 34, 10, dt);
@@ -620,6 +628,7 @@ export function stepRigAndCommitDom(
 
   let targetRot = clamp(sim.vx * 0.032, -22, 22);
   if (live.gravityFlipped) targetRot = 180 + clamp(-sim.vx * 0.03, -15, 15);
+  else if (sim.edgePeek && live.playMode === "interact") targetRot = sim.edgePeek === "left" ? 26 : -26;
   else if (live.spinTopActive) targetRot = (t * 1400) % 360;
   else if (live.tickledActive) targetRot = Math.sin(t * 28) * 16;
   else if (live.dizzyActive) targetRot = Math.sin(t * 14) * 14;

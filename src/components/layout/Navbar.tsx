@@ -7,11 +7,27 @@ import { siteConfig } from "@/config/site";
 import { Menu, X, ArrowUpRight, FileText } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/icons";
 import { ThemeToggle } from "./ThemeToggle";
+import { GooeyNav } from "./GooeyNav";
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<string>(() => {
+    if (typeof window !== "undefined" && window.location.hash) {
+      return `/${window.location.hash}`;
+    }
+    return "";
+  });
   const pathname = usePathname();
+
+  // Determine active tab across dynamic routes and homepage sections
+  const activeTab = (() => {
+    if (pathname === "/about") return "/about";
+    if (pathname.startsWith("/projects")) return "/projects";
+    if (pathname.startsWith("/playground")) return "/playground";
+    if (pathname === "/") return activeSection;
+    return pathname;
+  })();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -20,6 +36,47 @@ export function Navbar() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Track active section on the homepage during scroll
+  useEffect(() => {
+    if (pathname !== "/") return;
+
+    const sections = ["skills", "experience", "contact"];
+    const sectionElements = sections
+      .map((id) => document.getElementById(id))
+      .filter(Boolean) as HTMLElement[];
+
+    const handleScroll = () => {
+      if (window.scrollY < 260) {
+        setActiveSection("");
+      }
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    if (!sectionElements.length) {
+      return () => window.removeEventListener("scroll", handleScroll);
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visibleEntry = entries.find((entry) => entry.isIntersecting);
+        if (visibleEntry) {
+          setActiveSection(`/#${visibleEntry.target.id}`);
+        }
+      },
+      {
+        rootMargin: "-20% 0px -55% 0px",
+        threshold: 0.1,
+      }
+    );
+
+    sectionElements.forEach((el) => observer.observe(el));
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      observer.disconnect();
+    };
+  }, [pathname]);
 
   // Smooth in-page scrolling when navigating to hash sections
   useEffect(() => {
@@ -36,11 +93,12 @@ export function Navbar() {
   }, [pathname]);
 
   const handleNavClick = (
-    e: React.MouseEvent<HTMLAnchorElement>,
-    href: string
+    e?: React.MouseEvent<HTMLElement>,
+    href: string = "/"
   ) => {
     if (href.startsWith("/#") && pathname === "/") {
-      e.preventDefault();
+      e?.preventDefault();
+      setActiveSection(href);
       const targetId = href.replace("/#", "");
       const elem = document.getElementById(targetId);
       if (elem) {
@@ -49,7 +107,8 @@ export function Navbar() {
       }
       setMobileMenuOpen(false);
     } else if (href === "/" && pathname === "/") {
-      e.preventDefault();
+      e?.preventDefault();
+      setActiveSection("");
       window.scrollTo({ top: 0, behavior: "smooth" });
       window.history.pushState(null, "", "/");
       setMobileMenuOpen(false);
@@ -90,32 +149,17 @@ export function Navbar() {
           </div>
         </Link>
 
-        {/* Desktop Nav Links */}
-        <nav className="hidden lg:flex items-center gap-1 px-3 py-1.5 rounded-full border border-theme-border bg-theme-surface/80 backdrop-blur-md">
-          {siteConfig.navLinks.map((link) => {
-            const isActive =
-              link.href === "/"
-                ? pathname === "/"
-                : pathname.startsWith(link.href) &&
-                  link.href !== "/#skills" &&
-                  link.href !== "/#experience" &&
-                  link.href !== "/#contact";
-
-            return (
-              <Link
-                key={link.label}
-                href={link.href}
-                onClick={(e) => handleNavClick(e, link.href)}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all ${
-                  isActive
-                    ? "bg-theme-accent-subtle text-theme-accent font-semibold shadow-xs"
-                    : "text-theme-secondary hover:text-theme-primary hover:bg-theme-hover"
-                }`}
-              >
-                {link.label}
-              </Link>
-            );
-          })}
+        {/* Desktop Nav Links with Liquid-Mercury Gooey Metaball Pill */}
+        <nav className="hidden lg:flex items-center justify-center">
+          <GooeyNav
+            items={siteConfig.navLinks.map((link) => ({
+              id: link.href,
+              label: link.label,
+              href: link.href,
+            }))}
+            activeId={activeTab}
+            onSelect={(id, href, e) => handleNavClick(e, href || id)}
+          />
         </nav>
 
         {/* Right Controls: Theme Toggle + Resume + Socials + CTA */}

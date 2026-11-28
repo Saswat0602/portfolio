@@ -64,6 +64,9 @@ export function CompanionCornerWidget() {
     setFakeCrashActive,
     devJoke,
     setDevJoke,
+    focusSecondsLeft,
+    setFocusSecondsLeft,
+    toggleFocusTimer,
     polaroids,
     setPolaroids,
     stickyNote,
@@ -86,6 +89,7 @@ export function CompanionCornerWidget() {
     triggerDiscoRave,
     triggerDevJoke,
     triggerStickyPrank,
+    triggerHighFive,
     triggerChaosPrank,
     handleResetStage,
     triggerHireHearts,
@@ -226,6 +230,8 @@ export function CompanionCornerWidget() {
         devJoke={devJoke}
         onDismissDevJoke={() => setDevJoke(null)}
         onNextDevJoke={triggerDevJoke}
+        focusSecondsLeft={focusSecondsLeft}
+        onStopFocus={() => setFocusSecondsLeft(null)}
       />
 
       <CompanionRigSvg
@@ -247,6 +253,7 @@ export function CompanionCornerWidget() {
         onPointerDown={startRigDrag}
         onHeadPet={handleHeadPet}
         onPokeKey={handleBodyPoke}
+        onHighFive={triggerHighFive}
         initialTransform="translate3d(84vw, 44vh, 0) translate(-50%, -50%) scale(0.76)"
       />
 
@@ -271,6 +278,8 @@ export function CompanionCornerWidget() {
         onHitPad={hitSynthPad}
         onMiniClones={triggerMiniClones}
         onSneeze={triggerSneeze}
+        focusActive={focusSecondsLeft !== null}
+        onToggleFocus={toggleFocusTimer}
         mood={mood}
         onSelectMood={handleSelectMood}
         onThrowSnack={throwSnack}

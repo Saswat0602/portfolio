@@ -12,16 +12,19 @@ import {
   ArrowLeft,
   Compass,
   Bot,
+  Type,
 } from "lucide-react";
 import { EngineeringComparisonSandbox } from "./EngineeringComparisonSandbox";
 import { DevTerminalRunner } from "./DevTerminalRunner";
 import { NeuralParticleCanvas } from "./NeuralParticleCanvas";
 import { TiltCardShowcase } from "./TiltCardShowcase";
+import { ElasticTypeSandbox } from "./ElasticTypeSandbox";
 import { CompanionStudio } from "@/features/companion/components/CompanionStudio";
 
 type LabTab =
   | "all"
   | "companion"
+  | "elastic"
   | "scrubber"
   | "terminal"
   | "mesh"
@@ -30,6 +33,7 @@ type LabTab =
 const VALID_TABS = new Set<LabTab>([
   "all",
   "companion",
+  "elastic",
   "scrubber",
   "terminal",
   "mesh",
@@ -44,8 +48,9 @@ export function PlaygroundHub() {
   const activeTab = selectedTab ?? initialTab;
 
   const tabs: Array<{ id: LabTab; label: string; icon: React.ElementType; badge: string }> = [
-    { id: "all", label: "All Styles (5)", icon: Sparkles, badge: "Full Suite" },
+    { id: "all", label: "All Styles (6)", icon: Sparkles, badge: "Full Suite" },
     { id: "companion", label: "MOCHI-04 Companion", icon: Bot, badge: "60fps Physics" },
+    { id: "elastic", label: "Elastic Type Wall", icon: Type, badge: "Spring Ripple" },
     { id: "scrubber", label: "Before / After Scrubber", icon: Split, badge: "UX & Engineering" },
     { id: "terminal", label: "Dev Zsh Terminal", icon: Terminal, badge: "Interactive CLI" },
     { id: "mesh", label: "Neural Particle Mesh", icon: Zap, badge: "60fps Canvas" },
@@ -134,6 +139,27 @@ export function PlaygroundHub() {
           </div>
 
           <CompanionStudio />
+        </section>
+      )}
+
+      {/* Module 0.5: Elastic Conservation-of-Area Letterpress Type */}
+      {(activeTab === "all" || activeTab === "elastic") && (
+        <section id="elastic" className="flex flex-col gap-4 pt-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-theme-border/60 pb-3">
+            <div>
+              <span className="text-[11px] font-mono uppercase tracking-widest text-sky-400 font-semibold block mb-0.5">
+                Interactive Typography • Spring-Coupled Canvas
+              </span>
+              <h2 className="text-xl sm:text-2xl font-bold font-sans text-theme-primary">
+                Elastic Letterpress Type Wall
+              </h2>
+            </div>
+            <span className="text-xs font-mono text-theme-muted">
+              Hover to stretch glyphs, click anywhere for tactile shockwave ripples
+            </span>
+          </div>
+
+          <ElasticTypeSandbox />
         </section>
       )}
 

@@ -40,6 +40,8 @@ export interface CompanionPlayDockProps {
   onHitPad: (pad: SynthPadMeta) => void;
   onMiniClones: () => void;
   onSneeze: () => void;
+  focusActive: boolean;
+  onToggleFocus: () => void;
   dockTab: DockTab;
   setDockTab: Dispatch<SetStateAction<DockTab>>;
   mood: MoodId;
@@ -88,6 +90,8 @@ export function CompanionPlayDock({
   onHitPad,
   onMiniClones,
   onSneeze,
+  focusActive,
+  onToggleFocus,
   dockTab,
   setDockTab,
   mood,
@@ -389,6 +393,19 @@ export function CompanionPlayDock({
               style={{ backgroundColor: ui.recessed, color: ui.ink, border: `1px solid ${ui.border}` }}
             >
               🤧 Sneeze
+            </button>
+
+            <button
+              type="button"
+              onClick={onToggleFocus}
+              className="m4-focus whitespace-nowrap rounded-full px-3 py-1 font-mono text-[10px] font-medium cursor-pointer"
+              style={{
+                backgroundColor: focusActive ? "#10B981" : ui.recessed,
+                color: focusActive ? "#FFFFFF" : ui.ink,
+                border: focusActive ? "1px solid #10B981" : `1px solid ${ui.border}`,
+              }}
+            >
+              🍅 Focus 25m
             </button>
 
             {/* Voice/Beat mic beta paused for now */}

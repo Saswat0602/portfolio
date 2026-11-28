@@ -74,6 +74,9 @@ export function CompanionStudio({ defaultFullscreen = false }: CompanionStudioPr
     setFakeCrashActive,
     devJoke,
     setDevJoke,
+    focusSecondsLeft,
+    setFocusSecondsLeft,
+    toggleFocusTimer,
     polaroids,
     setPolaroids,
     stickyNote,
@@ -99,6 +102,7 @@ export function CompanionStudio({ defaultFullscreen = false }: CompanionStudioPr
     triggerDiscoRave,
     triggerDevJoke,
     triggerStickyPrank,
+    triggerHighFive,
     triggerChaosPrank,
     handleResetStage,
     triggerHireHearts,
@@ -219,6 +223,8 @@ export function CompanionStudio({ defaultFullscreen = false }: CompanionStudioPr
           devJoke={devJoke}
           onDismissDevJoke={() => setDevJoke(null)}
           onNextDevJoke={triggerDevJoke}
+          focusSecondsLeft={focusSecondsLeft}
+          onStopFocus={() => setFocusSecondsLeft(null)}
         />
 
         <CompanionRigSvg
@@ -240,6 +246,7 @@ export function CompanionStudio({ defaultFullscreen = false }: CompanionStudioPr
           onPointerDown={startRigDrag}
           onHeadPet={handleHeadPet}
           onPokeKey={handleBodyPoke}
+          onHighFive={triggerHighFive}
         />
 
         {viewMode === "portfolio" && widgetOpen && (
@@ -281,6 +288,8 @@ export function CompanionStudio({ defaultFullscreen = false }: CompanionStudioPr
             onHitPad={hitSynthPad}
             onMiniClones={triggerMiniClones}
             onSneeze={triggerSneeze}
+            focusActive={focusSecondsLeft !== null}
+            onToggleFocus={toggleFocusTimer}
             dockTab={dockTab}
             setDockTab={setDockTab}
             mood={mood}

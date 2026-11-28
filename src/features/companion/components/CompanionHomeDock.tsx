@@ -46,6 +46,8 @@ export interface CompanionHomeDockProps {
   onHitPad: (pad: SynthPadMeta) => void;
   onMiniClones: () => void;
   onSneeze: () => void;
+  focusActive: boolean;
+  onToggleFocus: () => void;
   mood: MoodId;
   onSelectMood: (id: MoodId) => void;
   onThrowSnack: (kind: SnackId) => void;
@@ -95,6 +97,8 @@ export function CompanionHomeDock({
   onHitPad,
   onMiniClones,
   onSneeze,
+  focusActive,
+  onToggleFocus,
   mood,
   onSelectMood,
   onThrowSnack,
@@ -389,6 +393,19 @@ export function CompanionHomeDock({
                 style={{ backgroundColor: ui.recessed, color: ui.ink, border: `1px solid ${ui.border}` }}
               >
                 🤧 Sneeze
+              </button>
+
+              <button
+                type="button"
+                onClick={onToggleFocus}
+                className="m4-focus whitespace-nowrap rounded-full px-2.5 py-1 font-mono text-[10px] font-medium cursor-pointer"
+                style={{
+                  backgroundColor: focusActive ? "#10B981" : ui.recessed,
+                  color: focusActive ? "#FFFFFF" : ui.ink,
+                  border: focusActive ? "1px solid #10B981" : `1px solid ${ui.border}`,
+                }}
+              >
+                🍅 Focus 25m
               </button>
 
               {/* Voice/Beat mic beta paused for now */}

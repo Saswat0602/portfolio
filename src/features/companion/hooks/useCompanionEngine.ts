@@ -92,6 +92,7 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
   const [fridayDeployActive, setFridayDeployActive] = useState<boolean>(false);
   const [fakeCrashActive, setFakeCrashActive] = useState<boolean>(false);
   const [devJoke, setDevJoke] = useState<string | null>(null);
+  const [focusSecondsLeft, setFocusSecondsLeft] = useState<number | null>(null);
 
   // Draggable Polaroids & Sticky Note
   const [polaroids, setPolaroids] = useState<PolaroidCard[]>([]);
@@ -403,12 +404,72 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
     };
   }, [autoJam, hitSynthPad, playMode]);
 
-  // Keyboard shortcuts for DJ Jam (A S D F G H J) & Escape to exit active tools/overlays
+  // Focus / Pomodoro 25m sprint timer
   useEffect(() => {
+    if (focusSecondsLeft === null) return;
+    if (focusSecondsLeft <= 0) {
+      queueMicrotask(() => {
+        setFocusSecondsLeft(null);
+        const sim = simRef.current;
+        sim.vy = -340;
+        playComedySound("chime", liveRef.current.soundOn, 1.35);
+        actions.spawnParticles("confetti", sim.x, sim.y - 30, 24);
+        actions.say("FOCUS SPRINT COMPLETE!! YOU CRUSHED IT!!", 3800, true);
+      });
+      return;
+    }
+    const id = setTimeout(() => {
+      setFocusSecondsLeft((prev) => (prev !== null && prev > 0 ? prev - 1 : null));
+    }, 1000);
+    return () => clearTimeout(id);
+  }, [actions, focusSecondsLeft]);
+
+  const toggleFocusTimer = useCallback(() => {
+    setFocusSecondsLeft((prev) => {
+      if (prev !== null) {
+        actions.say("Focus sprint paused. Take a breather!", 2200, true);
+        return null;
+      }
+      setAccessory("headphones");
+      setMood("zen");
+      actions.say("Focus mode active (25:00)! Headphones on, cheering silently.", 2800, true);
+      return 25 * 60;
+    });
+  }, [actions]);
+
+  // Keyboard shortcuts for DJ Jam (A S D F G H J), Escape & Konami Code
+  const { triggerKonami } = actions;
+  useEffect(() => {
+    const konamiSeq = [
+      "ArrowUp",
+      "ArrowUp",
+      "ArrowDown",
+      "ArrowDown",
+      "ArrowLeft",
+      "ArrowRight",
+      "ArrowLeft",
+      "ArrowRight",
+      "b",
+      "a",
+    ];
+    let konamiIdx = 0;
+
     const onKey = (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey || e.altKey || e.repeat) return;
       const tag = document.activeElement?.tagName;
       if (tag === "INPUT" || tag === "TEXTAREA") return;
+
+      const expected = konamiSeq[konamiIdx];
+      if (e.key === expected || e.key.toLowerCase() === expected) {
+        konamiIdx += 1;
+        if (konamiIdx === konamiSeq.length) {
+          konamiIdx = 0;
+          triggerKonami();
+          return;
+        }
+      } else {
+        konamiIdx = e.key === konamiSeq[0] ? 1 : 0;
+      }
 
       if (e.key === "Escape") {
         setPortalTool(false);
@@ -431,7 +492,7 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [hitSynthPad]);
+  }, [hitSynthPad, triggerKonami]);
 
   const triggerHireHearts = useCallback(() => {
     const sim = simRef.current;
@@ -529,6 +590,7 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
       const px = r ? e.clientX - r.left : e.clientX;
       const py = r ? e.clientY - r.top : e.clientY;
       const sim = simRef.current;
+      sim.edgePeek = null;
       sim.drag = {
         active: true,
         moved: false,
@@ -622,6 +684,9 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
     setFakeCrashActive,
     devJoke,
     setDevJoke,
+    focusSecondsLeft,
+    setFocusSecondsLeft,
+    toggleFocusTimer,
     polaroids,
     setPolaroids,
     stickyNote,

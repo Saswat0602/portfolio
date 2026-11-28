@@ -10,6 +10,42 @@ import type {
 import { playComedySound } from "../utils/audio";
 import { PolaroidMiniPortrait } from "./CompanionIcons";
 
+function downloadPolaroidPng(card: PolaroidCard): void {
+  const c = document.createElement("canvas");
+  c.width = 360;
+  c.height = 420;
+  const ctx = c.getContext("2d");
+  if (!ctx) return;
+
+  ctx.fillStyle = "#FCFBF8";
+  ctx.fillRect(0, 0, c.width, c.height);
+  ctx.strokeStyle = "rgba(0,0,0,0.12)";
+  ctx.lineWidth = 4;
+  ctx.strokeRect(2, 2, c.width - 4, c.height - 4);
+
+  ctx.fillStyle = card.moodId === "hype" ? "#FEF3C7" : card.moodId === "dramatic" ? "#1E293B" : "#E0F2FE";
+  ctx.fillRect(28, 28, 304, 270);
+
+  ctx.fillStyle = "#18181B";
+  ctx.font = '700 22px "JetBrains Mono", monospace';
+  ctx.textAlign = "center";
+  ctx.fillText(card.styleId.toUpperCase(), 180, 150);
+  ctx.font = '500 14px "JetBrains Mono", monospace';
+  ctx.fillText(`MOOD: ${card.moodLabel.toUpperCase()}`, 180, 184);
+
+  ctx.fillStyle = "#161618";
+  ctx.font = '700 15px "JetBrains Mono", monospace';
+  ctx.fillText(card.caption, 180, 344);
+  ctx.fillStyle = "#71717A";
+  ctx.font = '500 12px "JetBrains Mono", monospace';
+  ctx.fillText("MOCHI-04 · PORTFOLIO EDITION", 180, 372);
+
+  const link = document.createElement("a");
+  link.download = `mochi-polaroid-${card.id}.png`;
+  link.href = c.toDataURL("image/png");
+  link.click();
+}
+
 export interface CompanionStageOverlaysProps {
   isDark: boolean;
   ui: CompanionThemeTokens;
@@ -33,6 +69,8 @@ export interface CompanionStageOverlaysProps {
   devJoke?: string | null;
   onDismissDevJoke?: () => void;
   onNextDevJoke?: () => void;
+  focusSecondsLeft?: number | null;
+  onStopFocus?: () => void;
 }
 
 export function CompanionStageOverlays({
@@ -58,6 +96,8 @@ export function CompanionStageOverlays({
   devJoke = null,
   onDismissDevJoke,
   onNextDevJoke,
+  focusSecondsLeft = null,
+  onStopFocus,
 }: CompanionStageOverlaysProps) {
   return (
     <>
@@ -98,7 +138,10 @@ export function CompanionStageOverlays({
         <div
           key={card.id}
           data-polaroid
-          onPointerDown={(e) => startPolaroidDrag(card.id, e)}
+          onPointerDown={(e) => {
+            setPolaroids((prev) => [...prev.filter((c) => c.id !== card.id), card]);
+            startPolaroidDrag(card.id, e);
+          }}
           className="mochi-pop pointer-events-auto absolute z-20 w-[158px] p-2.5 pb-3.5 rounded-[3px] cursor-grab active:cursor-grabbing touch-none"
           style={{
             left: `${card.x}px`,
@@ -109,6 +152,16 @@ export function CompanionStageOverlays({
             boxShadow: "0 16px 34px -10px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(0,0,0,0.08)",
           }}
         >
+          <button
+            type="button"
+            aria-label="Download Polaroid PNG"
+            title="Download Polaroid PNG"
+            onPointerDown={(e) => e.stopPropagation()}
+            onClick={() => downloadPolaroidPng(card)}
+            className="absolute -top-2 right-4 w-5 h-5 rounded-full bg-sky-600 text-white font-mono text-[10px] flex items-center justify-center cursor-pointer hover:bg-sky-500"
+          >
+            ↓
+          </button>
           <button
             type="button"
             aria-label="Dismiss Polaroid"
@@ -239,6 +292,31 @@ export function CompanionStageOverlays({
           </div>
         ) : null}
       </div>
+
+      {focusSecondsLeft !== null && (
+        <div
+          className="mochi-pop pointer-events-auto fixed top-20 left-4 z-40 flex items-center gap-2 rounded-full px-3 py-1 font-mono text-[10.5px] shadow-md"
+          style={{
+            backgroundColor: ui.surface,
+            color: ui.ink,
+            border: `1px solid ${ui.borderStrong}`,
+          }}
+        >
+          <span>
+            🍅 {String(Math.floor(focusSecondsLeft / 60)).padStart(2, "0")}:
+            {String(focusSecondsLeft % 60).padStart(2, "0")}
+          </span>
+          {onStopFocus && (
+            <button
+              type="button"
+              onClick={onStopFocus}
+              className="text-rose-500 font-bold cursor-pointer hover:opacity-80"
+            >
+              Stop
+            </button>
+          )}
+        </div>
+      )}
 
       {fridayDeployActive && (
         <div className="mochi-pop pointer-events-auto fixed top-20 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 rounded-xl border border-rose-500/80 bg-rose-950/92 px-4 py-2 text-rose-100 shadow-2xl backdrop-blur-md">

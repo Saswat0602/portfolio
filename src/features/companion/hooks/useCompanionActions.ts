@@ -770,6 +770,34 @@ export function useCompanionActions(
     say("Left a totally objective hiring note on your screen >:)", 3000, true);
   }, [liveRef, say, setMood, setStickyNote, simRef]);
 
+  const triggerHighFive = useCallback(() => {
+    const sim = simRef.current;
+    sim.edgePeek = null;
+    sim.vy = -260;
+    sim.sx = 1.24;
+    sim.sy = 0.78;
+    sim.vHrX = 240;
+    sim.vHrY = -360;
+    playComedySound("chime", liveRef.current.soundOn, 1.3);
+    spawnParticles("star", sim.x + 36, sim.y - 16, 9, "#F59E0B");
+    say("*SLAP!* HIGH FIVE!! 10/10 TEAMWORK!", 2200, true);
+  }, [liveRef, say, simRef, spawnParticles]);
+
+  const triggerKonami = useCallback(() => {
+    const sim = simRef.current;
+    sim.edgePeek = null;
+    setAccessory("crown");
+    setMood("hype");
+    sim.vy = -420;
+    sim.flipping = true;
+    sim.flipDeg = 0;
+    sim.soundRings.push({ x: sim.x, y: sim.y, r: 20, maxR: 300, age: 0, color: "#F59E0B" });
+    sim.soundRings.push({ x: sim.x, y: sim.y, r: 8, maxR: 240, age: 0, color: "#EC4899" });
+    playComedySound("chime", liveRef.current.soundOn, 1.4);
+    spawnParticles("confetti", sim.x, sim.y - 20, 28);
+    say("KONAMI CODE UNLOCKED!! GOLDEN OVERDRIVE!!", 3600, true);
+  }, [liveRef, say, setAccessory, setMood, simRef, spawnParticles]);
+
   const triggerChaosPrank = useCallback(() => {
     const totalPranks = 8;
     let idx = Math.floor(Math.random() * totalPranks);
@@ -835,6 +863,7 @@ export function useCompanionActions(
     sim.vRot = 0;
     sim.flipDeg = 0;
     sim.flipping = false;
+    sim.edgePeek = null;
 
     setPlayMode("interact");
     setAccessory("none");
@@ -922,6 +951,8 @@ export function useCompanionActions(
     triggerDiscoRave,
     triggerDevJoke,
     triggerStickyPrank,
+    triggerHighFive,
+    triggerKonami,
     triggerChaosPrank,
     handleResetStage,
   };

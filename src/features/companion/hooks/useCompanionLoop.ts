@@ -444,6 +444,17 @@ export function useCompanionLoop({
         sim.vy = clamp(sim.drag.vy * 1.18, -920, 920);
         sim.ballistic = true;
         sim.ballisticTimer = flingSpeed > 260 ? 1.65 : 0.72;
+        if (liveRef.current.playMode === "interact" && flingSpeed < 240 && sim.x <= 82) {
+          sim.edgePeek = "left";
+          sim.ballistic = false;
+          say("Edge-peek engaged! Drag me out anytime!", 2000, true);
+        } else if (liveRef.current.playMode === "interact" && flingSpeed < 240 && sim.x >= sim.w - 82) {
+          sim.edgePeek = "right";
+          sim.ballistic = false;
+          say("Edge-peek engaged! Drag me out anytime!", 2000, true);
+        } else {
+          sim.edgePeek = null;
+        }
         if (flingSpeed > 420) {
           playComedySound("slideUp", liveRef.current.soundOn, 1.15);
           say(FLING_QUIPS[Math.floor(Math.random() * FLING_QUIPS.length)], 2200, true);

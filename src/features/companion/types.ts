@@ -278,6 +278,7 @@ export interface SimState {
   rainDrops: RainDropState[];
   time: number;
   lastInteractionAt: number;
+  edgePeek: "left" | "right" | null;
 }
 
 export interface LiveSnapshot {
