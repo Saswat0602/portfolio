@@ -1,13 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
-import { Sparkles, X } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { useCompanionEngine } from "../hooks/useCompanionEngine";
 import { useCompanionReaction } from "../context/CompanionReactionContext";
 import { CompanionRigSvg } from "./CompanionRigSvg";
 import { CompanionStageOverlays } from "./CompanionStageOverlays";
-import { CompanionQuickPopover } from "./CompanionPortfolioPreview";
+import { CompanionHomeDock } from "./CompanionHomeDock";
 import "../styles/companion.css";
 
 function CompanionCornerActive({ onMinimize }: { onMinimize: () => void }) {
@@ -23,7 +22,14 @@ function CompanionCornerActive({ onMinimize }: { onMinimize: () => void }) {
     mood,
     activeMoodMeta,
     soundOn,
+    setSoundOn,
+    portalTool,
+    setPortalTool,
+    trampolineOn,
+    setTrampolineOn,
     featherTool,
+    setFeatherTool,
+    gravityFlipped,
     shakingStage,
     cameraFlash,
     photoPosing,
@@ -45,8 +51,9 @@ function CompanionCornerActive({ onMinimize }: { onMinimize: () => void }) {
     setChatText,
     setChatFocused,
     secretMode,
-    widgetOpen,
-    setWidgetOpen,
+    setSecretMode,
+    peeking,
+    setPeeking,
     portfolioHover,
     say,
     handleSelectStyle,
@@ -54,18 +61,23 @@ function CompanionCornerActive({ onMinimize }: { onMinimize: () => void }) {
     throwSnack,
     triggerBackflip,
     handleBodyPoke,
+    triggerShakeStage,
     triggerPhotoBooth,
+    triggerGravityFlip,
+    triggerCloneDuel,
     triggerChaosPrank,
+    handleResetStage,
     handleChatSubmit,
     triggerHireHearts,
     handleHeadPet,
     handleFeatherWiggle,
+    handleStageDown,
     startRigDrag,
     startPolaroidDrag,
   } = useCompanionEngine({
     stageRef,
     fxCanvasRef,
-    initialViewMode: "portfolio",
+    initialViewMode: "home",
     initialStyle: "vinyl",
     externalHover: hoverTarget,
   });
@@ -82,13 +94,48 @@ function CompanionCornerActive({ onMinimize }: { onMinimize: () => void }) {
     }
   }, [lastCue, say, triggerBackflip, triggerHireHearts]);
 
+  useEffect(() => {
+    if (!portalTool && !featherTool) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setPortalTool(false);
+        setFeatherTool(false);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [featherTool, portalTool, setFeatherTool, setPortalTool]);
+
   return (
     <div
       ref={stageRef}
-      className={`pointer-events-none fixed inset-0 z-40 overflow-hidden select-none ${
+      onPointerDown={handleStageDown}
+      className={`${
+        portalTool ? "pointer-events-auto cursor-crosshair" : "pointer-events-none"
+      } fixed inset-0 z-40 overflow-hidden select-none ${
         shakingStage ? "mochi-quake" : ""
       }`}
     >
+      {portalTool && (
+        <div
+          className="pointer-events-auto fixed top-20 right-4 z-40 rounded-full px-3 py-1 font-mono text-[10.5px] shadow-md flex items-center gap-2"
+          style={{
+            backgroundColor: ui.surface,
+            color: "#06B6D4",
+            border: "1px solid #06B6D4",
+          }}
+        >
+          <span>🌀 Click anywhere on screen to place portals</span>
+          <button
+            type="button"
+            onClick={() => setPortalTool(false)}
+            className="font-bold cursor-pointer hover:opacity-80"
+          >
+            Done
+          </button>
+        </div>
+      )}
+
       <canvas
         ref={fxCanvasRef}
         className="pointer-events-none absolute inset-0 z-10 w-full h-full block"
@@ -129,47 +176,45 @@ function CompanionCornerActive({ onMinimize }: { onMinimize: () => void }) {
         onPointerDown={startRigDrag}
         onHeadPet={handleHeadPet}
         onPokeKey={handleBodyPoke}
-        initialTransform="translate3d(calc(100vw - 96px), calc(100vh - 118px), 0) translate(-50%, -50%) scale(0.56)"
+        initialTransform="translate3d(83vw, 44vh, 0) translate(-50%, -50%) scale(0.74)"
       />
 
-      <div className="pointer-events-auto fixed bottom-3 right-3 z-40 flex items-center gap-1.5">
-        <Link
-          href="/playground?tab=companion"
-          className="px-2.5 py-1 rounded-full border border-theme-border bg-theme-surface/90 backdrop-blur-md text-[10px] font-mono text-theme-secondary hover:text-theme-accent hover:border-theme-accent transition-colors shadow-sm"
-        >
-          Studio ↗
-        </Link>
-        <button
-          type="button"
-          aria-label="Minimize MOCHI-04 companion"
-          title="Minimize companion"
-          onClick={onMinimize}
-          className="w-6 h-6 rounded-full border border-theme-border bg-theme-surface/90 backdrop-blur-md flex items-center justify-center text-theme-muted hover:text-theme-primary cursor-pointer shadow-sm"
-        >
-          <X size={12} />
-        </button>
-      </div>
-
-      {widgetOpen && (
-        <CompanionQuickPopover
-          ui={ui}
-          styleMeta={styleMeta}
-          charStyle={charStyle}
-          onSelectStyle={handleSelectStyle}
-          mood={mood}
-          onSelectMood={handleSelectMood}
-          onThrowSnack={throwSnack}
-          onPhotoBooth={triggerPhotoBooth}
-          onChaosPrank={triggerChaosPrank}
-          onClose={() => setWidgetOpen(false)}
-          chatText={chatText}
-          setChatText={setChatText}
-          setChatFocused={setChatFocused}
-          onChatSubmit={handleChatSubmit}
-          studioHref="/playground?tab=companion"
-          positionClassName="fixed bottom-12 right-4 z-40"
-        />
-      )}
+      <CompanionHomeDock
+        ui={ui}
+        charStyle={charStyle}
+        styleMeta={styleMeta}
+        onSelectStyle={handleSelectStyle}
+        mood={mood}
+        onSelectMood={handleSelectMood}
+        onThrowSnack={throwSnack}
+        portalTool={portalTool}
+        setPortalTool={setPortalTool}
+        trampolineOn={trampolineOn}
+        setTrampolineOn={setTrampolineOn}
+        featherTool={featherTool}
+        setFeatherTool={setFeatherTool}
+        gravityFlipped={gravityFlipped}
+        cloneDuelActive={cloneDuelActive}
+        onShakeStage={triggerShakeStage}
+        onPhotoBooth={triggerPhotoBooth}
+        onChaosPrank={triggerChaosPrank}
+        onGravityFlip={triggerGravityFlip}
+        onCloneDuel={triggerCloneDuel}
+        onBackflip={triggerBackflip}
+        secretMode={secretMode}
+        setSecretMode={setSecretMode}
+        peeking={peeking}
+        setPeeking={setPeeking}
+        chatText={chatText}
+        setChatText={setChatText}
+        setChatFocused={setChatFocused}
+        onChatSubmit={handleChatSubmit}
+        soundOn={soundOn}
+        setSoundOn={setSoundOn}
+        onResetStage={handleResetStage}
+        onMinimize={onMinimize}
+        say={say}
+      />
     </div>
   );
 }
@@ -186,7 +231,7 @@ export function CompanionCornerWidget() {
           className="mochi-pop inline-flex items-center gap-2 px-3.5 py-2 rounded-full border border-theme-border bg-theme-surface/90 backdrop-blur-xl text-xs font-mono text-theme-primary shadow-lg hover:border-theme-accent transition-colors cursor-pointer"
         >
           <span className="w-2 h-2 rounded-full bg-[#FF6B4A] animate-pulse" />
-          <span>MOCHI-04</span>
+          <span>MOCHI-04 · Play</span>
           <Sparkles size={13} className="text-theme-accent" />
         </button>
       </div>

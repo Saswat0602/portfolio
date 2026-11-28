@@ -6,10 +6,6 @@ import { useSearchParams } from "next/navigation";
 import {
   Sparkles,
   Split,
-  Flame,
-  FileText,
-  GitBranch,
-  Activity,
   Terminal,
   Zap,
   Layers,
@@ -27,10 +23,6 @@ type LabTab =
   | "all"
   | "companion"
   | "scrubber"
-  | "brutalist"
-  | "swiss"
-  | "git"
-  | "benchmark"
   | "terminal"
   | "mesh"
   | "tilt";
@@ -39,10 +31,6 @@ const VALID_TABS = new Set<LabTab>([
   "all",
   "companion",
   "scrubber",
-  "brutalist",
-  "swiss",
-  "git",
-  "benchmark",
   "terminal",
   "mesh",
   "tilt",
@@ -56,13 +44,9 @@ export function PlaygroundHub() {
   const activeTab = selectedTab ?? initialTab;
 
   const tabs: Array<{ id: LabTab; label: string; icon: React.ElementType; badge: string }> = [
-    { id: "all", label: "All Styles", icon: Sparkles, badge: "Full Suite" },
+    { id: "all", label: "All Styles (5)", icon: Sparkles, badge: "Full Suite" },
     { id: "companion", label: "MOCHI-04 Companion", icon: Bot, badge: "60fps Physics" },
     { id: "scrubber", label: "Before / After Scrubber", icon: Split, badge: "UX & Engineering" },
-    { id: "brutalist", label: "Neo-Brutalist Kinetic", icon: Flame, badge: "Raw & Kinetic" },
-    { id: "swiss", label: "Swiss Architectural", icon: FileText, badge: "Light Editorial" },
-    { id: "git", label: "Git DAG & Code Diff", icon: GitBranch, badge: "Dev Inspector" },
-    { id: "benchmark", label: "API Benchmark Sandbox", icon: Activity, badge: "SLA Stress" },
     { id: "terminal", label: "Dev Zsh Terminal", icon: Terminal, badge: "Interactive CLI" },
     { id: "mesh", label: "Neural Particle Mesh", icon: Zap, badge: "60fps Canvas" },
     { id: "tilt", label: "3D Perspective Tilt", icon: Layers, badge: "Gyroscope" },
