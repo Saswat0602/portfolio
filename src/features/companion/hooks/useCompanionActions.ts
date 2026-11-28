@@ -3,12 +3,17 @@ import {
   ART_RATINGS,
   BUG_TAGS,
   CHARACTER_STYLES,
+  CHAT_FALLBACK_QUIPS,
   DEV_JOKES,
   DEV_ROASTS,
+  FRIDAY_DEPLOY_QUIPS,
   MOODS,
+  PHOTO_POSE_QUIPS,
+  PHOTO_PRINT_QUIPS,
+  PIZZA_QUIPS,
+  POKE_QUIPS,
   POLAROID_CAPTIONS,
   SNACKS,
-  SYNTH_PADS,
   type AccessoryId,
   type CharacterStyleId,
   type MoodId,
@@ -20,7 +25,6 @@ import type {
   ArtVerdictState,
   CompanionTimers,
   LiveSnapshot,
-  MicMode,
   ParticleKind,
   PolaroidCard,
   SimState,
@@ -30,6 +34,10 @@ import type {
 import { clamp } from "../utils/physics";
 import { getAudioContext, playComedySound } from "../utils/audio";
 import { resolveChatCommand } from "../utils/chatCommands";
+
+function pickRandom<T>(items: readonly T[]): T {
+  return items[Math.floor(Math.random() * items.length)];
+}
 
 export interface CompanionActionSetters {
   setCharStyle: Dispatch<SetStateAction<CharacterStyleId>>;
@@ -46,6 +54,7 @@ export interface CompanionActionSetters {
   setPhotoPosing: Dispatch<SetStateAction<boolean>>;
   setSpicyActive: Dispatch<SetStateAction<boolean>>;
   setSourActive: Dispatch<SetStateAction<boolean>>;
+  setPizzaActive: Dispatch<SetStateAction<boolean>>;
   setCaffeinatedActive: Dispatch<SetStateAction<boolean>>;
   setSpinTopActive: Dispatch<SetStateAction<boolean>>;
   setDizzyActive: Dispatch<SetStateAction<boolean>>;
@@ -53,6 +62,8 @@ export interface CompanionActionSetters {
   setCursorSnatched: Dispatch<SetStateAction<boolean>>;
   setCloneDuelActive: Dispatch<SetStateAction<boolean>>;
   setCloneSpeech: Dispatch<SetStateAction<string>>;
+  setFridayDeployActive: Dispatch<SetStateAction<boolean>>;
+  setFakeCrashActive: Dispatch<SetStateAction<boolean>>;
   setPolaroids: Dispatch<SetStateAction<PolaroidCard[]>>;
   setStickyNote: Dispatch<SetStateAction<StickyNoteState | null>>;
   setSpeechShown: Dispatch<SetStateAction<string>>;
@@ -61,7 +72,6 @@ export interface CompanionActionSetters {
   setArtVerdict: Dispatch<SetStateAction<ArtVerdictState | null>>;
   setAutoJam: Dispatch<SetStateAction<boolean>>;
   setActivePad: Dispatch<SetStateAction<string | null>>;
-  setMicMode: Dispatch<SetStateAction<MicMode>>;
   chatText: string;
   setChatText: Dispatch<SetStateAction<string>>;
 }
@@ -73,26 +83,13 @@ export interface CompanionActionRefs {
   pokeRef: MutableRefObject<{ count: number; lastAt: number }>;
   polaroidSeqRef: MutableRefObject<number>;
   snackSeqRef: MutableRefObject<number>;
-  micStreamRef: MutableRefObject<MediaStream | null>;
-  analyserRef: MutableRefObject<AnalyserNode | null>;
-  analyserDataRef: MutableRefObject<Uint8Array<ArrayBuffer> | null>;
 }
 
 export function useCompanionActions(
   refs: CompanionActionRefs,
   setters: CompanionActionSetters
 ) {
-  const {
-    simRef,
-    liveRef,
-    timersRef,
-    pokeRef,
-    polaroidSeqRef,
-    snackSeqRef,
-    micStreamRef,
-    analyserRef,
-    analyserDataRef,
-  } = refs;
+  const { simRef, liveRef, timersRef, pokeRef, polaroidSeqRef, snackSeqRef } = refs;
   const {
     setCharStyle,
     setAccessory,
@@ -108,6 +105,7 @@ export function useCompanionActions(
     setPhotoPosing,
     setSpicyActive,
     setSourActive,
+    setPizzaActive,
     setCaffeinatedActive,
     setSpinTopActive,
     setDizzyActive,
@@ -115,6 +113,8 @@ export function useCompanionActions(
     setCursorSnatched,
     setCloneDuelActive,
     setCloneSpeech,
+    setFridayDeployActive,
+    setFakeCrashActive,
     setPolaroids,
     setStickyNote,
     setSpeechShown,
@@ -123,12 +123,11 @@ export function useCompanionActions(
     setArtVerdict,
     setAutoJam,
     setActivePad,
-    setMicMode,
     chatText,
     setChatText,
   } = setters;
 
-  const prankCounterRef = useRef(0);
+  const lastPrankIdxRef = useRef(-1);
   const bugSeqRef = useRef(1);
 
   const spawnParticles = useCallback(
@@ -204,16 +203,19 @@ export function useCompanionActions(
       const resolved: AccessoryId = nextAcc === liveRef.current.accessory && nextAcc !== "none" ? "none" : nextAcc;
       setAccessory(resolved);
       playComedySound("boing", liveRef.current.soundOn, 1.25);
-      if (resolved === "none") say("Accessory removed — pure hardware.", 1800, true);
-      else if (resolved === "headphones") say("Studio cans on! Feeling that head-nod groove.", 2400, true);
-      else if (resolved === "halo") say("Zero bugs. Pure angelic silicon.", 2200, true);
-      else if (resolved === "shades") say("Cyber optics engaged. Shipped without tests.", 2400, true);
-      else if (resolved === "crown") say("Bow before your 60Hz sovereign.", 2400, true);
-      else if (resolved === "wizard") say("Casting npm run build with zero warnings!", 2400, true);
-      else if (resolved === "cat") say("Cat ears online. Ready for Laser mode!", 2400, true);
-      else if (resolved === "propeller") say("Propeller beanie spinning up for takeoff!", 2400, true);
-      else if (resolved === "chef") say("Simmering your React tree at 60 FPS!", 2400, true);
-      else if (resolved === "box") say("Stealth cardboard box deployed. Nobody sees me.", 2400, true);
+      const lines: Record<AccessoryId, string> = {
+        none: "Accessory removed — pure hardware.",
+        headphones: "Studio cans on! Feeling that head-nod groove.",
+        halo: "Zero bugs. Pure angelic silicon.",
+        shades: "Cyber optics engaged. Shipped without tests.",
+        crown: "Bow before your 60Hz sovereign.",
+        wizard: "Casting npm run build with zero warnings!",
+        cat: "Cat ears online. Ready for Laser mode!",
+        propeller: "Propeller beanie spinning up for takeoff!",
+        chef: "Simmering your React tree at 60 FPS!",
+        box: "Stealth cardboard box deployed. Nobody sees me.",
+      };
+      say(lines[resolved], 2400, true);
     },
     [liveRef, say, setAccessory]
   );
@@ -244,8 +246,7 @@ export function useCompanionActions(
         playComedySound("pop", liveRef.current.soundOn, m.pitch);
       }
 
-      const line = m.quips[Math.floor(Math.random() * m.quips.length)];
-      say(line, 3000, true);
+      say(pickRandom(m.quips), 3000, true);
     },
     [liveRef, say, setCaffeinatedActive, setMood, simRef, spawnParticles]
   );
@@ -308,19 +309,14 @@ export function useCompanionActions(
         setBugsLeft(0);
       }
 
-      if (resolved === "laser") {
-        say("Crimson laser armed! Move pointer to tease! (Esc to exit)", 2600, true);
-      } else if (resolved === "magnet") {
-        say("Magnetic orbit active! Click anywhere to fire repel pulse!", 2800, true);
-      } else if (resolved === "paint") {
-        say("Drag anywhere to paint luminous trampolines!", 2800, true);
-      } else if (resolved === "dj") {
+      if (resolved === "laser") say("Crimson laser armed! Move pointer to tease! (Esc to exit)", 2600, true);
+      else if (resolved === "magnet") say("Magnetic orbit active! Click anywhere to fire repel pulse!", 2800, true);
+      else if (resolved === "paint") say("Drag anywhere to paint luminous trampolines!", 2800, true);
+      else if (resolved === "dj") {
         setSoundOn(true);
         getAudioContext();
         say("Synth pads live! Tap pads or press A S D F G H J!", 2800, true);
-      } else if (resolved === "interact") {
-        say("Back to free interaction mode!", 1800, true);
-      }
+      } else if (resolved === "interact") say("Back to free interaction mode!", 1800, true);
     },
     [
       liveRef,
@@ -352,7 +348,7 @@ export function useCompanionActions(
     if (timersRef.current.critique) clearTimeout(timersRef.current.critique);
     timersRef.current.critique = setTimeout(() => {
       sim.criticScanY = -1;
-      const pick = ART_RATINGS[(sim.strokes.length + Math.floor(Math.random() * ART_RATINGS.length)) % ART_RATINGS.length];
+      const pick = pickRandom(ART_RATINGS);
       setArtVerdict(pick);
       playComedySound("chime", liveRef.current.soundOn);
       say(`"${pick.title}" — ${pick.score}. ${pick.note}`, 4200, true);
@@ -396,57 +392,6 @@ export function useCompanionActions(
     spawnParticles("star", sim.x, sim.y - 12, 9);
     say("Horizontal autoscaling: 3 mini-clones online for 7s!", 2800, true);
   }, [liveRef, say, simRef, spawnParticles]);
-
-  const stopMic = useCallback(() => {
-    if (micStreamRef.current) {
-      micStreamRef.current.getTracks().forEach((tr) => tr.stop());
-      micStreamRef.current = null;
-    }
-    analyserRef.current = null;
-    analyserDataRef.current = null;
-    setMicMode("off");
-  }, [analyserDataRef, analyserRef, micStreamRef, setMicMode]);
-
-  const toggleVoiceBeat = useCallback(async () => {
-    if (liveRef.current.micMode !== "off") {
-      stopMic();
-      say("Voice reactivity muted.", 1800);
-      return;
-    }
-    try {
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        throw new Error("Mic unavailable");
-      }
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const ctx = getAudioContext();
-      if (!ctx) throw new Error("AudioContext unavailable");
-      const src = ctx.createMediaStreamSource(stream);
-      const analyser = ctx.createAnalyser();
-      analyser.fftSize = 128;
-      analyser.smoothingTimeConstant = 0.72;
-      src.connect(analyser);
-
-      micStreamRef.current = stream;
-      analyserRef.current = analyser;
-      analyserDataRef.current = new Uint8Array(analyser.frequencyBinCount) as Uint8Array<ArrayBuffer>;
-      setMicMode("live");
-      say("Mic live! Speak or clap and watch me groove!", 2800);
-    } catch {
-      setMicMode("fallback");
-      say("Mic unavailable — tap Clap Pulse to drive the beat!", 2800);
-    }
-  }, [analyserDataRef, analyserRef, liveRef, micStreamRef, say, setMicMode, stopMic]);
-
-  const fireClapPulse = useCallback(() => {
-    const sim = simRef.current;
-    sim.beatEnergy = 1.0;
-    sim.vy = -210;
-    sim.sx = 1.18;
-    sim.sy = 0.84;
-    sim.soundRings.push({ x: sim.x, y: sim.y, r: 22, maxR: 220, age: 0, color: "#38BDF8" });
-    playComedySound("pulse", liveRef.current.soundOn);
-    spawnParticles("star", sim.x, sim.y - 44, 5);
-  }, [liveRef, simRef, spawnParticles]);
 
   const triggerSneeze = useCallback(() => {
     const sim = simRef.current;
@@ -530,12 +475,17 @@ export function useCompanionActions(
           say("Phew... caffeine crash. Back to normal clock speed.", 2400);
         }, 7000);
       } else if (snack.kind === "pizza") {
-        sim.sx = 1.18;
-        sim.sy = 0.86;
-        playComedySound("chime", liveRef.current.soundOn, 1.1);
-        spawnParticles("heart", sim.x, sim.y - 54, 6, "#FB7185");
+        if (timersRef.current.pizza) clearTimeout(timersRef.current.pizza);
+        setPizzaActive(true);
+        sim.vy = -210;
+        sim.sx = 1.24;
+        sim.sy = 0.78;
+        playComedySound("chime", liveRef.current.soundOn, 1.12);
+        spawnParticles("heart", sim.x, sim.y - 54, 7, "#FB7185");
+        spawnParticles("star", sim.x, sim.y - 36, 6, "#F59E0B");
         spawnParticles("burp", sim.x + 28, sim.y - 24, 3, "#FFFFFF");
-        say("Cold pizza at 2 AM hits different... *burp* ...excuse me.", 3100, true);
+        say(pickRandom(PIZZA_QUIPS), 3200, true);
+        timersRef.current.pizza = setTimeout(() => setPizzaActive(false), 2800);
       } else {
         sim.vy = -240;
         sim.sx = 1.22;
@@ -543,10 +493,21 @@ export function useCompanionActions(
         playComedySound("chime", liveRef.current.soundOn, 1.2);
         spawnParticles("burp", sim.x + 24, sim.y - 28, 4, "#34D399");
         spawnParticles("confetti", sim.x, sim.y - 20, 10);
-        say("*BURP* — 0 warnings, ship it.", 2800, true);
+        say("*BURP* — Bug squashed & eaten! 0 warnings, ship it!", 2800, true);
       }
     },
-    [liveRef, say, setCaffeinatedActive, setMood, setSourActive, setSpicyActive, simRef, spawnParticles, timersRef]
+    [
+      liveRef,
+      say,
+      setCaffeinatedActive,
+      setMood,
+      setPizzaActive,
+      setSourActive,
+      setSpicyActive,
+      simRef,
+      spawnParticles,
+      timersRef,
+    ]
   );
 
   const triggerBackflip = useCallback(() => {
@@ -560,7 +521,15 @@ export function useCompanionActions(
     sim.ballisticTimer = 0.9;
     playComedySound("slideUp", liveRef.current.soundOn, 1.15);
     spawnParticles("confetti", sim.x, sim.y + 30, 12);
-    say("360° BACKFLIP!! Judges gave it a 10.0!", 2600, true);
+    say(
+      pickRandom([
+        "360° BACKFLIP!! Judges gave it a 10.0!",
+        "TUCK, ROTATE, STICK THE LANDING!!",
+        "Zero layout shift mid-air backflip!!",
+      ]),
+      2600,
+      true
+    );
   }, [liveRef, say, simRef, spawnParticles]);
 
   const handleBodyPoke = useCallback(() => {
@@ -572,7 +541,7 @@ export function useCompanionActions(
       sim.sy = 1.34;
       playComedySound("slideUp", liveRef.current.soundOn, 1.35);
       spawnParticles("dust", sim.x, sim.y + 42, 8);
-      say("GAH!! I WASN’T SLEEPING, I WAS COMPILING!!", 2900, true);
+      say(pickRandom(POKE_QUIPS.sleepyWake), 2900, true);
       return;
     }
 
@@ -589,15 +558,15 @@ export function useCompanionActions(
 
     if (n === 1) {
       playComedySound("boing", liveRef.current.soundOn, 1.2);
-      say("Hey! Watch the matte clearcoat!", 2200, true);
+      say(pickRandom(POKE_QUIPS.first), 2200, true);
     } else if (n === 2) {
       setMood("grumpy");
       playComedySound("boing", liveRef.current.soundOn, 0.95);
-      say("Excuse me? Two pokes in a row?", 2300, true);
+      say(pickRandom(POKE_QUIPS.second), 2300, true);
     } else if (n === 3) {
       setMood("paranoid");
       playComedySound("squeak", liveRef.current.soundOn, 1.0);
-      say("One more poke and I enter Beyblade panic mode!!", 2500, true);
+      say(pickRandom(POKE_QUIPS.third), 2500, true);
     } else {
       pokeRef.current.count = 0;
       if (timersRef.current.spinTop) clearTimeout(timersRef.current.spinTop);
@@ -606,7 +575,7 @@ export function useCompanionActions(
       sim.vy = -260;
       playComedySound("slideUp", liveRef.current.soundOn, 1.5);
       spawnParticles("confetti", sim.x, sim.y, 14);
-      say("PANIC SPINNING TOP ENGAGED!! WOOOOOO!!", 2600, true);
+      say(pickRandom(POKE_QUIPS.spinTop), 2600, true);
       timersRef.current.spinTop = setTimeout(() => {
         setSpinTopActive(false);
         setDizzyActive(true);
@@ -638,14 +607,14 @@ export function useCompanionActions(
     if (timersRef.current.photo2) clearTimeout(timersRef.current.photo2);
     if (timersRef.current.photoFlash) clearTimeout(timersRef.current.photoFlash);
     setPhotoPosing(true);
-    say("Cheese!! Hold my best angle...", 900);
+    say(pickRandom(PHOTO_POSE_QUIPS), 900);
 
     timersRef.current.photo1 = setTimeout(() => {
       setCameraFlash(true);
       playComedySound("shutter", liveRef.current.soundOn);
       const id = ++polaroidSeqRef.current;
       const sim = simRef.current;
-      const caption = POLAROID_CAPTIONS[id % POLAROID_CAPTIONS.length];
+      const caption = pickRandom(POLAROID_CAPTIONS);
       const moodMeta = MOODS.find((m) => m.id === liveRef.current.displayMood) || MOODS[0];
       const newCard: PolaroidCard = {
         id,
@@ -661,7 +630,7 @@ export function useCompanionActions(
       timersRef.current.photoFlash = setTimeout(() => setCameraFlash(false), 170);
       timersRef.current.photo2 = setTimeout(() => {
         setPhotoPosing(false);
-        say("Fresh Polaroid printed! Drag it anywhere on stage.", 2600, true);
+        say(pickRandom(PHOTO_PRINT_QUIPS), 2800, true);
       }, 360);
     }, 520);
   }, [liveRef, polaroidSeqRef, say, setCameraFlash, setPhotoPosing, setPolaroids, simRef, timersRef]);
@@ -729,26 +698,90 @@ export function useCompanionActions(
     }, 6000);
   }, [liveRef, say, setCloneDuelActive, setCloneSpeech, simRef, spawnParticles, timersRef]);
 
+  const triggerFridayDeploy = useCallback(() => {
+    if (timersRef.current.friday) clearTimeout(timersRef.current.friday);
+    if (timersRef.current.shake) clearTimeout(timersRef.current.shake);
+    const sim = simRef.current;
+    setFridayDeployActive(true);
+    setShakingStage(true);
+    setMood("paranoid");
+    sim.vy = -440;
+    sim.vx = (Math.random() > 0.5 ? 1 : -1) * 420;
+    sim.ballistic = true;
+    sim.ballisticTimer = 1.1;
+    playComedySound("zap", liveRef.current.soundOn, 1.3);
+    spawnParticles("confetti", sim.x, sim.y, 16, "#EF4444");
+    say(pickRandom(FRIDAY_DEPLOY_QUIPS), 3800, true);
+    timersRef.current.shake = setTimeout(() => setShakingStage(false), 750);
+    timersRef.current.friday = setTimeout(() => {
+      setFridayDeployActive(false);
+      setMood("playful");
+      say("Rollback complete! Production survived another Friday.", 2600, true);
+    }, 4400);
+  }, [liveRef, say, setFridayDeployActive, setMood, setShakingStage, simRef, spawnParticles, timersRef]);
+
+  const triggerFakeCrash = useCallback(() => {
+    if (timersRef.current.crash) clearTimeout(timersRef.current.crash);
+    setFakeCrashActive(true);
+    playComedySound("sadTrombone", liveRef.current.soundOn, 1);
+    say("KERNEL PANIC!! Too many nested containers!!", 2600, true);
+    timersRef.current.crash = setTimeout(() => {
+      setFakeCrashActive(false);
+      playComedySound("chime", liveRef.current.soundOn, 1.2);
+      say("System rebooted in 0.02s! Zero data lost.", 2400, true);
+    }, 3600);
+  }, [liveRef, say, setFakeCrashActive, timersRef]);
+
+  const triggerDiscoRave = useCallback(() => {
+    const sim = simRef.current;
+    setMood("hype");
+    sim.vy = -380;
+    sim.vRot = 420;
+    sim.soundRings.push({ x: sim.x, y: sim.y, r: 22, maxR: 280, age: 0, color: "#EC4899" });
+    sim.soundRings.push({ x: sim.x, y: sim.y, r: 8, maxR: 220, age: 0, color: "#38BDF8" });
+    playComedySound("chime", liveRef.current.soundOn, 1.35);
+    spawnParticles("confetti", sim.x, sim.y - 30, 22);
+    say("DISCO RAVE MODE!! UNCE UNCE UNCE!!", 2800, true);
+  }, [liveRef, say, setMood, simRef, spawnParticles]);
+
+  const triggerDevRoast = useCallback(() => {
+    setMood("smug");
+    playComedySound("pop", liveRef.current.soundOn, 0.9);
+    say(pickRandom(DEV_ROASTS), 4000, true);
+  }, [liveRef, say, setMood]);
+
+  const triggerDevJoke = useCallback(() => {
+    setMood("hype");
+    playComedySound("giggle", liveRef.current.soundOn, 1.15);
+    say(pickRandom(DEV_JOKES), 4000, true);
+  }, [liveRef, say, setMood]);
+
+  const triggerStickyPrank = useCallback(() => {
+    const sim = simRef.current;
+    setStickyNote({
+      id: Date.now(),
+      x: clamp(sim.w * 0.5 + (Math.random() - 0.5) * 260, 120, Math.max(140, sim.w - 130)),
+      y: clamp(135 + Math.random() * 110, 96, Math.max(120, sim.floorY - 120)),
+      rot: (Math.random() - 0.5) * 14,
+    });
+    setMood("sneaky");
+    playComedySound("pop", liveRef.current.soundOn, 1.1);
+    say("Left a totally objective hiring note on your screen >:)", 3000, true);
+  }, [liveRef, say, setMood, setStickyNote, simRef]);
+
   const triggerChaosPrank = useCallback(() => {
-    const idx = prankCounterRef.current % 4;
-    prankCounterRef.current += 1;
+    const totalPranks = 8;
+    let idx = Math.floor(Math.random() * totalPranks);
+    if (idx === lastPrankIdxRef.current) {
+      idx = (idx + 1 + Math.floor(Math.random() * (totalPranks - 1))) % totalPranks;
+    }
+    lastPrankIdxRef.current = idx;
     const sim = simRef.current;
 
-    if (idx === 0) {
-      setStickyNote({
-        id: Date.now(),
-        x: clamp(sim.w * 0.5 + (Math.random() - 0.5) * 260, 120, Math.max(140, sim.w - 130)),
-        y: clamp(135 + Math.random() * 110, 96, Math.max(120, sim.floorY - 120)),
-        rot: (Math.random() - 0.5) * 14,
-      });
-      setMood("sneaky");
-      playComedySound("pop", liveRef.current.soundOn, 1.1);
-      say("Left a totally objective hiring note on your screen >:)", 3000, true);
-    } else if (idx === 1) {
-      triggerGravityFlip();
-    } else if (idx === 2) {
-      triggerCloneDuel();
-    } else {
+    if (idx === 0) triggerStickyPrank();
+    else if (idx === 1) triggerGravityFlip();
+    else if (idx === 2) triggerCloneDuel();
+    else if (idx === 3) {
       if (timersRef.current.snatchEnd) clearTimeout(timersRef.current.snatchEnd);
       setCursorSnatched(true);
       setMood("sneaky");
@@ -758,8 +791,25 @@ export function useCompanionActions(
       playComedySound("giggle", liveRef.current.soundOn, 1.2);
       say("MY MOUSE NOW >:D  (Click me to get it back!)", 3600, true);
       timersRef.current.snatchEnd = setTimeout(() => setCursorSnatched(false), 6500);
-    }
-  }, [liveRef, say, setCursorSnatched, setMood, setStickyNote, simRef, timersRef, triggerCloneDuel, triggerGravityFlip]);
+    } else if (idx === 4) triggerFridayDeploy();
+    else if (idx === 5) triggerFakeCrash();
+    else if (idx === 6) triggerDiscoRave();
+    else triggerMiniClones();
+  }, [
+    liveRef,
+    say,
+    setCursorSnatched,
+    setMood,
+    simRef,
+    timersRef,
+    triggerCloneDuel,
+    triggerDiscoRave,
+    triggerFakeCrash,
+    triggerFridayDeploy,
+    triggerGravityFlip,
+    triggerMiniClones,
+    triggerStickyPrank,
+  ]);
 
   const handleResetStage = useCallback(() => {
     const sim = simRef.current;
@@ -791,13 +841,13 @@ export function useCompanionActions(
     setBugsLeft(0);
     setArtVerdict(null);
     setAutoJam(false);
-    stopMic();
     setPortalTool(false);
     setTrampolineOn(false);
     setFeatherTool(false);
     setGravityFlipped(false);
     setSpicyActive(false);
     setSourActive(false);
+    setPizzaActive(false);
     setCaffeinatedActive(false);
     setSpinTopActive(false);
     setDizzyActive(false);
@@ -805,6 +855,8 @@ export function useCompanionActions(
     setCursorSnatched(false);
     setCloneDuelActive(false);
     setCloneSpeech("");
+    setFridayDeployActive(false);
+    setFakeCrashActive(false);
     setPolaroids([]);
     setStickyNote(null);
     setMood("playful");
@@ -822,9 +874,12 @@ export function useCompanionActions(
     setCloneSpeech,
     setCursorSnatched,
     setDizzyActive,
+    setFakeCrashActive,
     setFeatherTool,
+    setFridayDeployActive,
     setGravityFlipped,
     setMood,
+    setPizzaActive,
     setPlayMode,
     setPolaroids,
     setPortalTool,
@@ -836,7 +891,6 @@ export function useCompanionActions(
     setTickledActive,
     setTrampolineOn,
     simRef,
-    stopMic,
   ]);
 
   const handleChatSubmit = useCallback(
@@ -848,19 +902,32 @@ export function useCompanionActions(
       const intent = resolveChatCommand(raw);
 
       switch (intent.type) {
+        case "friday":
+          triggerFridayDeploy();
+          break;
+        case "crash":
+          triggerFakeCrash();
+          break;
+        case "disco":
+          triggerDiscoRave();
+          break;
+        case "sneeze":
+          triggerSneeze();
+          break;
         case "roast":
-          setMood("smug");
-          say(DEV_ROASTS[Math.floor(Math.random() * DEV_ROASTS.length)], 3800);
+          triggerDevRoast();
           break;
         case "joke":
-          setMood("hype");
-          say(DEV_JOKES[Math.floor(Math.random() * DEV_JOKES.length)], 3800);
+          triggerDevJoke();
           break;
         case "backflip":
           triggerBackflip();
           break;
         case "snack":
           throwSnack(intent.snack);
+          break;
+        case "mode":
+          selectPlayMode(intent.mode);
           break;
         case "portal":
           setPortalTool(true);
@@ -883,34 +950,45 @@ export function useCompanionActions(
         case "prank":
           triggerChaosPrank();
           break;
+        case "hire":
+          setMood("lovestruck");
+          spawnParticles("heart", simRef.current.x, simRef.current.y - 48, 8, "#FB7185");
+          say("Saswat builds production Next.js, AI Agents, RAG & native apps. 10/10 hire!", 3600);
+          break;
         case "greeting":
           setMood("playful");
-          say("Hey there!! Try Laser, Magnet, Catch, Paint, Bugs, or DJ Jam!", 2800);
+          say("Hey!! Try typing roast, joke, friday, crash, pizza, or pick a mode!", 3000);
           break;
         case "fallback":
-          say(`Heard "${intent.raw}" — filing it right next to my snacks.`, 2800);
+          say(`"${intent.raw}" — ${pickRandom(CHAT_FALLBACK_QUIPS)}`, 3200);
           break;
       }
     },
     [
       chatText,
       say,
+      selectPlayMode,
       setChatText,
       setFeatherTool,
       setMood,
       setPortalTool,
       setTrampolineOn,
+      simRef,
+      spawnParticles,
       throwSnack,
       triggerBackflip,
       triggerChaosPrank,
+      triggerDevJoke,
+      triggerDevRoast,
+      triggerDiscoRave,
+      triggerFakeCrash,
+      triggerFridayDeploy,
       triggerGravityFlip,
       triggerMiniClones,
       triggerPhotoBooth,
+      triggerSneeze,
     ]
   );
-
-  // Also keep SYNTH_PADS exported reference used cleanly
-  void SYNTH_PADS;
 
   return {
     spawnParticles,
@@ -924,9 +1002,6 @@ export function useCompanionActions(
     clearPaintStrokes,
     hitSynthPad,
     triggerMiniClones,
-    toggleVoiceBeat,
-    fireClapPulse,
-    stopMic,
     triggerSneeze,
     throwSnack,
     consumeSnack,
@@ -936,6 +1011,12 @@ export function useCompanionActions(
     triggerPhotoBooth,
     triggerGravityFlip,
     triggerCloneDuel,
+    triggerFridayDeploy,
+    triggerFakeCrash,
+    triggerDiscoRave,
+    triggerDevRoast,
+    triggerDevJoke,
+    triggerStickyPrank,
     triggerChaosPrank,
     handleResetStage,
     handleChatSubmit,

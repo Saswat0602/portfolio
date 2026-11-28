@@ -1,4 +1,4 @@
-import type { AccessoryId, AuraFinishId, CharacterStyleId, MoodId, PlayModeId, SnackId } from "@/lib/data";
+import type { AccessoryId, CharacterStyleId, MoodId, PlayModeId, SnackId } from "@/lib/data";
 
 export type ViewMode = "stage" | "portfolio" | "home";
 export type DockTab = "styles" | "modes" | "moods" | "toys" | "pranks";
@@ -284,7 +284,6 @@ export interface LiveSnapshot {
   theme: "dark" | "light";
   viewMode: ViewMode;
   charStyle: CharacterStyleId;
-  auraFinish: AuraFinishId;
   accessory: AccessoryId;
   playMode: PlayModeId;
   displayMood: MoodId;
@@ -297,6 +296,7 @@ export interface LiveSnapshot {
   photoPosing: boolean;
   spicyActive: boolean;
   sourActive: boolean;
+  pizzaActive: boolean;
   caffeinatedActive: boolean;
   spinTopActive: boolean;
   dizzyActive: boolean;
@@ -305,6 +305,8 @@ export interface LiveSnapshot {
   isHeld: boolean;
   cursorSnatched: boolean;
   cloneDuelActive: boolean;
+  fridayDeployActive: boolean;
+  fakeCrashActive: boolean;
   secretMode: boolean;
   peeking: boolean;
   chatFocused: boolean;
@@ -318,6 +320,7 @@ export interface CompanionTimers {
   speechClear: ReturnType<typeof setTimeout> | null;
   spicy: ReturnType<typeof setTimeout> | null;
   sour: ReturnType<typeof setTimeout> | null;
+  pizza: ReturnType<typeof setTimeout> | null;
   caffeine: ReturnType<typeof setTimeout> | null;
   spinTop: ReturnType<typeof setTimeout> | null;
   dizzy: ReturnType<typeof setTimeout> | null;
@@ -325,6 +328,8 @@ export interface CompanionTimers {
   pet: ReturnType<typeof setTimeout> | null;
   gravity: ReturnType<typeof setTimeout> | null;
   shake: ReturnType<typeof setTimeout> | null;
+  friday: ReturnType<typeof setTimeout> | null;
+  crash: ReturnType<typeof setTimeout> | null;
   photo1: ReturnType<typeof setTimeout> | null;
   photo2: ReturnType<typeof setTimeout> | null;
   photoFlash: ReturnType<typeof setTimeout> | null;

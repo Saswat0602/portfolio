@@ -5,14 +5,12 @@ import Link from "next/link";
 import { Sparkles, X } from "lucide-react";
 import {
   ACCESSORIES,
-  AURA_FINISHES,
   CHARACTER_STYLES,
   MOODS,
   PLAY_MODES,
   SNACKS,
   type AccessoryId,
   type ArtRatingMeta,
-  type AuraFinishId,
   type CharacterStyleId,
   type CharacterStyleMeta,
   type MoodId,
@@ -32,8 +30,6 @@ export interface CompanionHomeDockProps {
   charStyle: CharacterStyleId;
   styleMeta: CharacterStyleMeta;
   onSelectStyle: (id: CharacterStyleId) => void;
-  auraFinish: AuraFinishId;
-  onSelectAuraFinish: (id: AuraFinishId) => void;
   accessory: AccessoryId;
   onSelectAccessory: (id: AccessoryId) => void;
   playMode: PlayModeId;
@@ -44,14 +40,11 @@ export interface CompanionHomeDockProps {
   autoJam: boolean;
   onToggleAutoJam: () => void;
   activePad: string | null;
-  micMode: "off" | "live" | "fallback";
   onCritiqueArt: () => void;
   onClearPaint: () => void;
   onReleaseBugs: () => void;
   onHitPad: (pad: SynthPadMeta) => void;
   onMiniClones: () => void;
-  onToggleVoiceBeat: () => void;
-  onFireClapPulse: () => void;
   onSneeze: () => void;
   mood: MoodId;
   onSelectMood: (id: MoodId) => void;
@@ -67,6 +60,12 @@ export interface CompanionHomeDockProps {
   onShakeStage: () => void;
   onPhotoBooth: () => void;
   onChaosPrank: () => void;
+  onFridayDeploy: () => void;
+  onFakeCrash: () => void;
+  onDiscoRave: () => void;
+  onDevRoast: () => void;
+  onDevJoke: () => void;
+  onStickyPrank: () => void;
   onGravityFlip: () => void;
   onCloneDuel: () => void;
   onBackflip: () => void;
@@ -89,8 +88,6 @@ export function CompanionHomeDock({
   charStyle,
   styleMeta,
   onSelectStyle,
-  auraFinish,
-  onSelectAuraFinish,
   accessory,
   onSelectAccessory,
   playMode,
@@ -101,14 +98,11 @@ export function CompanionHomeDock({
   autoJam,
   onToggleAutoJam,
   activePad,
-  micMode,
   onCritiqueArt,
   onClearPaint,
   onReleaseBugs,
   onHitPad,
   onMiniClones,
-  onToggleVoiceBeat,
-  onFireClapPulse,
   onSneeze,
   mood,
   onSelectMood,
@@ -124,6 +118,12 @@ export function CompanionHomeDock({
   onShakeStage,
   onPhotoBooth,
   onChaosPrank,
+  onFridayDeploy,
+  onFakeCrash,
+  onDiscoRave,
+  onDevRoast,
+  onDevJoke,
+  onStickyPrank,
   onGravityFlip,
   onCloneDuel,
   onBackflip,
@@ -150,7 +150,7 @@ export function CompanionHomeDock({
 
   if (dockCollapsed) {
     return (
-      <div className="pointer-events-auto fixed bottom-3.5 right-4 z-40">
+      <div data-dock className="pointer-events-auto fixed bottom-3.5 right-4 z-40">
         <button
           type="button"
           onClick={() => setDockCollapsed(false)}
@@ -172,26 +172,27 @@ export function CompanionHomeDock({
   }
 
   return (
-    <div className="pointer-events-auto fixed bottom-3 left-1/2 -translate-x-1/2 z-40 w-fit max-w-[96vw] flex flex-col items-center gap-1.5">
+    <div
+      data-dock
+      className="pointer-events-auto fixed bottom-3 left-1/2 -translate-x-1/2 z-40 w-fit max-w-[96vw] flex flex-col items-center gap-1.5"
+    >
       <CompanionModeSubbar
         playMode={playMode}
         rallyCount={rallyCount}
         bugsLeft={bugsLeft}
         artVerdict={artVerdict}
         autoJam={autoJam}
-        micMode={micMode}
         activePad={activePad}
         onCritiqueArt={onCritiqueArt}
         onClearPaint={onClearPaint}
         onReleaseBugs={onReleaseBugs}
         onHitPad={onHitPad}
         onToggleAutoJam={onToggleAutoJam}
-        onFireClapPulse={onFireClapPulse}
       />
 
       {openDrawer && (
         <div
-          className="mochi-pop w-fit max-w-[94vw] rounded-2xl px-3 py-2"
+          className="mochi-pop w-fit max-w-[94vw] rounded-2xl px-3.5 py-2.5"
           style={{
             backgroundColor: ui.glass,
             border: `1px solid ${ui.borderStrong}`,
@@ -222,32 +223,6 @@ export function CompanionHomeDock({
                   );
                 })}
               </div>
-
-              {charStyle === "aura" && (
-                <div className="flex items-center justify-center gap-2 pt-0.5">
-                  <span className="font-mono text-[9.5px] uppercase tracking-wider" style={{ color: ui.muted }}>
-                    Finish:
-                  </span>
-                  {(Object.values(AURA_FINISHES) as Array<(typeof AURA_FINISHES)[AuraFinishId]>).map((fin) => {
-                    const active = auraFinish === fin.id;
-                    return (
-                      <button
-                        key={fin.id}
-                        type="button"
-                        title={fin.name}
-                        aria-label={`Select ${fin.name} finish`}
-                        onClick={() => onSelectAuraFinish(fin.id)}
-                        className="w-5 h-5 rounded-full cursor-pointer transition-transform hover:scale-110"
-                        style={{
-                          backgroundColor: fin.dot,
-                          border: active ? `2.5px solid ${styleMeta.accent}` : `1.5px solid ${ui.borderStrong}`,
-                          boxShadow: active ? `0 0 0 2px ${styleMeta.accent}44` : "none",
-                        }}
-                      />
-                    );
-                  })}
-                </div>
-              )}
 
               <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar sm:flex-wrap sm:justify-center">
                 {ACCESSORIES.map((acc) => {
@@ -434,18 +409,7 @@ export function CompanionHomeDock({
                 🤧 Sneeze
               </button>
 
-              <button
-                type="button"
-                onClick={onToggleVoiceBeat}
-                className="m4-focus whitespace-nowrap rounded-full px-2.5 py-1 font-mono text-[10px] font-medium cursor-pointer"
-                style={{
-                  backgroundColor: micMode !== "off" ? "#8B5CF6" : ui.recessed,
-                  color: micMode !== "off" ? "#FFFFFF" : ui.ink,
-                  border: micMode !== "off" ? "1px solid #8B5CF6" : `1px solid ${ui.border}`,
-                }}
-              >
-                🎙️ Voice/Beat
-              </button>
+              {/* Voice/Beat mic beta paused for now */}
 
               <button
                 type="button"
@@ -469,14 +433,62 @@ export function CompanionHomeDock({
 
           {openDrawer === "pranks" && (
             <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar sm:justify-center">
+              <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar sm:flex-wrap sm:justify-center">
                 <button
                   type="button"
                   onClick={onChaosPrank}
                   className="m4-focus whitespace-nowrap rounded-full px-2.5 py-1 font-mono text-[10px] font-semibold cursor-pointer"
                   style={{ backgroundColor: "#E03E2D", color: "#FFFFFF" }}
                 >
-                  😈 Chaos Prank
+                  🎲 Random Chaos
+                </button>
+                <button
+                  type="button"
+                  onClick={onFridayDeploy}
+                  className="m4-focus whitespace-nowrap rounded-full px-2.5 py-1 font-mono text-[10px] font-semibold cursor-pointer"
+                  style={{ backgroundColor: "#F59E0B", color: "#111827" }}
+                >
+                  🚨 Friday Deploy
+                </button>
+                <button
+                  type="button"
+                  onClick={onFakeCrash}
+                  className="m4-focus whitespace-nowrap rounded-full px-2.5 py-1 font-mono text-[10px] font-semibold cursor-pointer"
+                  style={{ backgroundColor: "#1D4ED8", color: "#FFFFFF" }}
+                >
+                  💙 Fake BSOD
+                </button>
+                <button
+                  type="button"
+                  onClick={onDevRoast}
+                  className="m4-focus whitespace-nowrap rounded-full px-2.5 py-1 font-mono text-[10px] cursor-pointer"
+                  style={{ backgroundColor: ui.recessed, color: ui.ink, border: `1px solid ${ui.border}` }}
+                >
+                  🔥 Roast Me
+                </button>
+                <button
+                  type="button"
+                  onClick={onDevJoke}
+                  className="m4-focus whitespace-nowrap rounded-full px-2.5 py-1 font-mono text-[10px] cursor-pointer"
+                  style={{ backgroundColor: ui.recessed, color: ui.ink, border: `1px solid ${ui.border}` }}
+                >
+                  🤣 Dev Joke
+                </button>
+                <button
+                  type="button"
+                  onClick={onStickyPrank}
+                  className="m4-focus whitespace-nowrap rounded-full px-2.5 py-1 font-mono text-[10px] cursor-pointer"
+                  style={{ backgroundColor: ui.recessed, color: ui.ink, border: `1px solid ${ui.border}` }}
+                >
+                  📌 Sticky Note
+                </button>
+                <button
+                  type="button"
+                  onClick={onDiscoRave}
+                  className="m4-focus whitespace-nowrap rounded-full px-2.5 py-1 font-mono text-[10px] cursor-pointer"
+                  style={{ backgroundColor: ui.recessed, color: ui.ink, border: `1px solid ${ui.border}` }}
+                >
+                  🪩 Disco Rave
                 </button>
                 <button
                   type="button"
@@ -512,7 +524,13 @@ export function CompanionHomeDock({
                 </button>
               </div>
 
-              <form onSubmit={onChatSubmit} className="w-full max-w-[640px] mx-auto flex items-center gap-1.5">
+              <form
+                onSubmit={onChatSubmit}
+                onPointerDown={(e) => e.stopPropagation()}
+                onMouseDown={(e) => e.stopPropagation()}
+                onKeyDown={(e) => e.stopPropagation()}
+                className="w-[min(86vw,560px)] mx-auto flex items-center gap-1.5 select-text"
+              >
                 <button
                   type="button"
                   aria-pressed={secretMode}
@@ -539,13 +557,15 @@ export function CompanionHomeDock({
                   onFocus={() => setChatFocused(true)}
                   onBlur={() => setChatFocused(false)}
                   onChange={(e) => setChatText(e.target.value)}
-                  placeholder="Say hi, roast, joke, flip, sneeze, bugs, portal, photo..."
+                  onPointerDown={(e) => e.stopPropagation()}
+                  onKeyDown={(e) => e.stopPropagation()}
+                  placeholder="Type: friday, crash, roast, joke, pizza, flip, laser..."
                   aria-label="Chat with MOCHI-04"
-                  className="flex-1 min-w-0 rounded-full px-3 py-1.5 text-xs outline-none"
+                  className="flex-1 min-w-[200px] select-text pointer-events-auto rounded-full px-3 py-1.5 text-xs outline-none focus:ring-2 focus:ring-sky-400/50"
                   style={{
                     backgroundColor: ui.recessed,
                     color: ui.ink,
-                    border: `1px solid ${ui.border}`,
+                    border: `1px solid ${ui.borderStrong}`,
                   }}
                 />
 
@@ -626,12 +646,12 @@ export function CompanionHomeDock({
         <div className="hidden md:flex items-center gap-1 shrink-0">
           <button
             type="button"
-            title="Throw Ghost Pepper"
-            onClick={() => onThrowSnack("pepper")}
+            title="Throw Cold Pizza"
+            onClick={() => onThrowSnack("pizza")}
             className="m4-focus rounded-full w-6.5 h-6.5 flex items-center justify-center text-xs cursor-pointer transition-transform active:scale-90"
             style={{ backgroundColor: ui.recessed, border: `1px solid ${ui.border}` }}
           >
-            🌶️
+            🍕
           </button>
           <button
             type="button"
@@ -644,21 +664,12 @@ export function CompanionHomeDock({
           </button>
           <button
             type="button"
-            title="Sneeze"
-            onClick={onSneeze}
+            title="Friday Deploy Panic"
+            onClick={onFridayDeploy}
             className="m4-focus rounded-full w-6.5 h-6.5 flex items-center justify-center text-xs cursor-pointer transition-transform active:scale-90"
-            style={{ backgroundColor: ui.recessed, border: `1px solid ${ui.border}` }}
+            style={{ backgroundColor: "#F59E0B22", border: "1px solid #F59E0B55" }}
           >
-            🤧
-          </button>
-          <button
-            type="button"
-            title="3x Mini-Clones"
-            onClick={onMiniClones}
-            className="m4-focus rounded-full w-6.5 h-6.5 flex items-center justify-center text-xs cursor-pointer transition-transform active:scale-90"
-            style={{ backgroundColor: ui.recessed, border: `1px solid ${ui.border}` }}
-          >
-            👯
+            🚨
           </button>
           <button
             type="button"

@@ -141,15 +141,23 @@ export function CompanionQuickPopover({
         </button>
       </div>
 
-      <form onSubmit={onChatSubmit} className="flex items-center gap-1.5">
+      <form
+        onSubmit={onChatSubmit}
+        onPointerDown={(e) => e.stopPropagation()}
+        onMouseDown={(e) => e.stopPropagation()}
+        onKeyDown={(e) => e.stopPropagation()}
+        className="flex items-center gap-1.5 select-text"
+      >
         <input
           type="text"
           value={chatText}
           onFocus={() => setChatFocused(true)}
           onBlur={() => setChatFocused(false)}
           onChange={(e) => setChatText(e.target.value)}
-          placeholder="Say hi, roast, joke, flip…"
-          className="flex-1 min-w-0 rounded-lg px-2.5 py-1.5 text-xs outline-none"
+          onPointerDown={(e) => e.stopPropagation()}
+          onKeyDown={(e) => e.stopPropagation()}
+          placeholder="Say hi, roast, joke, friday, flip…"
+          className="flex-1 min-w-0 select-text pointer-events-auto rounded-lg px-2.5 py-1.5 text-xs outline-none"
           style={{ backgroundColor: ui.recessed, color: ui.ink }}
         />
         <button

@@ -28,14 +28,11 @@ export interface UseCompanionLoopParams {
   simRef: MutableRefObject<SimState>;
   liveRef: MutableRefObject<LiveSnapshot>;
   timersRef: MutableRefObject<CompanionTimers>;
-  analyserRef: MutableRefObject<AnalyserNode | null>;
-  analyserDataRef: MutableRefObject<Uint8Array<ArrayBuffer> | null>;
   viewMode: ViewMode;
   consumeSnack: (snack: SnackEntity) => void;
   say: (text: string, holdMs?: number, silent?: boolean) => void;
   spawnParticles: (kind: ParticleKind, x: number, y: number, count?: number, customColor?: string | null) => void;
   handleBodyPoke: () => void;
-  stopMic: () => void;
   setIsHeld: Dispatch<SetStateAction<boolean>>;
   setDizzyActive: Dispatch<SetStateAction<boolean>>;
   setTickledActive: Dispatch<SetStateAction<boolean>>;
@@ -52,14 +49,11 @@ export function useCompanionLoop({
   simRef,
   liveRef,
   timersRef,
-  analyserRef,
-  analyserDataRef,
   viewMode,
   consumeSnack,
   say,
   spawnParticles,
   handleBodyPoke,
-  stopMic,
   setIsHeld,
   setDizzyActive,
   setTickledActive,
@@ -152,15 +146,14 @@ export function useCompanionLoop({
     return () => ro.disconnect();
   }, [fxCanvasRef, simRef, stageRef, viewMode]);
 
-  // Cleanup Timers, Mic & AudioContext on Unmount
+  // Cleanup Timers & AudioContext on Unmount
   useEffect(() => {
     const timers = timersRef.current;
     return () => {
       clearAllCompanionTimers(timers);
-      stopMic();
       closeSharedAudioContext();
     };
-  }, [stopMic, timersRef]);
+  }, [timersRef]);
 
   // Single 60 FPS Simulation & Canvas FX Loop
   useEffect(() => {
@@ -204,18 +197,9 @@ export function useCompanionLoop({
       if (sim.tickle.decay <= 0) sim.tickle.strokes = 0;
       sim.tickle.cd = Math.max(0, sim.tickle.cd - dt);
 
-      // Live Web Audio Microphone sampling
-      if (live.micMode === "live" && analyserRef.current && analyserDataRef.current) {
-        analyserRef.current.getByteFrequencyData(analyserDataRef.current);
-        let sum = 0;
-        const bins = Math.min(24, analyserDataRef.current.length);
-        for (let i = 0; i < bins; i++) sum += analyserDataRef.current[i];
-        const level = clamp((sum / (bins * 255)) * 2.4, 0, 1);
-        if (level > sim.beatEnergy) sim.beatEnergy = level;
-        if (level > 0.52 && sim.soundRings.length < 4) {
-          sim.soundRings.push({ x: sim.x, y: sim.y + 34, r: 24, maxR: 220, age: 0, color: "#38BDF8" });
-        }
-      }
+      /* Voice/Beat beta paused for now
+      if (live.micMode === "live" && analyserRef.current && analyserDataRef.current) { ... }
+      */
 
       // Squish-Charge Jump (> 0.35s press & hold without dragging)
       if (sim.drag.active && !sim.drag.moved) {
@@ -251,8 +235,6 @@ export function useCompanionLoop({
     rafId = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafId);
   }, [
-    analyserDataRef,
-    analyserRef,
     consumeSnack,
     elementsRef,
     fxCanvasRef,

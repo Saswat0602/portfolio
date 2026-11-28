@@ -9,14 +9,12 @@ export interface CompanionModeSubbarProps {
   bugsLeft: number;
   artVerdict: ArtRatingMeta | null;
   autoJam: boolean;
-  micMode: "off" | "live" | "fallback";
   activePad: string | null;
   onCritiqueArt: () => void;
   onClearPaint: () => void;
   onReleaseBugs: () => void;
   onHitPad: (pad: SynthPadMeta) => void;
   onToggleAutoJam: () => void;
-  onFireClapPulse: () => void;
 }
 
 export function CompanionModeSubbar({
@@ -24,21 +22,18 @@ export function CompanionModeSubbar({
   rallyCount,
   bugsLeft,
   autoJam,
-  micMode,
   activePad,
   onCritiqueArt,
   onClearPaint,
   onReleaseBugs,
   onHitPad,
   onToggleAutoJam,
-  onFireClapPulse,
 }: CompanionModeSubbarProps) {
   const showBar =
     playMode === "paint" ||
     playMode === "dj" ||
     playMode === "catch" ||
-    playMode === "bugs" ||
-    micMode === "fallback";
+    playMode === "bugs";
 
   if (!showBar) return null;
 
@@ -118,16 +113,6 @@ export function CompanionModeSubbar({
             {autoJam ? "Grooving ♫" : "Auto Groove"}
           </button>
         </>
-      )}
-
-      {micMode === "fallback" && (
-        <button
-          type="button"
-          onClick={onFireClapPulse}
-          className="rounded-full bg-violet-500 px-2.5 py-0.5 font-medium text-white hover:bg-violet-400 transition-colors cursor-pointer"
-        >
-          Clap Pulse ⚡
-        </button>
       )}
     </div>
   );

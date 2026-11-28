@@ -7,6 +7,7 @@ export interface CompanionFaceExpressionsProps {
   displayMood: MoodId;
   spicyActive: boolean;
   sourActive: boolean;
+  pizzaActive: boolean;
   dizzyActive: boolean;
   tickledActive: boolean;
   pettingActive: boolean;
@@ -20,6 +21,7 @@ export function CompanionFaceExpressions({
   displayMood,
   spicyActive,
   sourActive,
+  pizzaActive,
   dizzyActive,
   tickledActive,
   pettingActive,
@@ -68,6 +70,28 @@ export function CompanionFaceExpressions({
           <path d="M 183 155 Q 196 136, 209 155" />
           <path d="M 157 166 Q 170 184, 183 166 Z" fill={tickledActive ? "#FB7185" : "none"} strokeWidth="2.8" />
         </g>
+      </g>
+    );
+  }
+
+  if (pizzaActive) {
+    return (
+      <g>
+        <ellipse cx="123" cy="168" rx="11.5" ry="6" fill="#FB923C" opacity="0.65" />
+        <ellipse cx="217" cy="168" rx="11.5" ry="6" fill="#FB923C" opacity="0.65" />
+        <g stroke={primaryInk} strokeWidth="4" strokeLinecap="round" fill="none">
+          <path d="M 131 151 Q 144 137, 157 151" />
+          <path d="M 183 151 Q 196 137, 209 151" />
+        </g>
+        <path
+          d="M 154 166 Q 170 192, 186 166 Z"
+          fill="#FB7185"
+          stroke={primaryInk}
+          strokeWidth="2.8"
+          strokeLinejoin="round"
+        />
+        <ellipse cx="170" cy="176" rx="7" ry="4" fill="#F43F5E" />
+        <polygon points="168,125 174,113 181,123" fill="#F59E0B" stroke={primaryInk} strokeWidth="1.2" />
       </g>
     );
   }

@@ -1,4 +1,4 @@
-import { AURA_FINISHES, type MoodId } from "@/lib/data";
+import { CHARACTER_STYLES, type MoodId } from "@/lib/data";
 import type { LiveSnapshot, PortalPoint, SimState } from "../types";
 import { clamp, hexToRgb, rgbaStr } from "./physics";
 
@@ -472,7 +472,8 @@ export function renderCompanionStageCanvas(
   ctx.clearRect(0, 0, sim.w, sim.h);
 
   const isDark = live.theme === "dark";
-  const accentHex = live.charStyle === "aura" ? AURA_FINISHES[live.auraFinish].eyeBright : "#38BDF8";
+  const accentHex =
+    CHARACTER_STYLES.find((c) => c.id === live.charStyle)?.accent ?? "#38BDF8";
 
   drawMoodBackdropFx(ctx, sim, live.displayMood, drawX, drawY, isDark, dt);
   drawInteractiveModesFx(ctx, sim, live, drawX, drawY, accentHex, dt);

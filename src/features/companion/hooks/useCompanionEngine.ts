@@ -8,12 +8,10 @@ import {
   type RefObject,
 } from "react";
 import {
-  AURA_FINISHES,
   CHARACTER_STYLES,
   MOODS,
   SYNTH_PADS,
   type AccessoryId,
-  type AuraFinishId,
   type CharacterStyleId,
   type MoodId,
   type PlayModeId,
@@ -26,7 +24,6 @@ import type {
   CompanionTimers,
   DockTab,
   LiveSnapshot,
-  MicMode,
   PolaroidCard,
   PortfolioHoverTarget,
   SimState,
@@ -52,7 +49,6 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
   const { theme, toggleTheme } = useTheme();
   const [viewMode, setViewMode] = useState<ViewMode>(options.initialViewMode ?? "stage");
   const [charStyle, setCharStyle] = useState<CharacterStyleId>(options.initialStyle ?? "vinyl");
-  const [auraFinish, setAuraFinish] = useState<AuraFinishId>("pearl");
   const [accessory, setAccessory] = useState<AccessoryId>("none");
   const [playMode, setPlayMode] = useState<PlayModeId>("interact");
   const [mood, setMood] = useState<MoodId>("playful");
@@ -74,11 +70,11 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
   const [artVerdict, setArtVerdict] = useState<ArtVerdictState | null>(null);
   const [autoJam, setAutoJam] = useState<boolean>(false);
   const [activePad, setActivePad] = useState<string | null>(null);
-  const [micMode, setMicMode] = useState<MicMode>("off");
 
   // Slapstick Reaction Overrides
   const [spicyActive, setSpicyActive] = useState<boolean>(false);
   const [sourActive, setSourActive] = useState<boolean>(false);
+  const [pizzaActive, setPizzaActive] = useState<boolean>(false);
   const [caffeinatedActive, setCaffeinatedActive] = useState<boolean>(false);
   const [spinTopActive, setSpinTopActive] = useState<boolean>(false);
   const [dizzyActive, setDizzyActive] = useState<boolean>(false);
@@ -88,6 +84,8 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
   const [cursorSnatched, setCursorSnatched] = useState<boolean>(false);
   const [cloneDuelActive, setCloneDuelActive] = useState<boolean>(false);
   const [cloneSpeech, setCloneSpeech] = useState<string>("");
+  const [fridayDeployActive, setFridayDeployActive] = useState<boolean>(false);
+  const [fakeCrashActive, setFakeCrashActive] = useState<boolean>(false);
 
   // Draggable Polaroids & Sticky Note
   const [polaroids, setPolaroids] = useState<PolaroidCard[]>([]);
@@ -110,9 +108,6 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
   const polaroidSeqRef = useRef(1);
   const snackSeqRef = useRef(1);
   const simRef = useRef<SimState>(createInitialSimState());
-  const micStreamRef = useRef<MediaStream | null>(null);
-  const analyserRef = useRef<AnalyserNode | null>(null);
-  const analyserDataRef = useRef<Uint8Array<ArrayBuffer> | null>(null);
 
   const displayMood = useMemo<MoodId>(() => {
     if (portfolioHover === "hire") return "lovestruck";
@@ -127,13 +122,10 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
     [displayMood]
   );
 
-  const styleMeta = useMemo(() => {
-    const base = CHARACTER_STYLES.find((c) => c.id === charStyle) || CHARACTER_STYLES[0];
-    if (charStyle === "aura") {
-      return { ...base, accent: AURA_FINISHES[auraFinish].eyeBright };
-    }
-    return base;
-  }, [auraFinish, charStyle]);
+  const styleMeta = useMemo(
+    () => CHARACTER_STYLES.find((c) => c.id === charStyle) || CHARACTER_STYLES[0],
+    [charStyle]
+  );
 
   const isDark = theme === "dark";
 
@@ -141,7 +133,7 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
     () => ({
       bg: isDark ? "#060b13" : "#F6F4EF",
       surface: isDark ? "#0c1524" : "#FFFFFF",
-      glass: isDark ? "rgba(12, 21, 36, 0.86)" : "rgba(255, 255, 255, 0.88)",
+      glass: isDark ? "rgba(12, 21, 36, 0.88)" : "rgba(255, 255, 255, 0.90)",
       recessed: isDark ? "#111d30" : "#ECE9E1",
       ink: isDark ? "#f0f6fc" : "#161618",
       muted: isDark ? "#94a3b8" : "#6A6760",
@@ -156,7 +148,6 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
     theme,
     viewMode,
     charStyle,
-    auraFinish,
     accessory,
     playMode,
     displayMood,
@@ -169,6 +160,7 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
     photoPosing,
     spicyActive,
     sourActive,
+    pizzaActive,
     caffeinatedActive,
     spinTopActive,
     dizzyActive,
@@ -177,12 +169,14 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
     isHeld,
     cursorSnatched,
     cloneDuelActive,
+    fridayDeployActive,
+    fakeCrashActive,
     secretMode,
     peeking,
     chatFocused,
     chatLen: chatText.length,
     portfolioHover,
-    micMode,
+    micMode: "off",
   });
 
   useEffect(() => {
@@ -190,7 +184,6 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
       theme,
       viewMode,
       charStyle,
-      auraFinish,
       accessory,
       playMode,
       displayMood,
@@ -203,6 +196,7 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
       photoPosing,
       spicyActive,
       sourActive,
+      pizzaActive,
       caffeinatedActive,
       spinTopActive,
       dizzyActive,
@@ -211,18 +205,19 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
       isHeld,
       cursorSnatched,
       cloneDuelActive,
+      fridayDeployActive,
+      fakeCrashActive,
       secretMode,
       peeking,
       chatFocused,
       chatLen: chatText.length,
       portfolioHover,
-      micMode,
+      micMode: "off",
     };
   }, [
     theme,
     viewMode,
     charStyle,
-    auraFinish,
     accessory,
     playMode,
     displayMood,
@@ -235,6 +230,7 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
     photoPosing,
     spicyActive,
     sourActive,
+    pizzaActive,
     caffeinatedActive,
     spinTopActive,
     dizzyActive,
@@ -243,12 +239,13 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
     isHeld,
     cursorSnatched,
     cloneDuelActive,
+    fridayDeployActive,
+    fakeCrashActive,
     secretMode,
     peeking,
     chatFocused,
     chatText.length,
     portfolioHover,
-    micMode,
   ]);
 
   const actions = useCompanionActions(
@@ -259,9 +256,6 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
       pokeRef,
       polaroidSeqRef,
       snackSeqRef,
-      micStreamRef,
-      analyserRef,
-      analyserDataRef,
     },
     {
       setCharStyle,
@@ -278,6 +272,7 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
       setPhotoPosing,
       setSpicyActive,
       setSourActive,
+      setPizzaActive,
       setCaffeinatedActive,
       setSpinTopActive,
       setDizzyActive,
@@ -285,6 +280,8 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
       setCursorSnatched,
       setCloneDuelActive,
       setCloneSpeech,
+      setFridayDeployActive,
+      setFakeCrashActive,
       setPolaroids,
       setStickyNote,
       setSpeechShown,
@@ -293,7 +290,6 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
       setArtVerdict,
       setAutoJam,
       setActivePad,
-      setMicMode,
       chatText,
       setChatText,
     }
@@ -306,14 +302,11 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
     simRef,
     liveRef,
     timersRef,
-    analyserRef,
-    analyserDataRef,
     viewMode,
     consumeSnack: actions.consumeSnack,
     say: actions.say,
     spawnParticles: actions.spawnParticles,
     handleBodyPoke: actions.handleBodyPoke,
-    stopMic: actions.stopMic,
     setIsHeld,
     setDizzyActive,
     setTickledActive,
@@ -343,7 +336,7 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
     };
   }, [autoJam, hitSynthPad, playMode]);
 
-  // Keyboard shortcuts for DJ Jam (A S D F G H J) & Escape to exit Laser/Paint/Feather/Portal
+  // Keyboard shortcuts for DJ Jam (A S D F G H J) & Escape to exit Laser/Paint/Feather/Portal/BSOD
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey || e.altKey || e.repeat) return;
@@ -354,6 +347,8 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
         setPortalTool(false);
         setFeatherTool(false);
         setAutoJam(false);
+        setFakeCrashActive(false);
+        setFridayDeployActive(false);
         if (liveRef.current.playMode !== "interact") setPlayMode("interact");
         return;
       }
@@ -510,8 +505,6 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
     viewMode,
     setViewMode,
     charStyle,
-    auraFinish,
-    setAuraFinish,
     accessory,
     playMode,
     styleMeta,
@@ -539,9 +532,9 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
     autoJam,
     setAutoJam,
     activePad,
-    micMode,
     spicyActive,
     sourActive,
+    pizzaActive,
     spinTopActive,
     dizzyActive,
     tickledActive,
@@ -550,6 +543,10 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
     cursorSnatched,
     cloneDuelActive,
     cloneSpeech,
+    fridayDeployActive,
+    setFridayDeployActive,
+    fakeCrashActive,
+    setFakeCrashActive,
     polaroids,
     setPolaroids,
     stickyNote,

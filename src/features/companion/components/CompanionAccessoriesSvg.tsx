@@ -1,6 +1,6 @@
 "use client";
 
-import type { AccessoryId, AuraFinishMeta } from "@/lib/data";
+import type { AccessoryId } from "@/lib/data";
 
 export interface CompanionAccessoriesSvgProps {
   accessory: AccessoryId;
@@ -273,5 +273,3 @@ export function CompanionAccessoriesSvg({
     </g>
   );
 }
-
-export type { AuraFinishMeta };

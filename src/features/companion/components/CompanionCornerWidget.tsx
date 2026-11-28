@@ -17,8 +17,6 @@ export function CompanionCornerWidget() {
     isDark,
     ui,
     charStyle,
-    auraFinish,
-    setAuraFinish,
     accessory,
     playMode,
     selectPlayMode,
@@ -27,8 +25,6 @@ export function CompanionCornerWidget() {
     clearPaintStrokes,
     hitSynthPad,
     triggerMiniClones,
-    toggleVoiceBeat,
-    fireClapPulse,
     triggerSneeze,
     rallyCount,
     bugsLeft,
@@ -37,7 +33,6 @@ export function CompanionCornerWidget() {
     autoJam,
     setAutoJam,
     activePad,
-    micMode,
     styleMeta,
     mood,
     activeMoodMeta,
@@ -55,6 +50,7 @@ export function CompanionCornerWidget() {
     photoPosing,
     spicyActive,
     sourActive,
+    pizzaActive,
     dizzyActive,
     tickledActive,
     pettingActive,
@@ -62,6 +58,10 @@ export function CompanionCornerWidget() {
     cursorSnatched,
     cloneDuelActive,
     cloneSpeech,
+    fridayDeployActive,
+    setFridayDeployActive,
+    fakeCrashActive,
+    setFakeCrashActive,
     polaroids,
     setPolaroids,
     stickyNote,
@@ -86,6 +86,12 @@ export function CompanionCornerWidget() {
     triggerPhotoBooth,
     triggerGravityFlip,
     triggerCloneDuel,
+    triggerFridayDeploy,
+    triggerFakeCrash,
+    triggerDiscoRave,
+    triggerDevRoast,
+    triggerDevJoke,
+    triggerStickyPrank,
     triggerChaosPrank,
     handleResetStage,
     handleChatSubmit,
@@ -130,13 +136,13 @@ export function CompanionCornerWidget() {
       onPointerDown={handleStageDown}
       className={`${
         stagePointerActive ? "pointer-events-auto" : "pointer-events-none"
-      } ${stageCursorClass} fixed inset-0 z-40 overflow-hidden select-none ${
+      } ${stageCursorClass} fixed inset-0 z-40 overflow-hidden ${
         shakingStage ? "mochi-quake" : ""
       }`}
     >
       {(portalTool || playMode !== "interact") && (
         <div
-          className="pointer-events-auto fixed top-20 right-4 z-40 rounded-full px-3 py-1 font-mono text-[10.5px] shadow-md flex items-center gap-2"
+          className="pointer-events-auto fixed top-20 right-4 z-40 rounded-full px-3 py-1 font-mono text-[10.5px] shadow-md flex items-center gap-2 select-none"
           style={{
             backgroundColor: ui.glass,
             color: portalTool ? "#06B6D4" : styleMeta.accent,
@@ -183,16 +189,20 @@ export function CompanionCornerWidget() {
         soundOn={soundOn}
         artVerdict={artVerdict}
         onDismissArtVerdict={() => setArtVerdict(null)}
+        fridayDeployActive={fridayDeployActive}
+        onDismissFridayDeploy={() => setFridayDeployActive(false)}
+        fakeCrashActive={fakeCrashActive}
+        onDismissFakeCrash={() => setFakeCrashActive(false)}
       />
 
       <CompanionRigSvg
         isDark={isDark}
         styleMeta={styleMeta}
-        auraFinish={auraFinish}
         accessory={accessory}
         activeMoodMeta={activeMoodMeta}
         spicyActive={spicyActive}
         sourActive={sourActive}
+        pizzaActive={pizzaActive}
         dizzyActive={dizzyActive}
         tickledActive={tickledActive}
         pettingActive={pettingActive}
@@ -205,7 +215,7 @@ export function CompanionCornerWidget() {
         onPointerDown={startRigDrag}
         onHeadPet={handleHeadPet}
         onPokeKey={handleBodyPoke}
-        initialTransform="translate3d(80vw, 56vh, 0) translate(-50%, -50%) scale(0.76)"
+        initialTransform="translate3d(84vw, 44vh, 0) translate(-50%, -50%) scale(0.76)"
       />
 
       <CompanionHomeDock
@@ -213,8 +223,6 @@ export function CompanionCornerWidget() {
         charStyle={charStyle}
         styleMeta={styleMeta}
         onSelectStyle={handleSelectStyle}
-        auraFinish={auraFinish}
-        onSelectAuraFinish={setAuraFinish}
         accessory={accessory}
         onSelectAccessory={handleSelectAccessory}
         playMode={playMode}
@@ -225,14 +233,11 @@ export function CompanionCornerWidget() {
         autoJam={autoJam}
         onToggleAutoJam={() => setAutoJam((v) => !v)}
         activePad={activePad}
-        micMode={micMode}
         onCritiqueArt={triggerArtCritique}
         onClearPaint={clearPaintStrokes}
         onReleaseBugs={releaseBugs}
         onHitPad={hitSynthPad}
         onMiniClones={triggerMiniClones}
-        onToggleVoiceBeat={toggleVoiceBeat}
-        onFireClapPulse={fireClapPulse}
         onSneeze={triggerSneeze}
         mood={mood}
         onSelectMood={handleSelectMood}
@@ -248,6 +253,12 @@ export function CompanionCornerWidget() {
         onShakeStage={triggerShakeStage}
         onPhotoBooth={triggerPhotoBooth}
         onChaosPrank={triggerChaosPrank}
+        onFridayDeploy={triggerFridayDeploy}
+        onFakeCrash={triggerFakeCrash}
+        onDiscoRave={triggerDiscoRave}
+        onDevRoast={triggerDevRoast}
+        onDevJoke={triggerDevJoke}
+        onStickyPrank={triggerStickyPrank}
         onGravityFlip={triggerGravityFlip}
         onCloneDuel={triggerCloneDuel}
         onBackflip={triggerBackflip}

@@ -25,8 +25,6 @@ export function CompanionStudio({ defaultFullscreen = false }: CompanionStudioPr
     viewMode,
     setViewMode,
     charStyle,
-    auraFinish,
-    setAuraFinish,
     accessory,
     playMode,
     selectPlayMode,
@@ -35,8 +33,6 @@ export function CompanionStudio({ defaultFullscreen = false }: CompanionStudioPr
     clearPaintStrokes,
     hitSynthPad,
     triggerMiniClones,
-    toggleVoiceBeat,
-    fireClapPulse,
     triggerSneeze,
     rallyCount,
     bugsLeft,
@@ -45,7 +41,6 @@ export function CompanionStudio({ defaultFullscreen = false }: CompanionStudioPr
     autoJam,
     setAutoJam,
     activePad,
-    micMode,
     styleMeta,
     mood,
     activeMoodMeta,
@@ -65,6 +60,7 @@ export function CompanionStudio({ defaultFullscreen = false }: CompanionStudioPr
     photoPosing,
     spicyActive,
     sourActive,
+    pizzaActive,
     dizzyActive,
     tickledActive,
     pettingActive,
@@ -72,6 +68,10 @@ export function CompanionStudio({ defaultFullscreen = false }: CompanionStudioPr
     cursorSnatched,
     cloneDuelActive,
     cloneSpeech,
+    fridayDeployActive,
+    setFridayDeployActive,
+    fakeCrashActive,
+    setFakeCrashActive,
     polaroids,
     setPolaroids,
     stickyNote,
@@ -99,6 +99,12 @@ export function CompanionStudio({ defaultFullscreen = false }: CompanionStudioPr
     triggerPhotoBooth,
     triggerGravityFlip,
     triggerCloneDuel,
+    triggerFridayDeploy,
+    triggerFakeCrash,
+    triggerDiscoRave,
+    triggerDevRoast,
+    triggerDevJoke,
+    triggerStickyPrank,
     triggerChaosPrank,
     handleResetStage,
     handleChatSubmit,
@@ -154,7 +160,7 @@ export function CompanionStudio({ defaultFullscreen = false }: CompanionStudioPr
       <main
         ref={stageRef}
         onPointerDown={handleStageDown}
-        className={`relative flex-1 w-full overflow-hidden select-none ${stageCursorClass}`}
+        className={`relative flex-1 w-full overflow-hidden ${stageCursorClass}`}
         style={{
           backgroundImage: isDark
             ? "radial-gradient(rgba(56, 189, 248, 0.12) 1px, transparent 1px)"
@@ -164,7 +170,7 @@ export function CompanionStudio({ defaultFullscreen = false }: CompanionStudioPr
       >
         {viewMode === "stage" && (
           <div
-            className="pointer-events-none absolute top-4 left-5 z-10 flex flex-wrap items-center gap-2 font-mono text-[10px] uppercase tracking-[0.08em]"
+            className="pointer-events-none select-none absolute top-4 left-5 z-10 flex flex-wrap items-center gap-2 font-mono text-[10px] uppercase tracking-[0.08em]"
             style={{ color: ui.muted }}
           >
             <span className="font-semibold" style={{ color: ui.ink }}>
@@ -213,16 +219,20 @@ export function CompanionStudio({ defaultFullscreen = false }: CompanionStudioPr
           soundOn={soundOn}
           artVerdict={artVerdict}
           onDismissArtVerdict={() => setArtVerdict(null)}
+          fridayDeployActive={fridayDeployActive}
+          onDismissFridayDeploy={() => setFridayDeployActive(false)}
+          fakeCrashActive={fakeCrashActive}
+          onDismissFakeCrash={() => setFakeCrashActive(false)}
         />
 
         <CompanionRigSvg
           isDark={isDark}
           styleMeta={styleMeta}
-          auraFinish={auraFinish}
           accessory={accessory}
           activeMoodMeta={activeMoodMeta}
           spicyActive={spicyActive}
           sourActive={sourActive}
+          pizzaActive={pizzaActive}
           dizzyActive={dizzyActive}
           tickledActive={tickledActive}
           pettingActive={pettingActive}
@@ -262,8 +272,6 @@ export function CompanionStudio({ defaultFullscreen = false }: CompanionStudioPr
             styleMeta={styleMeta}
             charStyle={charStyle}
             onSelectStyle={handleSelectStyle}
-            auraFinish={auraFinish}
-            onSelectAuraFinish={setAuraFinish}
             accessory={accessory}
             onSelectAccessory={handleSelectAccessory}
             playMode={playMode}
@@ -274,14 +282,11 @@ export function CompanionStudio({ defaultFullscreen = false }: CompanionStudioPr
             autoJam={autoJam}
             onToggleAutoJam={() => setAutoJam((v) => !v)}
             activePad={activePad}
-            micMode={micMode}
             onCritiqueArt={triggerArtCritique}
             onClearPaint={clearPaintStrokes}
             onReleaseBugs={releaseBugs}
             onHitPad={hitSynthPad}
             onMiniClones={triggerMiniClones}
-            onToggleVoiceBeat={toggleVoiceBeat}
-            onFireClapPulse={fireClapPulse}
             onSneeze={triggerSneeze}
             dockTab={dockTab}
             setDockTab={setDockTab}
@@ -299,6 +304,12 @@ export function CompanionStudio({ defaultFullscreen = false }: CompanionStudioPr
             onShakeStage={triggerShakeStage}
             onPhotoBooth={triggerPhotoBooth}
             onChaosPrank={triggerChaosPrank}
+            onFridayDeploy={triggerFridayDeploy}
+            onFakeCrash={triggerFakeCrash}
+            onDiscoRave={triggerDiscoRave}
+            onDevRoast={triggerDevRoast}
+            onDevJoke={triggerDevJoke}
+            onStickyPrank={triggerStickyPrank}
             onGravityFlip={triggerGravityFlip}
             onCloneDuel={triggerCloneDuel}
             onBackflip={triggerBackflip}

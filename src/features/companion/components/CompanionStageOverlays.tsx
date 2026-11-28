@@ -26,6 +26,10 @@ export interface CompanionStageOverlaysProps {
   soundOn: boolean;
   artVerdict?: ArtRatingMeta | null;
   onDismissArtVerdict?: () => void;
+  fridayDeployActive?: boolean;
+  onDismissFridayDeploy?: () => void;
+  fakeCrashActive?: boolean;
+  onDismissFakeCrash?: () => void;
 }
 
 export function CompanionStageOverlays({
@@ -44,6 +48,10 @@ export function CompanionStageOverlays({
   soundOn,
   artVerdict = null,
   onDismissArtVerdict,
+  fridayDeployActive = false,
+  onDismissFridayDeploy,
+  fakeCrashActive = false,
+  onDismissFakeCrash,
 }: CompanionStageOverlaysProps) {
   return (
     <>
@@ -189,6 +197,42 @@ export function CompanionStageOverlays({
           </div>
         )}
       </div>
+
+      {fridayDeployActive && (
+        <div className="mochi-pop pointer-events-auto fixed top-20 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 rounded-xl border border-rose-500/80 bg-rose-950/92 px-4 py-2 text-rose-100 shadow-2xl backdrop-blur-md">
+          <span className="h-2.5 w-2.5 rounded-full bg-rose-500 animate-ping" />
+          <div className="font-mono text-[11px] font-bold tracking-wide">
+            🚨 FRIDAY 5:58 PM PROD DEPLOY IN PROGRESS — ROLLBACK RECOMMENDED
+          </div>
+          {onDismissFridayDeploy && (
+            <button
+              type="button"
+              onClick={onDismissFridayDeploy}
+              className="rounded-md bg-rose-500 px-2 py-0.5 font-mono text-[10px] font-bold text-white cursor-pointer hover:bg-rose-400"
+            >
+              Abort
+            </button>
+          )}
+        </div>
+      )}
+
+      {fakeCrashActive && (
+        <button
+          type="button"
+          onClick={onDismissFakeCrash}
+          className="mochi-pop pointer-events-auto fixed inset-0 z-50 flex items-center justify-center bg-blue-800/88 p-6 text-left text-white backdrop-blur-xs cursor-pointer"
+        >
+          <div className="max-w-lg space-y-3 font-mono">
+            <div className="text-4xl font-black">:(</div>
+            <div className="text-sm leading-relaxed">
+              MOCHI_KERNEL_PANIC: Your flex container ran into too much swagger and needs to reboot. We are collecting anonymous coffee telemetry (100% complete).
+            </div>
+            <div className="text-xs text-blue-200">
+              Stop code: SHIPPED_ON_FRIDAY_WITHOUT_TESTS · Click anywhere to reboot
+            </div>
+          </div>
+        </button>
+      )}
 
       {artVerdict && (
         <div

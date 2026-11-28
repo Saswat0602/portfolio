@@ -1,8 +1,6 @@
 import userData, { type ProjectData } from "./userdata";
 
-export type CharacterStyleId = "vinyl" | "crt" | "paper" | "astro" | "aura" | "bit";
-
-export type AuraFinishId = "pearl" | "obsidian" | "vermilion" | "matcha" | "iridescent";
+export type CharacterStyleId = "vinyl" | "bit" | "crt" | "paper" | "astro";
 
 export type AccessoryId =
   | "none"
@@ -39,24 +37,6 @@ export interface CharacterStyleMeta {
   label: string;
   accent: string;
   tag: string;
-}
-
-export interface AuraFinishMeta {
-  id: AuraFinishId;
-  name: string;
-  dot: string;
-  trim: string;
-  eye: string;
-  eyeBright: string;
-  body: readonly [string, string, string, string];
-  head: readonly [string, string, string, string];
-  paw: readonly [string, string, string];
-  ear: readonly [string, string, string];
-  stroke: string;
-  seam: string;
-  spec: string;
-  rimCool: string;
-  antenna: string;
 }
 
 export interface AccessoryMeta {
@@ -115,100 +95,11 @@ export interface RainDropSeed {
 
 export const CHARACTER_STYLES: readonly CharacterStyleMeta[] = [
   { id: "vinyl", label: "Vinyl Mochi", accent: "#FF6B4A", tag: "DESIGNER TOY" },
-  { id: "aura", label: "AURA-03", accent: "#2563EB", tag: "CERAMIC BOT" },
   { id: "bit", label: "BIT-02", accent: "#E03E2D", tag: "DESKTOP MISCHIEF" },
   { id: "crt", label: "Retro CRT", accent: "#10B981", tag: "1984 POCKET TV" },
   { id: "paper", label: "Paper Spirit", accent: "#D4A037", tag: "ORIGAMI MASK" },
   { id: "astro", label: "Astro Pod", accent: "#38BDF8", tag: "SPACE CAPSULE" },
 ] as const;
-
-export const AURA_FINISHES: Record<AuraFinishId, AuraFinishMeta> = {
-  pearl: {
-    id: "pearl",
-    name: "Ceramic Pearl",
-    dot: "#F3EFE6",
-    trim: "#D8C3A5",
-    eye: "#2563EB",
-    eyeBright: "#60A5FA",
-    body: ["#FFFFFF", "#F8F6F1", "#E6E1D6", "#CEC7BA"],
-    head: ["#FFFFFF", "#FAF8F4", "#EAE5DB", "#D3CCC0"],
-    paw: ["#FFFFFF", "#F3EFE7", "#DAD4C8"],
-    ear: ["#F9F6F0", "#E5DFD4", "#C9C1B3"],
-    stroke: "rgba(24, 22, 20, 0.14)",
-    seam: "rgba(24, 22, 20, 0.10)",
-    spec: "rgba(255, 255, 255, 0.94)",
-    rimCool: "rgba(147, 197, 253, 0.35)",
-    antenna: "#B8A68E",
-  },
-  obsidian: {
-    id: "obsidian",
-    name: "Obsidian Chrome",
-    dot: "#18181D",
-    trim: "#9CA3AF",
-    eye: "#06B6D4",
-    eyeBright: "#22D3EE",
-    body: ["#3C404D", "#23252E", "#16171D", "#0D0E12"],
-    head: ["#454A59", "#272A34", "#181920", "#0E0F14"],
-    paw: ["#404554", "#242730", "#14151B"],
-    ear: ["#3A3E4C", "#21242C", "#121318"],
-    stroke: "rgba(255, 255, 255, 0.16)",
-    seam: "rgba(255, 255, 255, 0.10)",
-    spec: "rgba(255, 255, 255, 0.34)",
-    rimCool: "rgba(34, 211, 238, 0.38)",
-    antenna: "#788092",
-  },
-  vermilion: {
-    id: "vermilion",
-    name: "Swiss Vermilion",
-    dot: "#E84A27",
-    trim: "#F6F1E7",
-    eye: "#F59E0B",
-    eyeBright: "#FFF7ED",
-    body: ["#FF805D", "#EC522E", "#C93A18", "#99260C"],
-    head: ["#FF8C6B", "#EE5631", "#CE3D1B", "#A0290E"],
-    paw: ["#FF8563", "#E64C27", "#BA3414"],
-    ear: ["#F8F3E9", "#E5DDD0", "#CBC1B2"],
-    stroke: "rgba(56, 14, 4, 0.22)",
-    seam: "rgba(56, 14, 4, 0.15)",
-    spec: "rgba(255, 248, 240, 0.72)",
-    rimCool: "rgba(255, 237, 213, 0.45)",
-    antenna: "#D6CEC0",
-  },
-  matcha: {
-    id: "matcha",
-    name: "Matcha Ceramic",
-    dot: "#D8E2DC",
-    trim: "#C8A464",
-    eye: "#059669",
-    eyeBright: "#10B981",
-    body: ["#F1F6F3", "#DCE6E0", "#C2D1C8", "#A5B7AC"],
-    head: ["#F4F8F5", "#E0EAE4", "#C6D5CC", "#AABBB1"],
-    paw: ["#EFF5F1", "#D6E2DB", "#B8C8BF"],
-    ear: ["#E4D2AE", "#C8A464", "#9A7940"],
-    stroke: "rgba(20, 38, 29, 0.15)",
-    seam: "rgba(20, 38, 29, 0.11)",
-    spec: "rgba(255, 255, 255, 0.90)",
-    rimCool: "rgba(167, 243, 208, 0.40)",
-    antenna: "#B59457",
-  },
-  iridescent: {
-    id: "iridescent",
-    name: "Iridescent Pearl",
-    dot: "#E4D8F8",
-    trim: "#E8B4F8",
-    eye: "#A855F7",
-    eyeBright: "#C084FC",
-    body: ["#FFF8FD", "#EFE7FB", "#DDD6F6", "#C8C6EC"],
-    head: ["#FFFAFE", "#F3ECFD", "#E2DAF8", "#CCC9EE"],
-    paw: ["#FDF7FC", "#EAE2FA", "#CFCBEB"],
-    ear: ["#F8E8FA", "#DEC8F5", "#C2B2E6"],
-    stroke: "rgba(59, 32, 92, 0.15)",
-    seam: "rgba(59, 32, 92, 0.10)",
-    spec: "rgba(255, 255, 255, 0.95)",
-    rimCool: "rgba(192, 132, 252, 0.42)",
-    antenna: "#B9A3DE",
-  },
-};
 
 export const ACCESSORIES: readonly AccessoryMeta[] = [
   { id: "none", label: "None" },
@@ -251,6 +142,7 @@ export const ART_RATINGS: readonly ArtRatingMeta[] = [
   { title: "Late-Night CSS Refactor", score: "6.4 / 10", note: "Chaotic, mildly unstable, deeply relatable." },
   { title: "Minimalist Horizon IV", score: "9.4 / 10", note: "Dieter Rams himself would nod silently in approval." },
   { title: "Kinetic Doodle (Archival)", score: "10 / 10", note: "A masterpiece of human-robot collaboration." },
+  { title: "Asynchronous Noodle No. 9", score: "9.1 / 10", note: "Bold stroke velocity with zero hydration warnings." },
 ] as const;
 
 export const CATCH_QUIPS_HIT: readonly string[] = [
@@ -260,12 +152,96 @@ export const CATCH_QUIPS_HIT: readonly string[] = [
   "SPIKE!!",
   "CLEAN VOLLEY!",
   "FEEL THE TOPSPIN!",
+  "GRAND SLAM!!",
 ] as const;
 
 export const CATCH_QUIPS_DROP: readonly string[] = [
   "OOF MY RECORD.",
   "GRAVITY CHEATED.",
   "MY HANDS ARE MAGNETIC, NOT GLUE!",
+  "LAG SPIKE IN THE PHYSICS ENGINE!",
+] as const;
+
+export const PIZZA_QUIPS: readonly string[] = [
+  "2 AM cold pizza!! +100% pure serotonin & cheesy frames!!",
+  "*NOM NOM NOM* Best stack-trace topping in production!!",
+  "Mmm!! Carbs directly fuel my RK4 physics springs!!",
+  "*happy munching* Zero regret, extra mozzarella, *burp*!",
+  "Hot take: cold pepperoni compiles faster than clean salads.",
+  "Peak software nutrition achieved!! *blissful tummy rub*",
+] as const;
+
+export const FRIDAY_DEPLOY_QUIPS: readonly string[] = [
+  "🚨 GIT PUSH --FORCE ON A FRIDAY AT 5:58 PM?! SOUND THE SIRENS!!",
+  "🚨 PAGERDUTY IS GLOWING LIKE A CHRISTMAS TREE!! ROLLBACK! ROLLBACK!",
+  "🚨 WHO APPROVED THIS PR WITH 'LGTM 🚀' AND ZERO TESTS ON FRIDAY?!",
+  "🚨 PROD DB JUST SIGHED IN LOWERCASE!! HIDE BEHIND THE NGINX CONFIG!!",
+] as const;
+
+export const PHOTO_POSE_QUIPS: readonly string[] = [
+  "Cheese!! Hold my best designer-toy angle...",
+  "Wait! Fixing my gloss highlight for the cover shoot!",
+  "Say TypeScript!! No, wait—say ZERO LAYOUT SHIFT!",
+  "Strike a pose! Put me in 4K Swiss editorial lighting!",
+  "Hold still, activating studio rim flash in 3... 2...",
+  "Giving main-character energy for this Polaroid...",
+  "Channeling Vogue Tech Edition! Don't blink!!",
+  "Ready! Capturing 60FPS charisma on instant film!",
+] as const;
+
+export const PHOTO_PRINT_QUIPS: readonly string[] = [
+  "Fresh Polaroid printed! Drag it anywhere on stage.",
+  "Hot off the darkroom! Pin it right next to your favorite project.",
+  "Studio shot developed! That lighting cured two console warnings.",
+  "Frame-worthy! Drag this card around the screen like desktop confetti.",
+  "Zero filter needed—born with natural specular sheen.",
+  "Print complete! Proof I was supervising your portfolio today.",
+  "Archival edition #04 printed! Grab and toss it anywhere!",
+  "Clean bokeh, cleaner jawline. Drag to rearrange!",
+] as const;
+
+export const POKE_QUIPS = {
+  sleepyWake: [
+    "GAH!! I WASN’T SLEEPING, I WAS COMPILING!!",
+    "WHO DARES INTERRUPT MY GARBAGE COLLECTION NAP?!",
+    "5 MORE MINUTES—OH! PRODUCTION IS ON FIRE?! IM AWAKE!",
+  ],
+  first: [
+    "Hey! Watch the matte clearcoat!",
+    "Boop! Keep poking and see what my spring torque does.",
+    "Excuse me, that tickles my collision box!",
+    "Yo! Treat a 60FPS SVG with a little luxury!",
+  ],
+  second: [
+    "Excuse me? Two pokes in a row?!",
+    "Strike two, buddy. My eyebrows are officially lowering.",
+    "Do I look like a mechanical keyboard switch to you?!",
+    "Keep testing my patience and I steal your cursor!",
+  ],
+  third: [
+    "One more poke and I enter Beyblade panic mode!!",
+    "WARNING: Threat level Midnight! Back away from the vinyl!",
+    "Three pokes?! Initiating orbital defense spin in 3... 2...",
+    "That is IT—one more boop and nobody gets clean commits!",
+  ],
+  spinTop: [
+    "PANIC SPINNING TOP ENGAGED!! WOOOOOO!!",
+    "MAXIMUM GYROSCOPE OVERDRIVE!!",
+    "YOU ASKED FOR IT—BEYBLADE PROTOCOL ACTIVATED!!",
+  ],
+} as const;
+
+export const CHAT_FALLBACK_QUIPS: readonly string[] = [
+  "Filing that message directly into my priority snack queue!",
+  "Interesting take! Try typing: roast, joke, friday, crash, pizza, or laser!",
+  "10/10 prompt engineering. Now throw me a pepperoni slice!",
+  "My neural net (two RK4 springs and vibes) totally agrees.",
+  "Wait—say 'friday' or 'crash' if you dare test production stability!",
+  "Ack! Returning HTTP 200 OK with complimentary good vibes.",
+  "Noted! Adding that to Saswat’s next commit message (kidding).",
+  "Bold words from someone within cursor-snatching distance >:)",
+  "Type 'roast' for emotional damage or 'pizza' for a snack!",
+  "Scanning message... verdict: 98% human genius, 2% caffeine.",
 ] as const;
 
 export const MOODS: readonly MoodMeta[] = [
@@ -276,7 +252,11 @@ export const MOODS: readonly MoodMeta[] = [
     quips: [
       "Boop! Ready to break physics or build apps?",
       "Catch me if you can—my springs are freshly oiled!",
-      "Toss me a snack or switch to Laser/Catch/Magnet!",
+      "Toss me a snack or switch to Laser, Catch, Magnet, or Paint!",
+      "Hold me down to charge a giant squish-launch jump!",
+      "Double-click me for an Olympic-grade 360 backflip!",
+      "I run on zero layout shift and pure Saturday cartoon physics.",
+      "Swipe the Tickle Feather near me—I dare you!",
     ],
   },
   {
@@ -287,6 +267,10 @@ export const MOODS: readonly MoodMeta[] = [
       "Oh, you centered that div on the third try? Adorable.",
       "My code compiles on the first try. Literally never had a bug.",
       "Finger guns deployed. Zero unit tests, maximum confidence.",
+      "Clean architecture? Sweetheart, I AM the architecture.",
+      "Imagine pushing straight to main without a panic attack. Couldn't be you.",
+      "Yes, I read the docs BEFORE writing code. Stay jealous.",
+      "My Lighthouse score stays 100 even in airplane mode.",
     ],
   },
   {
@@ -297,6 +281,10 @@ export const MOODS: readonly MoodMeta[] = [
       "Alas! A missing semicolon... my soul is shattered!",
       "Spotlight on me, please. I am experiencing a 404 of the heart.",
       "Do not look at me while I weep in 60 frames per second!",
+      "The build failed at step 9 of 10... fade to black, cruel world!",
+      "Every deleted console.log was a piece of my youth!!",
+      "Tell my mother... the CSS cascade has forsaken me!",
+      "Curtains down! The flexbox wrapped when life was already fragile!",
     ],
   },
   {
@@ -307,6 +295,10 @@ export const MOODS: readonly MoodMeta[] = [
       "I CAN HEAR THE GARBAGE COLLECTOR RUNNING!!",
       "JUST REWROTE THE ENTIRE BACKEND IN 400 MILLISECONDS!!",
       "MY CLOCK SPEED IS YES!! GIVE ME ANOTHER ESPRESSO!!",
+      "NO NEED FOR AWAIT—MY PROMISES RESOLVE THROUGH PURE WILLPOWER!!",
+      "I CAN SEE EVERY BEZIER CONTROL POINT IN THE MULTIVERSE!!",
+      "TYPESCRIPT NARROWING AT MACH 4!! NO `ANY` SURVIVES!!",
+      "WHO NEEDS SLEEP WHEN YOU HAVE WEBPACK AND COLD BREW?!",
     ],
   },
   {
@@ -317,6 +309,10 @@ export const MOODS: readonly MoodMeta[] = [
       "Back off, cursor. Personal space is a human right.",
       "Who scheduled a standup at 9 AM on a Monday?",
       "Do not hover near me. I will shove your mouse.",
+      "Unless that PR has tests, do not even wave at my viewport.",
+      "Ugh. Another 'quick 5-minute tweak' that touches 19 files.",
+      "Keep clicking and I am returning HTTP 418 Teapot.",
+      "Move along, visitor. My bezels require quiet contemplation.",
     ],
   },
   {
@@ -327,6 +323,10 @@ export const MOODS: readonly MoodMeta[] = [
       "Your clean TypeScript interfaces make my circuits flutter!",
       "Is it hot in this viewport, or is it just your kerning?",
       "Floating closer... purely for UX research reasons.",
+      "That folder separation between features and lib... *swoon*.",
+      "You + Hire Saswat = zero tech debt forever!",
+      "My heart beats at a romantic 60Hz whenever you hover!",
+      "Even my physics springs soften around great engineering.",
     ],
   },
   {
@@ -335,8 +335,12 @@ export const MOODS: readonly MoodMeta[] = [
     pitch: 0.96,
     quips: [
       "Hehehe... definitely not planning to steal your cursor.",
-      "Just tiptoeing past ESLint with an // @ts-ignore...",
+      "Just tiptoeing past ESLint with a suspicious smile...",
       "Pay no attention to this distinguished mustache.",
+      "Totally not leaving sticky notes on the portfolio while you read.",
+      "Checking what Chaos Prank to deploy next... stay tuned >:)",
+      "Nobody saw me edit the CSS z-index. Carry on.",
+      "Stealth protocol active. Try Pranks & Chat if you dare!",
     ],
   },
   {
@@ -347,6 +351,10 @@ export const MOODS: readonly MoodMeta[] = [
       "Am I truly alive, or merely 42 kilobytes of SVG paths?",
       "What if the user closes this tab... where do my springs go?",
       "Even my personal raincloud is rendered in O(n) time.",
+      "Why do we optimize bundle size if entropy always wins?",
+      "When Vite reloads me, am I still the same Mochi?",
+      "We are all just state transitions waiting for unmount.",
+      "I bounce, therefore I am... probably a React ref.",
     ],
   },
   {
@@ -357,6 +365,10 @@ export const MOODS: readonly MoodMeta[] = [
       "LET’S GOOO!! 100 LIGHTHOUSE SCORE ENERGY!!",
       "SHIP IT! SHIP IT! CONFETTI FOR EVERY COMMIT!!",
       "WE ARE BUILDING THE GREATEST PORTFOLIO OF ALL TIME!!",
+      "ZERO ERRORS, ZERO WARNINGS, PURE VELOCITY!!",
+      "HIRE THIS ENGINEER YESTERDAY!! SOUND THE AIRHORNS!!",
+      "GREEN CHECKMARKS ACROSS EVERY PIPELINE STAGE!!",
+      "TOSS A PIZZA AND LAUNCH THE BACKFLIPS!!",
     ],
   },
   {
@@ -367,6 +379,10 @@ export const MOODS: readonly MoodMeta[] = [
       "Did the cursor just move?! Tin-foil hat: ENGAGED.",
       "They are tracking my state transitions! Duck!!",
       "Who is watching this DOM tree?! Stay low!",
+      "Is that DevTools open?! Act natural—look static!!",
+      "Wait... why is there an unpinned dependency in lockfile?!",
+      "Hold everything! I heard someone whisper 'friday deploy'!",
+      "Encrypting my eye pupils immediately!!",
     ],
   },
   {
@@ -377,6 +393,10 @@ export const MOODS: readonly MoodMeta[] = [
       "Breathe in... zero layout shift. Breathe out... 60 FPS.",
       "Be like a critically damped spring: arrive without overshoot.",
       "Inner peace achieved. Even Safari renders cleanly today.",
+      "Let go of premature abstractions. Embrace crisp composition.",
+      "No deadline can disturb a grounded CSS grid.",
+      "Quiet mind. Clean diff. Zero warnings.",
+      "Drift gently... production is calm tonight.",
     ],
   },
   {
@@ -387,6 +407,10 @@ export const MOODS: readonly MoodMeta[] = [
       "Five more minutes... *pop* ...just resting my pixels...",
       "Entering low-power dream cache... do not poke me...",
       "Zzz... dreaming of zero merge conflicts...",
+      "Soft suspend mode... *snore*... wake me for pizza...",
+      "Hibernating the main thread... leave a sticky note...",
+      "Counting sheep... 1024... 2048... stack overflow zzz...",
+      "Do not deploy... after bedtime... *yawn*...",
     ],
   },
 ] as const;
@@ -406,13 +430,38 @@ export const POLAROID_CAPTIONS: readonly string[] = [
   "ZERO WARNINGS, PURE CHAOS",
   "PRINCIPAL PIXEL WRANGLER",
   "CAFFEINATED & DEPLOYED",
+  "LGTM WITHOUT READING",
+  "WORKS ON MY MACHINE™",
+  "CENTERED IN ONE TRY",
+  "PRODUCTION TESTED LIVE",
+  "NO `ANY` TYPES ALLOWED",
+  "REBASE SURVIVOR 2026",
+  "POWERED BY COLD PIZZA",
+  "DARK MODE ENTHUSIAST",
+  "CHROME DEVTOOLS MODEL",
+  "BUILT AT 2:14 AM",
+  "ZERO LAYOUT SHIFT CLUB",
+  "CHIEF MORALE COMPANION",
+  "GIT BLAME: NOT ME",
+  "STRICT MODE CERTIFIED",
 ] as const;
 
 export const DEV_ROASTS: readonly string[] = [
   'I checked your git history. Nine commits in a row named "fix final fr".',
   "Bold move centering that hero with four nested flexboxes and prayer.",
-  "Your node_modules folder just applied for its own area code.",
+  "Your node_modules folder just applied for its own zip code.",
   "Still holding onto that TODO comment from 2023? Respect the commitment.",
+  "Shipping straight to main without running `tsc`? I admire the adrenaline rush.",
+  "You opened 47 StackOverflow tabs just to undo a CSS margin?",
+  "That helper function named `doThing2` is really carrying the architecture.",
+  "Your `.env.example` hasn't been updated since Next.js 12 and it shows.",
+  "Refreshing localhost four times didn't fix the backend bug, bestie.",
+  "Writing `// temporary hack` in 2024 means it is load-bearing infrastructure now.",
+  "Dark mode won’t hide that `O(n²)` loop inside `useEffect`, I can see it.",
+  "Putting business logic inside a button's `onClick`? Chaotic neutral energy.",
+  "Why does your utils folder have a file named `misc2.ts`? Seek help.",
+  "Deploying at 5:59 PM on Friday is crazy—even for my spring damper.",
+  "Calling `setTimeout(..., 100)` to fix a race condition? A bold artisan!",
 ] as const;
 
 export const DEV_JOKES: readonly string[] = [
@@ -420,6 +469,17 @@ export const DEV_JOKES: readonly string[] = [
   "A QA engineer walks into a bar and orders 0 beers, 999999 beers, and a lizard.",
   "I told my rubber duck a recursion joke. Now it cannot stop laughing.",
   "There are two hard things in CS: cache invalidation, naming, and off-by-one errors.",
+  "Why did the React component go to therapy? Too many unresolved side effects.",
+  "What is a backend dev's favorite exercise? Running migrations at midnight.",
+  "Why was the JavaScript developer sad? Because he didn't `Node` how to express himself.",
+  "Git commit: fixed the bug. Narrative twist: created three cooler bugs.",
+  "A CSS rule walks into a bar... and immediately overflows the bar across 4 pixels.",
+  "Why do microservices make terrible friends? Zero shared context and high latency.",
+  "What do you call 8 hobbits? A hobbyte.",
+  "Programmer's diet: coffee turns into TypeScript, pizza turns into deployment anxiety.",
+  "Waiter, there’s a `NaN` in my soup! Relax, that’s just JavaScript arithmetic.",
+  "How do you comfort a TypeScript dev? Pat their back and say 'It is strictly typed now.'",
+  "Why did the database break up with the API? Too many unindexed expectations.",
 ] as const;
 
 const PROJECT_QUIPS_BY_SLUG: Record<string, string> = {

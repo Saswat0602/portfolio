@@ -1,12 +1,10 @@
 "use client";
 
 import type { PointerEvent as ReactPointerEvent } from "react";
-import {
-  AURA_FINISHES,
-  type AccessoryId,
-  type AuraFinishId,
-  type CharacterStyleMeta,
-  type MoodMeta,
+import type {
+  AccessoryId,
+  CharacterStyleMeta,
+  MoodMeta,
 } from "@/lib/data";
 import type { PortfolioHoverTarget } from "../types";
 import { CompanionFaceExpressions } from "./CompanionFaceExpressions";
@@ -16,11 +14,11 @@ import { AuraAndBitChassis } from "./AuraAndBitChassis";
 export interface CompanionRigSvgProps {
   isDark: boolean;
   styleMeta: CharacterStyleMeta;
-  auraFinish: AuraFinishId;
   accessory: AccessoryId;
   activeMoodMeta: MoodMeta;
   spicyActive: boolean;
   sourActive: boolean;
+  pizzaActive: boolean;
   dizzyActive: boolean;
   tickledActive: boolean;
   pettingActive: boolean;
@@ -39,11 +37,11 @@ export interface CompanionRigSvgProps {
 export function CompanionRigSvg({
   isDark,
   styleMeta,
-  auraFinish,
   accessory,
   activeMoodMeta,
   spicyActive,
   sourActive,
+  pizzaActive,
   dizzyActive,
   tickledActive,
   pettingActive,
@@ -60,7 +58,6 @@ export function CompanionRigSvg({
 }: CompanionRigSvgProps) {
   const charStyle = styleMeta.id;
   const displayMood = activeMoodMeta.id;
-  const finishMeta = AURA_FINISHES[auraFinish];
 
   const faceNode = (
     <g data-mochi-el="faceGroup">
@@ -70,6 +67,7 @@ export function CompanionRigSvg({
           displayMood={displayMood}
           spicyActive={spicyActive}
           sourActive={sourActive}
+          pizzaActive={pizzaActive}
           dizzyActive={dizzyActive}
           tickledActive={tickledActive}
           pettingActive={pettingActive}
@@ -86,9 +84,7 @@ export function CompanionRigSvg({
       ? "#E03E2D"
       : charStyle === "astro"
         ? "#2563EB"
-        : charStyle === "aura"
-          ? finishMeta.trim
-          : "#18181B";
+        : "#18181B";
 
   return (
     <div
@@ -278,7 +274,6 @@ export function CompanionRigSvg({
 
             <AuraAndBitChassis
               charStyle={charStyle}
-              auraFinish={auraFinish}
               spicyActive={spicyActive}
               faceNode={faceNode}
             />
@@ -286,7 +281,7 @@ export function CompanionRigSvg({
             <CompanionAccessoriesSvg
               accessory={accessory}
               accentColor={styleMeta.accent}
-              trimColor={finishMeta.trim}
+              trimColor={styleMeta.accent}
             />
 
             <rect x="104" y="62" width="132" height="46" rx="22" fill="transparent" onPointerMove={onHeadPet} />
