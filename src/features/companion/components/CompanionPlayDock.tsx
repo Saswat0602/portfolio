@@ -1,13 +1,53 @@
 "use client";
 
 import type { Dispatch, FormEvent, SetStateAction } from "react";
-import { MOODS, SNACKS, type CharacterStyleMeta, type MoodId, type SnackId } from "@/lib/data";
+import {
+  ACCESSORIES,
+  AURA_FINISHES,
+  CHARACTER_STYLES,
+  MOODS,
+  PLAY_MODES,
+  SNACKS,
+  type AccessoryId,
+  type ArtRatingMeta,
+  type AuraFinishId,
+  type CharacterStyleId,
+  type CharacterStyleMeta,
+  type MoodId,
+  type PlayModeId,
+  type SnackId,
+  type SynthPadMeta,
+} from "@/lib/data";
 import type { CompanionThemeTokens, DockTab } from "../types";
 import { IconLock, IconSend } from "./CompanionIcons";
+import { CompanionModeSubbar } from "./CompanionModeSubbar";
 
 export interface CompanionPlayDockProps {
   ui: CompanionThemeTokens;
   styleMeta: CharacterStyleMeta;
+  charStyle: CharacterStyleId;
+  onSelectStyle: (id: CharacterStyleId) => void;
+  auraFinish: AuraFinishId;
+  onSelectAuraFinish: (id: AuraFinishId) => void;
+  accessory: AccessoryId;
+  onSelectAccessory: (id: AccessoryId) => void;
+  playMode: PlayModeId;
+  onSelectPlayMode: (mode: PlayModeId) => void;
+  rallyCount: number;
+  bugsLeft: number;
+  artVerdict: ArtRatingMeta | null;
+  autoJam: boolean;
+  onToggleAutoJam: () => void;
+  activePad: string | null;
+  micMode: "off" | "live" | "fallback";
+  onCritiqueArt: () => void;
+  onClearPaint: () => void;
+  onReleaseBugs: () => void;
+  onHitPad: (pad: SynthPadMeta) => void;
+  onMiniClones: () => void;
+  onToggleVoiceBeat: () => void;
+  onFireClapPulse: () => void;
+  onSneeze: () => void;
   dockTab: DockTab;
   setDockTab: Dispatch<SetStateAction<DockTab>>;
   mood: MoodId;
@@ -41,6 +81,29 @@ export interface CompanionPlayDockProps {
 export function CompanionPlayDock({
   ui,
   styleMeta,
+  charStyle,
+  onSelectStyle,
+  auraFinish,
+  onSelectAuraFinish,
+  accessory,
+  onSelectAccessory,
+  playMode,
+  onSelectPlayMode,
+  rallyCount,
+  bugsLeft,
+  artVerdict,
+  autoJam,
+  onToggleAutoJam,
+  activePad,
+  micMode,
+  onCritiqueArt,
+  onClearPaint,
+  onReleaseBugs,
+  onHitPad,
+  onMiniClones,
+  onToggleVoiceBeat,
+  onFireClapPulse,
+  onSneeze,
   dockTab,
   setDockTab,
   mood,
@@ -71,11 +134,27 @@ export function CompanionPlayDock({
   say,
 }: CompanionPlayDockProps) {
   return (
-    <div className="absolute bottom-3.5 left-1/2 -translate-x-1/2 z-30 w-[min(96%,880px)] flex flex-col items-center gap-2">
+    <div className="absolute bottom-3.5 left-1/2 -translate-x-1/2 z-30 w-[min(96%,920px)] flex flex-col items-center gap-2">
+      <CompanionModeSubbar
+        playMode={playMode}
+        rallyCount={rallyCount}
+        bugsLeft={bugsLeft}
+        artVerdict={artVerdict}
+        autoJam={autoJam}
+        micMode={micMode}
+        activePad={activePad}
+        onCritiqueArt={onCritiqueArt}
+        onClearPaint={onClearPaint}
+        onReleaseBugs={onReleaseBugs}
+        onHitPad={onHitPad}
+        onToggleAutoJam={onToggleAutoJam}
+        onFireClapPulse={onFireClapPulse}
+      />
+
       <div
         role="tablist"
         aria-label="Play dock tabs"
-        className="inline-flex items-center rounded-full p-1 gap-1"
+        className="inline-flex flex-wrap items-center justify-center rounded-full p-1 gap-1"
         style={{
           backgroundColor: ui.glass,
           border: `1px solid ${ui.borderStrong}`,
@@ -85,6 +164,8 @@ export function CompanionPlayDock({
       >
         {(
           [
+            { id: "modes", label: `Modes (${PLAY_MODES.length})` },
+            { id: "styles", label: "Gear & Finish" },
             { id: "moods", label: "Moods (12)" },
             { id: "toys", label: "Snacks & Toys" },
             { id: "pranks", label: "Pranks & Chat" },
@@ -98,7 +179,7 @@ export function CompanionPlayDock({
               role="tab"
               aria-selected={active}
               onClick={() => setDockTab(tb.id)}
-              className="m4-focus rounded-full px-3.5 py-1 font-mono text-[10.5px] font-medium cursor-pointer transition-colors"
+              className="m4-focus rounded-full px-3 py-1 font-mono text-[10.5px] font-medium cursor-pointer transition-colors"
               style={{
                 backgroundColor: active ? ui.ink : "transparent",
                 color: active ? ui.bg : ui.muted,
@@ -119,6 +200,104 @@ export function CompanionPlayDock({
           backdropFilter: "blur(16px)",
         }}
       >
+        {dockTab === "modes" && (
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar sm:flex-wrap sm:justify-center">
+            {PLAY_MODES.map((pm) => {
+              const active = playMode === pm.id;
+              return (
+                <button
+                  key={pm.id}
+                  type="button"
+                  title={pm.hint}
+                  onClick={() => onSelectPlayMode(pm.id)}
+                  className="m4-focus whitespace-nowrap rounded-full px-3 py-1 font-mono text-[10.5px] cursor-pointer transition-transform active:scale-95"
+                  style={{
+                    backgroundColor: active ? styleMeta.accent : ui.recessed,
+                    color: active ? "#FFFFFF" : ui.ink,
+                    border: active ? `1px solid ${styleMeta.accent}` : `1px solid ${ui.border}`,
+                    fontWeight: active ? 600 : 400,
+                  }}
+                >
+                  {pm.label}
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        {dockTab === "styles" && (
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar sm:flex-wrap sm:justify-center">
+              {CHARACTER_STYLES.map((st) => {
+                const active = charStyle === st.id;
+                return (
+                  <button
+                    key={st.id}
+                    type="button"
+                    onClick={() => onSelectStyle(st.id)}
+                    className="m4-focus whitespace-nowrap rounded-full px-3 py-1 font-mono text-[10.5px] cursor-pointer transition-transform active:scale-95"
+                    style={{
+                      backgroundColor: active ? `${st.accent}24` : ui.recessed,
+                      color: active ? st.accent : ui.ink,
+                      border: active ? `1px solid ${st.accent}` : `1px solid ${ui.border}`,
+                      fontWeight: active ? 600 : 400,
+                    }}
+                  >
+                    {st.label}
+                  </button>
+                );
+              })}
+            </div>
+
+            {charStyle === "aura" && (
+              <div className="flex items-center justify-center gap-2">
+                <span className="font-mono text-[9.5px] uppercase tracking-wider" style={{ color: ui.muted }}>
+                  AURA Finish:
+                </span>
+                {(Object.values(AURA_FINISHES) as Array<(typeof AURA_FINISHES)[AuraFinishId]>).map((fin) => {
+                  const active = auraFinish === fin.id;
+                  return (
+                    <button
+                      key={fin.id}
+                      type="button"
+                      title={fin.name}
+                      aria-label={`Select ${fin.name} finish`}
+                      onClick={() => onSelectAuraFinish(fin.id)}
+                      className="w-5 h-5 rounded-full cursor-pointer transition-transform hover:scale-110"
+                      style={{
+                        backgroundColor: fin.dot,
+                        border: active ? `2.5px solid ${styleMeta.accent}` : `1.5px solid ${ui.borderStrong}`,
+                        boxShadow: active ? `0 0 0 2px ${styleMeta.accent}44` : "none",
+                      }}
+                    />
+                  );
+                })}
+              </div>
+            )}
+
+            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar sm:flex-wrap sm:justify-center">
+              {ACCESSORIES.map((acc) => {
+                const active = accessory === acc.id;
+                return (
+                  <button
+                    key={acc.id}
+                    type="button"
+                    onClick={() => onSelectAccessory(acc.id)}
+                    className="m4-focus whitespace-nowrap rounded-full px-2.5 py-0.5 font-mono text-[10px] cursor-pointer transition-transform active:scale-95"
+                    style={{
+                      backgroundColor: active ? styleMeta.accent : ui.recessed,
+                      color: active ? "#FFFFFF" : ui.ink,
+                      border: active ? `1px solid ${styleMeta.accent}` : `1px solid ${ui.border}`,
+                    }}
+                  >
+                    {acc.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         {dockTab === "moods" && (
           <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar sm:flex-wrap sm:justify-center">
             {MOODS.map((m) => {
@@ -240,6 +419,37 @@ export function CompanionPlayDock({
 
             <button
               type="button"
+              onClick={onMiniClones}
+              className="m4-focus whitespace-nowrap rounded-full px-3 py-1 font-mono text-[10.5px] cursor-pointer"
+              style={{ backgroundColor: ui.recessed, color: ui.ink, border: `1px solid ${ui.border}` }}
+            >
+              👯 3x Clones
+            </button>
+
+            <button
+              type="button"
+              onClick={onSneeze}
+              className="m4-focus whitespace-nowrap rounded-full px-3 py-1 font-mono text-[10.5px] cursor-pointer"
+              style={{ backgroundColor: ui.recessed, color: ui.ink, border: `1px solid ${ui.border}` }}
+            >
+              🤧 Sneeze
+            </button>
+
+            <button
+              type="button"
+              onClick={onToggleVoiceBeat}
+              className="m4-focus whitespace-nowrap rounded-full px-3 py-1 font-mono text-[10.5px] font-medium cursor-pointer"
+              style={{
+                backgroundColor: micMode !== "off" ? "#8B5CF6" : ui.recessed,
+                color: micMode !== "off" ? "#FFFFFF" : ui.ink,
+                border: micMode !== "off" ? "1px solid #8B5CF6" : `1px solid ${ui.border}`,
+              }}
+            >
+              🎙️ Voice/Beat
+            </button>
+
+            <button
+              type="button"
               onClick={onShakeStage}
               className="m4-focus whitespace-nowrap rounded-full px-3 py-1 font-mono text-[10.5px] cursor-pointer"
               style={{ backgroundColor: ui.recessed, color: ui.ink, border: `1px solid ${ui.border}` }}
@@ -291,7 +501,7 @@ export function CompanionPlayDock({
                   border: `1px solid ${ui.border}`,
                 }}
               >
-                👯 Clone Duel
+                🤺 Clone Duel
               </button>
               <button
                 type="button"
@@ -333,7 +543,7 @@ export function CompanionPlayDock({
                 placeholder={
                   secretMode
                     ? "Typing in Secret Mode..."
-                    : "Say hi, roast, joke, flip, pepper, lemon, portal, photo..."
+                    : "Say hi, roast, joke, flip, sneeze, bugs, portal, photo..."
                 }
                 aria-label="Chat with MOCHI-04"
                 className="flex-1 min-w-0 rounded-full px-3.5 py-1.5 text-xs outline-none"

@@ -1,13 +1,23 @@
 "use client";
 
 import type { PointerEvent as ReactPointerEvent } from "react";
-import type { CharacterStyleMeta, MoodMeta } from "@/lib/data";
+import {
+  AURA_FINISHES,
+  type AccessoryId,
+  type AuraFinishId,
+  type CharacterStyleMeta,
+  type MoodMeta,
+} from "@/lib/data";
 import type { PortfolioHoverTarget } from "../types";
 import { CompanionFaceExpressions } from "./CompanionFaceExpressions";
+import { CompanionAccessoriesSvg } from "./CompanionAccessoriesSvg";
+import { AuraAndBitChassis } from "./AuraAndBitChassis";
 
 export interface CompanionRigSvgProps {
   isDark: boolean;
   styleMeta: CharacterStyleMeta;
+  auraFinish: AuraFinishId;
+  accessory: AccessoryId;
   activeMoodMeta: MoodMeta;
   spicyActive: boolean;
   sourActive: boolean;
@@ -20,7 +30,6 @@ export interface CompanionRigSvgProps {
   cursorSnatched: boolean;
   portfolioHover: PortfolioHoverTarget;
   onDoubleClick: () => void;
-  onPointerMove: (e: ReactPointerEvent<SVGSVGElement>) => void;
   onPointerDown: (e: ReactPointerEvent<SVGSVGElement>) => void;
   onHeadPet: (e: ReactPointerEvent<SVGRectElement>) => void;
   onPokeKey: () => void;
@@ -30,6 +39,8 @@ export interface CompanionRigSvgProps {
 export function CompanionRigSvg({
   isDark,
   styleMeta,
+  auraFinish,
+  accessory,
   activeMoodMeta,
   spicyActive,
   sourActive,
@@ -42,7 +53,6 @@ export function CompanionRigSvg({
   cursorSnatched,
   portfolioHover,
   onDoubleClick,
-  onPointerMove,
   onPointerDown,
   onHeadPet,
   onPokeKey,
@@ -50,6 +60,7 @@ export function CompanionRigSvg({
 }: CompanionRigSvgProps) {
   const charStyle = styleMeta.id;
   const displayMood = activeMoodMeta.id;
+  const finishMeta = AURA_FINISHES[auraFinish];
 
   const faceNode = (
     <g data-mochi-el="faceGroup">
@@ -70,18 +81,25 @@ export function CompanionRigSvg({
     </g>
   );
 
-  const footFill = charStyle === "crt" ? "#E03E2D" : charStyle === "astro" ? "#2563EB" : "#18181B";
+  const footFill =
+    charStyle === "crt"
+      ? "#E03E2D"
+      : charStyle === "astro"
+        ? "#2563EB"
+        : charStyle === "aura"
+          ? finishMeta.trim
+          : "#18181B";
 
   return (
     <div
       data-mochi-el="charWrap"
       data-mochi-rig
-      className="pointer-events-auto absolute left-0 top-0 z-20 w-[216px] h-[216px] will-change-transform touch-none"
+      className="pointer-events-auto absolute left-0 top-0 z-[45] w-[216px] h-[216px] will-change-transform touch-none outline-none"
       style={{ transform: initialTransform }}
     >
       <svg
         viewBox="0 0 340 320"
-        className="w-full h-full block overflow-visible cursor-grab active:cursor-grabbing"
+        className="w-full h-full block overflow-visible cursor-grab active:cursor-grabbing outline-none focus:outline-none focus-visible:outline-none select-none"
         role="button"
         tabIndex={0}
         aria-label={`MOCHI-04 ${styleMeta.label} companion in ${activeMoodMeta.label} mood. Drag to fling, poke, or double-click to backflip.`}
@@ -89,7 +107,6 @@ export function CompanionRigSvg({
           e.stopPropagation();
           onDoubleClick();
         }}
-        onPointerMove={onPointerMove}
         onPointerDown={onPointerDown}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
@@ -258,6 +275,19 @@ export function CompanionRigSvg({
                 {faceNode}
               </g>
             )}
+
+            <AuraAndBitChassis
+              charStyle={charStyle}
+              auraFinish={auraFinish}
+              spicyActive={spicyActive}
+              faceNode={faceNode}
+            />
+
+            <CompanionAccessoriesSvg
+              accessory={accessory}
+              accentColor={styleMeta.accent}
+              trimColor={finishMeta.trim}
+            />
 
             <rect x="104" y="62" width="132" height="46" rx="22" fill="transparent" onPointerMove={onHeadPet} />
 

@@ -10,6 +10,7 @@ import type {
 } from "../types";
 import { clamp, stepRK4 } from "./physics";
 import { playComedySound } from "./audio";
+import { stepInkBounces } from "./modeStep";
 
 const ELEMENT_SELECTORS: ReadonlyArray<[keyof CompanionElements, string]> = [
   ["charWrap", '[data-mochi-el="charWrap"]'],
@@ -35,6 +36,7 @@ const ELEMENT_SELECTORS: ReadonlyArray<[keyof CompanionElements, string]> = [
   ["flame", '[data-mochi-el="flame"]'],
   ["boosterL", '[data-mochi-el="boosterL"]'],
   ["boosterR", '[data-mochi-el="boosterR"]'],
+  ["propBlade", '[data-mochi-el="propBlade"]'],
 ];
 
 export function syncConnectedElements(stage: HTMLDivElement, elements: CompanionElements): void {
@@ -123,9 +125,7 @@ export function stepSnacks(
 
     if (sim.portals.cyan && sim.portals.orange && sn.portalCd <= 0) {
       const moved = tryTeleportSnack(sn, sim.portals.cyan, sim.portals.orange, live, callbacks);
-      if (!moved) {
-        tryTeleportSnack(sn, sim.portals.orange, sim.portals.cyan, live, callbacks);
-      }
+      if (!moved) tryTeleportSnack(sn, sim.portals.orange, sim.portals.cyan, live, callbacks);
     }
 
     if (!chaseSnack) chaseSnack = sn;
@@ -138,6 +138,75 @@ export function stepSnacks(
   }
 
   return chaseSnack;
+}
+
+function applyPlayModeSteering(
+  sim: SimState,
+  live: LiveSnapshot,
+  minX: number,
+  maxX: number,
+  dt: number,
+  callbacks: StepCallbacks
+): boolean {
+  if (live.playMode === "laser" && sim.ptrActive) {
+    const gx = clamp(sim.ptrX, minX, maxX);
+    const gy = clamp(sim.ptrY, sim.ceilY, sim.floorY - 8);
+    const sx = stepRK4(sim.x, sim.vx, gx, 72, 11.2, dt);
+    const sy = stepRK4(sim.y, sim.vy, gy, 72, 11.2, dt);
+    sim.x = sx.x;
+    sim.vx = sx.v;
+    sim.y = sy.x;
+    sim.vy = sy.v;
+    if (Math.hypot(sim.ptrX - sim.x, sim.ptrY - sim.y) < 62 && sim.laserPounceCd <= 0) {
+      sim.laserPounceCd = 2.4;
+      sim.sx = 1.22;
+      sim.sy = 0.8;
+      playComedySound("boing", live.soundOn, 1.35);
+      callbacks.say("ALMOST CAUGHT THE PHOTON!!", 1600, true);
+    }
+    return true;
+  }
+
+  if (live.playMode === "magnet" && sim.ptrActive) {
+    sim.magnetAngle += dt * 2.35;
+    const orbitR = Math.min(138, sim.w * 0.18);
+    const gx = clamp(sim.ptrX + Math.cos(sim.magnetAngle) * orbitR, minX, maxX);
+    const gy = clamp(sim.ptrY + Math.sin(sim.magnetAngle) * orbitR * 0.72, sim.ceilY, sim.floorY - 12);
+    const sx = stepRK4(sim.x, sim.vx, gx, 64, 10.8, dt);
+    const sy = stepRK4(sim.y, sim.vy, gy, 64, 10.8, dt);
+    sim.x = sx.x;
+    sim.vx = sx.v;
+    sim.y = sy.x;
+    sim.vy = sy.v;
+    return true;
+  }
+
+  if (live.playMode === "catch" && sim.ball) {
+    const gx = clamp(sim.ball.x + sim.ball.vx * 0.18, minX, maxX);
+    const gy = sim.ball.y > sim.h * 0.34 ? clamp(sim.ball.y + 30, sim.ceilY, sim.floorY - 8) : sim.floorY - 36;
+    const sx = stepRK4(sim.x, sim.vx, gx, 76, 12.5, dt);
+    const sy = stepRK4(sim.y, sim.vy, gy, 76, 12.5, dt);
+    sim.x = sx.x;
+    sim.vx = sx.v;
+    sim.y = sy.x;
+    sim.vy = sy.v;
+    return true;
+  }
+
+  if (live.playMode === "bugs" && sim.bugs.length > 0) {
+    const target = sim.bugs[0];
+    const gx = clamp(target.x, minX, maxX);
+    const gy = clamp(target.y - 18, sim.ceilY, sim.floorY - 8);
+    const sx = stepRK4(sim.x, sim.vx, gx, 58, 10.5, dt);
+    const sy = stepRK4(sim.y, sim.vy, gy, 58, 10.5, dt);
+    sim.x = sx.x;
+    sim.vx = sx.v;
+    sim.y = sy.x;
+    sim.vy = sy.v;
+    return true;
+  }
+
+  return false;
 }
 
 function applyMoodSteering(
@@ -305,6 +374,12 @@ export function stepCharacterKinematics(
     return;
   }
 
+  if (sim.squishCharge > 0.01) {
+    sim.vx *= 0.78;
+    sim.vy *= 0.78;
+    return;
+  }
+
   const onFloor = !live.gravityFlipped && sim.y >= sim.floorY - 6;
   const homeToyActive =
     live.trampolineOn ||
@@ -312,35 +387,49 @@ export function stepCharacterKinematics(
     live.spicyActive ||
     live.spinTopActive ||
     live.cursorSnatched ||
+    (live.playMode !== "interact" && live.playMode !== "dj") ||
     Boolean(chaseSnack) ||
     Boolean(sim.portals.cyan && sim.portals.orange) ||
+    sim.ballistic ||
     sim.flipping ||
     Math.hypot(sim.vx, sim.vy) > 65;
 
-  if (live.viewMode === "home" && !homeToyActive) {
-    const floatX = sim.homeX + Math.cos(sim.time * 0.9) * 14;
-    const floatY = sim.homeY + Math.sin(sim.time * 1.8) * 12;
-    const sx = stepRK4(sim.x, sim.vx, floatX, 34, 10, dt);
-    const sy = stepRK4(sim.y, sim.vy, floatY, 34, 10, dt);
-    sim.x = sx.x;
-    sim.vx = sx.v;
-    sim.y = sy.x;
-    sim.vy = sy.v;
-  } else if (live.displayMood === "zen" && !live.gravityFlipped) {
-    const zenY = sim.homeY - 46 + Math.sin(sim.time * 1.9) * 14;
-    const zenX = sim.homeX + Math.cos(sim.time * 0.8) * 32;
-    const sx = stepRK4(sim.x, sim.vx, zenX, 26, 9, dt);
-    const sy = stepRK4(sim.y, sim.vy, zenY, 26, 9, dt);
-    sim.x = sx.x;
-    sim.vx = sx.v;
-    sim.y = sy.x;
-    sim.vy = sy.v;
-  } else {
-    sim.vy += 1160 * gravDir * dt;
-    applyMoodSteering(sim, live, chaseSnack, onFloor, dt, callbacks.spawnParticles);
-    sim.vx *= Math.exp(-dt * (onFloor ? 3.0 : 0.45));
-    sim.x += sim.vx * dt;
-    sim.y += sim.vy * dt;
+  const steeredByMode = !chaseSnack && applyPlayModeSteering(sim, live, minX, maxX, dt, callbacks);
+
+  if (!steeredByMode) {
+    if (live.viewMode === "home" && !homeToyActive) {
+      const floatX = sim.homeX + Math.cos(sim.time * 0.9) * 14;
+      const floatY = sim.homeY + Math.sin(sim.time * 1.8) * 12 - sim.beatEnergy * 28;
+      const sx = stepRK4(sim.x, sim.vx, floatX, 34, 10, dt);
+      const sy = stepRK4(sim.y, sim.vy, floatY, 34, 10, dt);
+      sim.x = sx.x;
+      sim.vx = sx.v;
+      sim.y = sy.x;
+      sim.vy = sy.v;
+    } else if (live.displayMood === "zen" && !live.gravityFlipped) {
+      const zenY = sim.homeY - 46 + Math.sin(sim.time * 1.9) * 14;
+      const zenX = sim.homeX + Math.cos(sim.time * 0.8) * 32;
+      const sx = stepRK4(sim.x, sim.vx, zenX, 26, 9, dt);
+      const sy = stepRK4(sim.y, sim.vy, zenY, 26, 9, dt);
+      sim.x = sx.x;
+      sim.vx = sx.v;
+      sim.y = sy.x;
+      sim.vy = sy.v;
+    } else {
+      sim.vy += 1160 * gravDir * dt;
+      applyMoodSteering(sim, live, chaseSnack, onFloor, dt, callbacks.spawnParticles);
+      sim.vx *= Math.exp(-dt * (onFloor ? 3.0 : 0.45));
+      sim.x += sim.vx * dt;
+      sim.y += sim.vy * dt;
+    }
+  }
+
+  if (sim.ballistic || sim.strokes.length > 0) {
+    stepInkBounces(sim, live, callbacks.spawnParticles);
+  }
+  if (sim.ballistic) {
+    sim.ballisticTimer -= dt;
+    if (sim.ballisticTimer <= 0) sim.ballistic = false;
   }
 
   const trSpring = stepRK4(sim.tramp.comp, sim.tramp.vComp, 0, 260, 12, dt);
@@ -369,9 +458,7 @@ export function stepCharacterKinematics(
 
   if (sim.portals.cyan && sim.portals.orange && sim.charPortalCd <= 0) {
     const moved = tryTeleportCharacter(sim, sim.portals.cyan, sim.portals.orange, live, callbacks);
-    if (!moved) {
-      tryTeleportCharacter(sim, sim.portals.orange, sim.portals.cyan, live, callbacks);
-    }
+    if (!moved) tryTeleportCharacter(sim, sim.portals.orange, sim.portals.cyan, live, callbacks);
   }
 
   containCharacter(sim, minX, maxX, live, callbacks);
@@ -431,6 +518,14 @@ function resolveHandTargets(
   if (live.photoPosing) {
     return { tHLX: 88, tHLY: 212, tHRX: 258, tHRY: 142, rHL, rHR: 16 };
   }
+  if (live.playMode === "dj") {
+    const b = Math.sin(t * 8.4) * 16 + sim.beatEnergy * 18;
+    return { tHLX: 88, tHLY: 180 - b, tHRX: 252, tHRY: 180 + b * 0.7, rHL: -22, rHR: 22 };
+  }
+  if (live.playMode === "laser" || live.playMode === "catch") {
+    const sw = Math.sin(t * 14) * 12;
+    return { tHLX: 98 + sim.headX * 18, tHLY: 188 + sw, tHRX: 242 + sim.headX * 18, tHRY: 188 - sw, rHL: -22, rHR: 22 };
+  }
   if (dm === "dramatic") {
     return { tHLX: 96, tHLY: 224, tHRX: 194, tHRY: 104, rHL, rHR: -36 };
   }
@@ -476,13 +571,15 @@ export function stepRigAndCommitDom(
   sim.faceScale = clamp(sfs.x, 0.36, 1.25);
   sim.vFaceScale = sfs.v;
 
-  const goalSX = live.spinTopActive ? 0.72 : 1 + sim.crouchY * 0.24;
-  const goalSY = live.spinTopActive ? 0.72 : 1 - sim.crouchY * 0.26;
+  const squishSX = sim.squishCharge > 0.01 ? 1 + sim.squishCharge * 0.42 : 1;
+  const squishSY = sim.squishCharge > 0.01 ? 1 - sim.squishCharge * 0.38 : 1;
+  const goalSX = live.spinTopActive ? 0.72 : squishSX + sim.crouchY * 0.24;
+  const goalSY = live.spinTopActive ? 0.72 : squishSY - sim.crouchY * 0.26;
   const rsx = stepRK4(sim.sx, sim.vsx, goalSX, 220, 16, dt);
   const rsy = stepRK4(sim.sy, sim.vsy, goalSY, 220, 16, dt);
-  sim.sx = clamp(rsx.x, 0.62, 1.44);
+  sim.sx = clamp(rsx.x, 0.56, 1.5);
   sim.vsx = rsx.v;
-  sim.sy = clamp(rsy.x, 0.62, 1.44);
+  sim.sy = clamp(rsy.x, 0.56, 1.44);
   sim.vsy = rsy.v;
 
   if (sim.flipping) {
@@ -498,6 +595,7 @@ export function stepRigAndCommitDom(
   else if (live.spinTopActive) targetRot = (t * 1400) % 360;
   else if (live.tickledActive) targetRot = Math.sin(t * 28) * 16;
   else if (live.dizzyActive) targetRot = Math.sin(t * 14) * 14;
+  else if (live.playMode === "dj") targetRot = Math.sin(t * 6.5) * (6 + sim.beatEnergy * 8);
   else if (dm === "dramatic") targetRot = -14 + Math.sin(t * 2.2) * 8;
   else if (dm === "smug") targetRot = -6;
   else if (dm === "sleepy") targetRot = -5 + Math.sin(t * 1.1) * 1.5;
@@ -515,6 +613,9 @@ export function stepRigAndCommitDom(
   if (chaseSnack) {
     lookX = clamp((chaseSnack.x - sim.x) / 180, -1, 1);
     lookY = clamp((chaseSnack.y - sim.y) / 160, -1, 1);
+  } else if (live.playMode === "catch" && sim.ball) {
+    lookX = clamp((sim.ball.x - sim.x) / 180, -1, 1);
+    lookY = clamp((sim.ball.y - sim.y) / 160, -1, 1);
   } else if (dm === "paranoid") {
     lookX = Math.sin(t * 6.5) > 0 ? 0.85 : -0.85;
     lookY = -0.15;
@@ -569,10 +670,17 @@ export function stepRigAndCommitDom(
   if (elements.footL) elements.footL.setAttribute("transform", `rotate(${fKickL.toFixed(1)} 146 254)`);
   if (elements.footR) elements.footR.setAttribute("transform", `rotate(${(-fKickL).toFixed(1)} 194 254)`);
 
+  if (live.accessory === "propeller" && elements.propBlade) {
+    sim.propellerDeg = (sim.propellerDeg + dt * (280 + spdX * 1.4 + Math.abs(sim.vy) * 1.2)) % 360;
+    const scaleX = Math.cos((sim.propellerDeg * Math.PI) / 180);
+    elements.propBlade.setAttribute("transform", `translate(170 46) scale(${scaleX.toFixed(2)} 1) translate(-170 -46)`);
+  }
+
   const cafVibX = dm === "caffeinated" ? Math.sin(t * 188) * 3.2 : 0;
   const cafVibY = dm === "caffeinated" ? Math.cos(t * 180) * 2.4 : 0;
+  const squishJitX = sim.squishCharge > 0.25 ? Math.sin(t * 58) * sim.squishCharge * 2.6 : 0;
   const idleBob = dm === "playful" && !sim.drag.active ? Math.sin(t * 4.2) * 4 : Math.sin(t * 2.2) * 2.5;
-  const drawX = sim.x + cafVibX;
+  const drawX = sim.x + cafVibX + squishJitX;
   const drawY = sim.y + idleBob + cafVibY + sim.crouchY * 18;
   const sc =
     live.viewMode === "portfolio"

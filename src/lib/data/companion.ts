@@ -1,6 +1,22 @@
 import userData, { type ProjectData } from "./userdata";
 
-export type CharacterStyleId = "vinyl" | "crt" | "paper" | "astro";
+export type CharacterStyleId = "vinyl" | "crt" | "paper" | "astro" | "aura" | "bit";
+
+export type AuraFinishId = "pearl" | "obsidian" | "vermilion" | "matcha" | "iridescent";
+
+export type AccessoryId =
+  | "none"
+  | "halo"
+  | "shades"
+  | "headphones"
+  | "cat"
+  | "crown"
+  | "wizard"
+  | "propeller"
+  | "chef"
+  | "box";
+
+export type PlayModeId = "interact" | "laser" | "magnet" | "catch" | "paint" | "bugs" | "dj";
 
 export type MoodId =
   | "playful"
@@ -23,6 +39,49 @@ export interface CharacterStyleMeta {
   label: string;
   accent: string;
   tag: string;
+}
+
+export interface AuraFinishMeta {
+  id: AuraFinishId;
+  name: string;
+  dot: string;
+  trim: string;
+  eye: string;
+  eyeBright: string;
+  body: readonly [string, string, string, string];
+  head: readonly [string, string, string, string];
+  paw: readonly [string, string, string];
+  ear: readonly [string, string, string];
+  stroke: string;
+  seam: string;
+  spec: string;
+  rimCool: string;
+  antenna: string;
+}
+
+export interface AccessoryMeta {
+  id: AccessoryId;
+  label: string;
+}
+
+export interface PlayModeMeta {
+  id: PlayModeId;
+  label: string;
+  hint: string;
+}
+
+export interface SynthPadMeta {
+  key: string;
+  label: string;
+  note: string;
+  hz: number;
+  color: string;
+}
+
+export interface ArtRatingMeta {
+  title: string;
+  score: string;
+  note: string;
 }
 
 export interface MoodMeta {
@@ -56,9 +115,157 @@ export interface RainDropSeed {
 
 export const CHARACTER_STYLES: readonly CharacterStyleMeta[] = [
   { id: "vinyl", label: "Vinyl Mochi", accent: "#FF6B4A", tag: "DESIGNER TOY" },
-  { id: "crt", label: "Retro CRT", accent: "#E03E2D", tag: "1984 POCKET TV" },
+  { id: "aura", label: "AURA-03", accent: "#2563EB", tag: "CERAMIC BOT" },
+  { id: "bit", label: "BIT-02", accent: "#E03E2D", tag: "DESKTOP MISCHIEF" },
+  { id: "crt", label: "Retro CRT", accent: "#10B981", tag: "1984 POCKET TV" },
   { id: "paper", label: "Paper Spirit", accent: "#D4A037", tag: "ORIGAMI MASK" },
-  { id: "astro", label: "Astro Pod", accent: "#2563EB", tag: "SPACE CAPSULE" },
+  { id: "astro", label: "Astro Pod", accent: "#38BDF8", tag: "SPACE CAPSULE" },
+] as const;
+
+export const AURA_FINISHES: Record<AuraFinishId, AuraFinishMeta> = {
+  pearl: {
+    id: "pearl",
+    name: "Ceramic Pearl",
+    dot: "#F3EFE6",
+    trim: "#D8C3A5",
+    eye: "#2563EB",
+    eyeBright: "#60A5FA",
+    body: ["#FFFFFF", "#F8F6F1", "#E6E1D6", "#CEC7BA"],
+    head: ["#FFFFFF", "#FAF8F4", "#EAE5DB", "#D3CCC0"],
+    paw: ["#FFFFFF", "#F3EFE7", "#DAD4C8"],
+    ear: ["#F9F6F0", "#E5DFD4", "#C9C1B3"],
+    stroke: "rgba(24, 22, 20, 0.14)",
+    seam: "rgba(24, 22, 20, 0.10)",
+    spec: "rgba(255, 255, 255, 0.94)",
+    rimCool: "rgba(147, 197, 253, 0.35)",
+    antenna: "#B8A68E",
+  },
+  obsidian: {
+    id: "obsidian",
+    name: "Obsidian Chrome",
+    dot: "#18181D",
+    trim: "#9CA3AF",
+    eye: "#06B6D4",
+    eyeBright: "#22D3EE",
+    body: ["#3C404D", "#23252E", "#16171D", "#0D0E12"],
+    head: ["#454A59", "#272A34", "#181920", "#0E0F14"],
+    paw: ["#404554", "#242730", "#14151B"],
+    ear: ["#3A3E4C", "#21242C", "#121318"],
+    stroke: "rgba(255, 255, 255, 0.16)",
+    seam: "rgba(255, 255, 255, 0.10)",
+    spec: "rgba(255, 255, 255, 0.34)",
+    rimCool: "rgba(34, 211, 238, 0.38)",
+    antenna: "#788092",
+  },
+  vermilion: {
+    id: "vermilion",
+    name: "Swiss Vermilion",
+    dot: "#E84A27",
+    trim: "#F6F1E7",
+    eye: "#F59E0B",
+    eyeBright: "#FFF7ED",
+    body: ["#FF805D", "#EC522E", "#C93A18", "#99260C"],
+    head: ["#FF8C6B", "#EE5631", "#CE3D1B", "#A0290E"],
+    paw: ["#FF8563", "#E64C27", "#BA3414"],
+    ear: ["#F8F3E9", "#E5DDD0", "#CBC1B2"],
+    stroke: "rgba(56, 14, 4, 0.22)",
+    seam: "rgba(56, 14, 4, 0.15)",
+    spec: "rgba(255, 248, 240, 0.72)",
+    rimCool: "rgba(255, 237, 213, 0.45)",
+    antenna: "#D6CEC0",
+  },
+  matcha: {
+    id: "matcha",
+    name: "Matcha Ceramic",
+    dot: "#D8E2DC",
+    trim: "#C8A464",
+    eye: "#059669",
+    eyeBright: "#10B981",
+    body: ["#F1F6F3", "#DCE6E0", "#C2D1C8", "#A5B7AC"],
+    head: ["#F4F8F5", "#E0EAE4", "#C6D5CC", "#AABBB1"],
+    paw: ["#EFF5F1", "#D6E2DB", "#B8C8BF"],
+    ear: ["#E4D2AE", "#C8A464", "#9A7940"],
+    stroke: "rgba(20, 38, 29, 0.15)",
+    seam: "rgba(20, 38, 29, 0.11)",
+    spec: "rgba(255, 255, 255, 0.90)",
+    rimCool: "rgba(167, 243, 208, 0.40)",
+    antenna: "#B59457",
+  },
+  iridescent: {
+    id: "iridescent",
+    name: "Iridescent Pearl",
+    dot: "#E4D8F8",
+    trim: "#E8B4F8",
+    eye: "#A855F7",
+    eyeBright: "#C084FC",
+    body: ["#FFF8FD", "#EFE7FB", "#DDD6F6", "#C8C6EC"],
+    head: ["#FFFAFE", "#F3ECFD", "#E2DAF8", "#CCC9EE"],
+    paw: ["#FDF7FC", "#EAE2FA", "#CFCBEB"],
+    ear: ["#F8E8FA", "#DEC8F5", "#C2B2E6"],
+    stroke: "rgba(59, 32, 92, 0.15)",
+    seam: "rgba(59, 32, 92, 0.10)",
+    spec: "rgba(255, 255, 255, 0.95)",
+    rimCool: "rgba(192, 132, 252, 0.42)",
+    antenna: "#B9A3DE",
+  },
+};
+
+export const ACCESSORIES: readonly AccessoryMeta[] = [
+  { id: "none", label: "None" },
+  { id: "halo", label: "Halo Ring" },
+  { id: "shades", label: "Cyber Shades" },
+  { id: "headphones", label: "Headphones" },
+  { id: "cat", label: "Cat Ears" },
+  { id: "crown", label: "Gold Crown" },
+  { id: "wizard", label: "Wizard Hat" },
+  { id: "propeller", label: "Propeller" },
+  { id: "chef", label: "Chef Hat" },
+  { id: "box", label: "Stealth Box" },
+] as const;
+
+export const PLAY_MODES: readonly PlayModeMeta[] = [
+  { id: "interact", label: "Interact", hint: "Rub head · Hold to squish-launch · Drag to fling · Click to poke" },
+  { id: "laser", label: "Laser", hint: "Move pointer to tease with crimson laser (Esc to exit)" },
+  { id: "magnet", label: "Magnet", hint: "Orbits cursor · Click anywhere to fire magnetic repel pulse" },
+  { id: "catch", label: "Catch", hint: "Move cursor paddle to rally the glowing sphere!" },
+  { id: "paint", label: "Paint", hint: "Drag to paint elastic ink trampolines · Click Critique Art" },
+  { id: "bugs", label: "Bugs", hint: "Hunting rogue production bugs with laser zaps!" },
+  { id: "dj", label: "DJ Jam", hint: "Tap synth pads or press A S D F G H J on keyboard!" },
+] as const;
+
+export const SYNTH_PADS: readonly SynthPadMeta[] = [
+  { key: "a", label: "A", note: "C4", hz: 261.63, color: "#2563EB" },
+  { key: "s", label: "S", note: "D4", hz: 293.66, color: "#0EA5E9" },
+  { key: "d", label: "D", note: "E4", hz: 329.63, color: "#10B981" },
+  { key: "f", label: "F", note: "F4", hz: 349.23, color: "#84CC16" },
+  { key: "g", label: "G", note: "G4", hz: 392.0, color: "#F59E0B" },
+  { key: "h", label: "H", note: "A4", hz: 440.0, color: "#EA580C" },
+  { key: "j", label: "J", note: "C5", hz: 523.25, color: "#C084FC" },
+] as const;
+
+export const BUG_TAGS: readonly string[] = ["NaN", "500", "null", "CORS", "404", "OOM", "ENV"] as const;
+
+export const ART_RATINGS: readonly ArtRatingMeta[] = [
+  { title: "Untitled Trampoline No. 4", score: "9.8 / 10", note: "Exquisite spring tension. The Guggenheim is calling." },
+  { title: "Study in Caffeinated Bezier", score: "8.9 / 10", note: "Fearless curvature. Bounces cleanly at 60 FPS." },
+  { title: "Late-Night CSS Refactor", score: "6.4 / 10", note: "Chaotic, mildly unstable, deeply relatable." },
+  { title: "Minimalist Horizon IV", score: "9.4 / 10", note: "Dieter Rams himself would nod silently in approval." },
+  { title: "Kinetic Doodle (Archival)", score: "10 / 10", note: "A masterpiece of human-robot collaboration." },
+] as const;
+
+export const CATCH_QUIPS_HIT: readonly string[] = [
+  "TOO SLOW!",
+  "NICE SAVE!",
+  "MY TURN!",
+  "SPIKE!!",
+  "CLEAN VOLLEY!",
+  "FEEL THE TOPSPIN!",
+] as const;
+
+export const CATCH_QUIPS_DROP: readonly string[] = [
+  "OOF MY RECORD.",
+  "GRAVITY CHEATED.",
+  "MY HANDS ARE MAGNETIC, NOT GLUE!",
 ] as const;
 
 export const MOODS: readonly MoodMeta[] = [
@@ -69,7 +276,7 @@ export const MOODS: readonly MoodMeta[] = [
     quips: [
       "Boop! Ready to break physics or build apps?",
       "Catch me if you can—my springs are freshly oiled!",
-      "Toss me a snack or open a portal. I dare you.",
+      "Toss me a snack or switch to Laser/Catch/Magnet!",
     ],
   },
   {
@@ -243,7 +450,6 @@ function mapProjectToCompanionCard(project: ProjectData, index: number): Compani
 }
 
 const FEATURED_SLUGS = new Set(["orbito", "reviewsage-ai", "oryn-ui"]);
-
 const curatedProjects = userData.Projects.filter((p) => FEATURED_SLUGS.has(p.slug));
 const fallbackProjects = curatedProjects.length >= 3 ? curatedProjects : userData.Projects.slice(0, 3);
 

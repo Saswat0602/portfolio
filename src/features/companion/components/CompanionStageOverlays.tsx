@@ -1,6 +1,7 @@
 "use client";
 
 import type { Dispatch, PointerEvent as ReactPointerEvent, SetStateAction } from "react";
+import type { ArtRatingMeta } from "@/lib/data";
 import type {
   CompanionThemeTokens,
   PolaroidCard,
@@ -23,6 +24,8 @@ export interface CompanionStageOverlaysProps {
   featherTool: boolean;
   cameraFlash: boolean;
   soundOn: boolean;
+  artVerdict?: ArtRatingMeta | null;
+  onDismissArtVerdict?: () => void;
 }
 
 export function CompanionStageOverlays({
@@ -39,6 +42,8 @@ export function CompanionStageOverlays({
   featherTool,
   cameraFlash,
   soundOn,
+  artVerdict = null,
+  onDismissArtVerdict,
 }: CompanionStageOverlaysProps) {
   return (
     <>
@@ -128,7 +133,7 @@ export function CompanionStageOverlays({
         <>
           <div
             data-mochi-el="cloneBubble"
-            className="pointer-events-none absolute left-0 top-0 z-30 w-max max-w-[210px] will-change-transform"
+            className="pointer-events-none absolute left-0 top-0 z-[46] w-max max-w-[210px] will-change-transform"
           >
             {cloneSpeech && (
               <div
@@ -145,7 +150,7 @@ export function CompanionStageOverlays({
           </div>
           <div
             data-mochi-el="cloneWrap"
-            className="pointer-events-none absolute left-0 top-0 z-20 w-[160px] h-[160px] will-change-transform"
+            className="pointer-events-none absolute left-0 top-0 z-[44] w-[160px] h-[160px] will-change-transform"
           >
             <svg viewBox="0 0 120 120" className="w-full h-full block drop-shadow-md" aria-hidden="true">
               <path
@@ -167,7 +172,7 @@ export function CompanionStageOverlays({
       <div
         data-mochi-el="speech"
         aria-live="polite"
-        className="pointer-events-none absolute left-0 top-0 z-30 w-max max-w-[min(295px,86vw)] will-change-transform transition-opacity duration-150"
+        className="pointer-events-none absolute left-0 top-0 z-[46] w-max max-w-[min(295px,86vw)] will-change-transform transition-opacity duration-150"
         style={{ opacity: speechShown ? 1 : 0 }}
       >
         {speechShown && (
@@ -185,11 +190,44 @@ export function CompanionStageOverlays({
         )}
       </div>
 
+      {artVerdict && (
+        <div
+          className="mochi-pop pointer-events-auto absolute top-16 left-5 z-30 w-[260px] rounded-xl p-3.5 shadow-xl"
+          style={{
+            backgroundColor: ui.surface,
+            color: ui.ink,
+            border: `1px solid ${ui.borderStrong}`,
+            boxShadow: ui.shadow,
+          }}
+        >
+          <div className="flex items-center justify-between font-mono text-[9.5px] uppercase tracking-[0.1em] text-amber-500 mb-1">
+            <span>Gallery Critique</span>
+            {onDismissArtVerdict && (
+              <button
+                type="button"
+                aria-label="Dismiss art critique"
+                onClick={onDismissArtVerdict}
+                className="cursor-pointer font-bold hover:opacity-75"
+              >
+                ×
+              </button>
+            )}
+          </div>
+          <div className="text-xs font-semibold leading-snug">{artVerdict.title}</div>
+          <div className="mt-0.5 font-mono text-[11px] font-bold text-amber-500">
+            Score: {artVerdict.score}
+          </div>
+          <p className="mt-1 text-[11px] leading-relaxed" style={{ color: ui.muted }}>
+            {artVerdict.note}
+          </p>
+        </div>
+      )}
+
       {featherTool && (
         <div
           data-mochi-el="featherDom"
           aria-hidden="true"
-          className="pointer-events-none fixed left-0 top-0 z-50 will-change-transform"
+          className="pointer-events-none absolute left-0 top-0 z-50 will-change-transform"
         >
           <svg viewBox="0 0 48 48" width="46" height="46" className="block -translate-x-2 -translate-y-8 drop-shadow">
             <path

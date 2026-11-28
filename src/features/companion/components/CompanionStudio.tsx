@@ -25,6 +25,27 @@ export function CompanionStudio({ defaultFullscreen = false }: CompanionStudioPr
     viewMode,
     setViewMode,
     charStyle,
+    auraFinish,
+    setAuraFinish,
+    accessory,
+    playMode,
+    selectPlayMode,
+    releaseBugs,
+    triggerArtCritique,
+    clearPaintStrokes,
+    hitSynthPad,
+    triggerMiniClones,
+    toggleVoiceBeat,
+    fireClapPulse,
+    triggerSneeze,
+    rallyCount,
+    bugsLeft,
+    artVerdict,
+    setArtVerdict,
+    autoJam,
+    setAutoJam,
+    activePad,
+    micMode,
     styleMeta,
     mood,
     activeMoodMeta,
@@ -69,6 +90,7 @@ export function CompanionStudio({ defaultFullscreen = false }: CompanionStudioPr
     setPortfolioHover,
     say,
     handleSelectStyle,
+    handleSelectAccessory,
     handleSelectMood,
     throwSnack,
     triggerBackflip,
@@ -82,7 +104,6 @@ export function CompanionStudio({ defaultFullscreen = false }: CompanionStudioPr
     handleChatSubmit,
     triggerHireHearts,
     handleHeadPet,
-    handleFeatherWiggle,
     handleStageDown,
     startRigDrag,
     startPolaroidDrag,
@@ -91,6 +112,13 @@ export function CompanionStudio({ defaultFullscreen = false }: CompanionStudioPr
   const containerClass = isFullscreen
     ? "fixed inset-0 z-50 w-screen h-screen"
     : "relative w-full h-[78vh] min-h-[620px] max-h-[820px] rounded-2xl border border-theme-border shadow-xl";
+
+  const stageCursorClass =
+    featherTool || playMode === "laser" || playMode === "catch"
+      ? "cursor-none"
+      : portalTool || playMode === "paint"
+        ? "cursor-crosshair"
+        : "";
 
   return (
     <div
@@ -126,9 +154,7 @@ export function CompanionStudio({ defaultFullscreen = false }: CompanionStudioPr
       <main
         ref={stageRef}
         onPointerDown={handleStageDown}
-        className={`relative flex-1 w-full overflow-hidden select-none ${
-          featherTool ? "cursor-none" : portalTool ? "cursor-crosshair" : ""
-        }`}
+        className={`relative flex-1 w-full overflow-hidden select-none ${stageCursorClass}`}
         style={{
           backgroundImage: isDark
             ? "radial-gradient(rgba(56, 189, 248, 0.12) 1px, transparent 1px)"
@@ -146,6 +172,9 @@ export function CompanionStudio({ defaultFullscreen = false }: CompanionStudioPr
             </span>
             <span>·</span>
             <span>MOOD: {activeMoodMeta.label.toUpperCase()}</span>
+            {playMode !== "interact" && (
+              <span style={{ color: styleMeta.accent }}>· MODE: {playMode.toUpperCase()}</span>
+            )}
             {portalTool && <span style={{ color: "#06B6D4" }}>· CLICK STAGE TO PLACE PORTALS</span>}
             {featherTool && <span style={{ color: "#EC4899" }}>· WIGGLE FEATHER OVER CHARACTER</span>}
             {gravityFlipped && <span style={{ color: "#F59E0B" }}>· CEILING GRAVITY</span>}
@@ -182,11 +211,15 @@ export function CompanionStudio({ defaultFullscreen = false }: CompanionStudioPr
           featherTool={featherTool}
           cameraFlash={cameraFlash}
           soundOn={soundOn}
+          artVerdict={artVerdict}
+          onDismissArtVerdict={() => setArtVerdict(null)}
         />
 
         <CompanionRigSvg
           isDark={isDark}
           styleMeta={styleMeta}
+          auraFinish={auraFinish}
+          accessory={accessory}
           activeMoodMeta={activeMoodMeta}
           spicyActive={spicyActive}
           sourActive={sourActive}
@@ -199,7 +232,6 @@ export function CompanionStudio({ defaultFullscreen = false }: CompanionStudioPr
           cursorSnatched={cursorSnatched}
           portfolioHover={portfolioHover}
           onDoubleClick={triggerBackflip}
-          onPointerMove={handleFeatherWiggle}
           onPointerDown={startRigDrag}
           onHeadPet={handleHeadPet}
           onPokeKey={handleBodyPoke}
@@ -228,6 +260,29 @@ export function CompanionStudio({ defaultFullscreen = false }: CompanionStudioPr
           <CompanionPlayDock
             ui={ui}
             styleMeta={styleMeta}
+            charStyle={charStyle}
+            onSelectStyle={handleSelectStyle}
+            auraFinish={auraFinish}
+            onSelectAuraFinish={setAuraFinish}
+            accessory={accessory}
+            onSelectAccessory={handleSelectAccessory}
+            playMode={playMode}
+            onSelectPlayMode={selectPlayMode}
+            rallyCount={rallyCount}
+            bugsLeft={bugsLeft}
+            artVerdict={artVerdict}
+            autoJam={autoJam}
+            onToggleAutoJam={() => setAutoJam((v) => !v)}
+            activePad={activePad}
+            micMode={micMode}
+            onCritiqueArt={triggerArtCritique}
+            onClearPaint={clearPaintStrokes}
+            onReleaseBugs={releaseBugs}
+            onHitPad={hitSynthPad}
+            onMiniClones={triggerMiniClones}
+            onToggleVoiceBeat={toggleVoiceBeat}
+            onFireClapPulse={fireClapPulse}
+            onSneeze={triggerSneeze}
             dockTab={dockTab}
             setDockTab={setDockTab}
             mood={mood}

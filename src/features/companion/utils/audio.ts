@@ -8,7 +8,7 @@ interface WindowWithWebkitAudio extends Window {
 let sharedCtx: AudioContext | null = null;
 let lastGiggleMs = 0;
 
-function getAudioContext(): AudioContext | null {
+export function getAudioContext(): AudioContext | null {
   if (typeof window === "undefined") return null;
   try {
     const win = window as WindowWithWebkitAudio;
@@ -96,6 +96,54 @@ function playOscEnvelope(
   osc.stop(startAt + durationSec + 0.02);
 }
 
+function playMarimbaNote(ctx: AudioContext, now: number, hz: number): void {
+  const o1 = ctx.createOscillator();
+  const o2 = ctx.createOscillator();
+  const lp = ctx.createBiquadFilter();
+  const g = ctx.createGain();
+  o1.type = "triangle";
+  o2.type = "sine";
+  o1.frequency.setValueAtTime(hz, now);
+  o2.frequency.setValueAtTime(hz * 2, now);
+  lp.type = "lowpass";
+  lp.frequency.setValueAtTime(2200, now);
+  lp.frequency.exponentialRampToValueAtTime(640, now + 0.34);
+  g.gain.setValueAtTime(0.0001, now);
+  g.gain.linearRampToValueAtTime(0.06, now + 0.007);
+  g.gain.exponentialRampToValueAtTime(0.0001, now + 0.38);
+  o1.connect(lp);
+  o2.connect(lp);
+  lp.connect(g);
+  g.connect(ctx.destination);
+  o1.start(now);
+  o2.start(now);
+  o1.stop(now + 0.4);
+  o2.stop(now + 0.4);
+}
+
+function playTwang(ctx: AudioContext, now: number): void {
+  const o = ctx.createOscillator();
+  const lfo = ctx.createOscillator();
+  const lfoG = ctx.createGain();
+  const g = ctx.createGain();
+  o.type = "triangle";
+  o.frequency.setValueAtTime(220, now);
+  o.frequency.exponentialRampToValueAtTime(360, now + 0.34);
+  lfo.frequency.setValueAtTime(24, now);
+  lfoG.gain.setValueAtTime(42, now);
+  lfoG.gain.exponentialRampToValueAtTime(2, now + 0.36);
+  lfo.connect(lfoG);
+  lfoG.connect(o.frequency);
+  g.gain.setValueAtTime(0.052, now);
+  g.gain.exponentialRampToValueAtTime(0.0001, now + 0.38);
+  o.connect(g);
+  g.connect(ctx.destination);
+  o.start(now);
+  lfo.start(now);
+  o.stop(now + 0.4);
+  lfo.stop(now + 0.4);
+}
+
 function playSadTrombone(ctx: AudioContext, now: number): void {
   const notes = [
     { hz: 311.13, t: 0.0, d: 0.24, slide: undefined },
@@ -111,9 +159,7 @@ function playSadTrombone(ctx: AudioContext, now: number): void {
 
     osc.type = "sawtooth";
     osc.frequency.setValueAtTime(note.hz, now + note.t);
-    if (note.slide) {
-      osc.frequency.exponentialRampToValueAtTime(note.slide, now + note.t + note.d);
-    }
+    if (note.slide) osc.frequency.exponentialRampToValueAtTime(note.slide, now + note.t + note.d);
 
     lp.type = "lowpass";
     lp.frequency.setValueAtTime(980, now + note.t);
@@ -131,13 +177,13 @@ function playSadTrombone(ctx: AudioContext, now: number): void {
   });
 }
 
-export function playComedySound(kind: SoundKind, enabled: boolean, pitchMul = 1): void {
+export function playComedySound(kind: SoundKind, enabled: boolean, param = 1): void {
   if (!enabled) return;
   try {
     const ctx = getAudioContext();
     if (!ctx) return;
     const now = ctx.currentTime;
-    const pm = clamp(pitchMul, 0.55, 1.8);
+    const pm = clamp(param, 0.55, 1.8);
 
     switch (kind) {
       case "boing":
@@ -190,6 +236,34 @@ export function playComedySound(kind: SoundKind, enabled: boolean, pitchMul = 1)
         break;
       case "pop":
         playOscEnvelope(ctx, "sine", now, 0.075, [[460 * pm, 0], [780 * pm, 0.055]], 0.04, 0.006);
+        break;
+      case "marimba":
+        playMarimbaNote(ctx, now, param || 440);
+        break;
+      case "zap":
+        playOscEnvelope(ctx, "sawtooth", now, 0.12, [[1450, 0], [180, 0.12]], 0.042, 0.005);
+        break;
+      case "volley": {
+        const pitch = 320 + clamp(param, 0, 14) * 32;
+        playOscEnvelope(ctx, "triangle", now, 0.09, [[pitch, 0], [pitch * 1.35, 0.06]], 0.048, 0.006);
+        break;
+      }
+      case "squish": {
+        const hz = 220 + clamp(param, 0, 1) * 420;
+        playOscEnvelope(ctx, "sine", now, 0.07, [[hz, 0], [hz + 26, 0.055]], 0.022);
+        break;
+      }
+      case "twang":
+        playTwang(ctx, now);
+        break;
+      case "pulse":
+        playOscEnvelope(ctx, "sine", now, 0.2, [[340, 0], [110, 0.18]], 0.06, 0.008);
+        break;
+      case "sneeze":
+        playNoiseBurst(ctx, now, 0.18, 0.3, "bandpass", 1850, 1850, 0.1);
+        break;
+      case "tick":
+        playOscEnvelope(ctx, "triangle", now, 0.024, [[1060, 0], [420, 0.02]], 0.022, 0.003);
         break;
     }
   } catch {

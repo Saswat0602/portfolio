@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { Sparkles } from "lucide-react";
+import { useEffect, useRef } from "react";
 import { useCompanionEngine } from "../hooks/useCompanionEngine";
 import { useCompanionReaction } from "../context/CompanionReactionContext";
 import { CompanionRigSvg } from "./CompanionRigSvg";
@@ -9,7 +8,7 @@ import { CompanionStageOverlays } from "./CompanionStageOverlays";
 import { CompanionHomeDock } from "./CompanionHomeDock";
 import "../styles/companion.css";
 
-function CompanionCornerActive({ onMinimize }: { onMinimize: () => void }) {
+export function CompanionCornerWidget() {
   const { hoverTarget, lastCue } = useCompanionReaction();
   const stageRef = useRef<HTMLDivElement | null>(null);
   const fxCanvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -18,6 +17,27 @@ function CompanionCornerActive({ onMinimize }: { onMinimize: () => void }) {
     isDark,
     ui,
     charStyle,
+    auraFinish,
+    setAuraFinish,
+    accessory,
+    playMode,
+    selectPlayMode,
+    releaseBugs,
+    triggerArtCritique,
+    clearPaintStrokes,
+    hitSynthPad,
+    triggerMiniClones,
+    toggleVoiceBeat,
+    fireClapPulse,
+    triggerSneeze,
+    rallyCount,
+    bugsLeft,
+    artVerdict,
+    setArtVerdict,
+    autoJam,
+    setAutoJam,
+    activePad,
+    micMode,
     styleMeta,
     mood,
     activeMoodMeta,
@@ -57,6 +77,7 @@ function CompanionCornerActive({ onMinimize }: { onMinimize: () => void }) {
     portfolioHover,
     say,
     handleSelectStyle,
+    handleSelectAccessory,
     handleSelectMood,
     throwSnack,
     triggerBackflip,
@@ -70,7 +91,6 @@ function CompanionCornerActive({ onMinimize }: { onMinimize: () => void }) {
     handleChatSubmit,
     triggerHireHearts,
     handleHeadPet,
-    handleFeatherWiggle,
     handleStageDown,
     startRigDrag,
     startPolaroidDrag,
@@ -94,41 +114,47 @@ function CompanionCornerActive({ onMinimize }: { onMinimize: () => void }) {
     }
   }, [lastCue, say, triggerBackflip, triggerHireHearts]);
 
-  useEffect(() => {
-    if (!portalTool && !featherTool) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setPortalTool(false);
-        setFeatherTool(false);
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [featherTool, portalTool, setFeatherTool, setPortalTool]);
+  const stagePointerActive =
+    portalTool || playMode === "paint" || playMode === "magnet";
+
+  const stageCursorClass =
+    featherTool || playMode === "laser" || playMode === "catch"
+      ? "cursor-none"
+      : portalTool || playMode === "paint"
+        ? "cursor-crosshair"
+        : "";
 
   return (
     <div
       ref={stageRef}
       onPointerDown={handleStageDown}
       className={`${
-        portalTool ? "pointer-events-auto cursor-crosshair" : "pointer-events-none"
-      } fixed inset-0 z-40 overflow-hidden select-none ${
+        stagePointerActive ? "pointer-events-auto" : "pointer-events-none"
+      } ${stageCursorClass} fixed inset-0 z-40 overflow-hidden select-none ${
         shakingStage ? "mochi-quake" : ""
       }`}
     >
-      {portalTool && (
+      {(portalTool || playMode !== "interact") && (
         <div
           className="pointer-events-auto fixed top-20 right-4 z-40 rounded-full px-3 py-1 font-mono text-[10.5px] shadow-md flex items-center gap-2"
           style={{
-            backgroundColor: ui.surface,
-            color: "#06B6D4",
-            border: "1px solid #06B6D4",
+            backgroundColor: ui.glass,
+            color: portalTool ? "#06B6D4" : styleMeta.accent,
+            border: `1px solid ${portalTool ? "#06B6D4" : ui.borderStrong}`,
+            backdropFilter: "blur(12px)",
           }}
         >
-          <span>🌀 Click anywhere on screen to place portals</span>
+          <span>
+            {portalTool
+              ? "🌀 Click two spots to place portals"
+              : `Mode: ${playMode.toUpperCase()} (Esc to exit)`}
+          </span>
           <button
             type="button"
-            onClick={() => setPortalTool(false)}
+            onClick={() => {
+              setPortalTool(false);
+              selectPlayMode("interact");
+            }}
             className="font-bold cursor-pointer hover:opacity-80"
           >
             Done
@@ -155,11 +181,15 @@ function CompanionCornerActive({ onMinimize }: { onMinimize: () => void }) {
         featherTool={featherTool}
         cameraFlash={cameraFlash}
         soundOn={soundOn}
+        artVerdict={artVerdict}
+        onDismissArtVerdict={() => setArtVerdict(null)}
       />
 
       <CompanionRigSvg
         isDark={isDark}
         styleMeta={styleMeta}
+        auraFinish={auraFinish}
+        accessory={accessory}
         activeMoodMeta={activeMoodMeta}
         spicyActive={spicyActive}
         sourActive={sourActive}
@@ -172,11 +202,10 @@ function CompanionCornerActive({ onMinimize }: { onMinimize: () => void }) {
         cursorSnatched={cursorSnatched}
         portfolioHover={portfolioHover}
         onDoubleClick={triggerBackflip}
-        onPointerMove={handleFeatherWiggle}
         onPointerDown={startRigDrag}
         onHeadPet={handleHeadPet}
         onPokeKey={handleBodyPoke}
-        initialTransform="translate3d(83vw, 44vh, 0) translate(-50%, -50%) scale(0.74)"
+        initialTransform="translate3d(80vw, 56vh, 0) translate(-50%, -50%) scale(0.76)"
       />
 
       <CompanionHomeDock
@@ -184,6 +213,27 @@ function CompanionCornerActive({ onMinimize }: { onMinimize: () => void }) {
         charStyle={charStyle}
         styleMeta={styleMeta}
         onSelectStyle={handleSelectStyle}
+        auraFinish={auraFinish}
+        onSelectAuraFinish={setAuraFinish}
+        accessory={accessory}
+        onSelectAccessory={handleSelectAccessory}
+        playMode={playMode}
+        onSelectPlayMode={selectPlayMode}
+        rallyCount={rallyCount}
+        bugsLeft={bugsLeft}
+        artVerdict={artVerdict}
+        autoJam={autoJam}
+        onToggleAutoJam={() => setAutoJam((v) => !v)}
+        activePad={activePad}
+        micMode={micMode}
+        onCritiqueArt={triggerArtCritique}
+        onClearPaint={clearPaintStrokes}
+        onReleaseBugs={releaseBugs}
+        onHitPad={hitSynthPad}
+        onMiniClones={triggerMiniClones}
+        onToggleVoiceBeat={toggleVoiceBeat}
+        onFireClapPulse={fireClapPulse}
+        onSneeze={triggerSneeze}
         mood={mood}
         onSelectMood={handleSelectMood}
         onThrowSnack={throwSnack}
@@ -212,31 +262,8 @@ function CompanionCornerActive({ onMinimize }: { onMinimize: () => void }) {
         soundOn={soundOn}
         setSoundOn={setSoundOn}
         onResetStage={handleResetStage}
-        onMinimize={onMinimize}
         say={say}
       />
     </div>
   );
-}
-
-export function CompanionCornerWidget() {
-  const [minimized, setMinimized] = useState(false);
-
-  if (minimized) {
-    return (
-      <div className="fixed bottom-4 right-4 z-40">
-        <button
-          type="button"
-          onClick={() => setMinimized(false)}
-          className="mochi-pop inline-flex items-center gap-2 px-3.5 py-2 rounded-full border border-theme-border bg-theme-surface/90 backdrop-blur-xl text-xs font-mono text-theme-primary shadow-lg hover:border-theme-accent transition-colors cursor-pointer"
-        >
-          <span className="w-2 h-2 rounded-full bg-[#FF6B4A] animate-pulse" />
-          <span>MOCHI-04 · Play</span>
-          <Sparkles size={13} className="text-theme-accent" />
-        </button>
-      </div>
-    );
-  }
-
-  return <CompanionCornerActive onMinimize={() => setMinimized(true)} />;
 }

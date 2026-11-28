@@ -43,6 +43,7 @@ export function createInitialSimState(): SimState {
     walkPhase: 0,
     crouchY: 0,
     vCrouchY: 0,
+    propellerDeg: 0,
     ptrX: 500,
     ptrY: 320,
     ptrVx: 0,
@@ -61,14 +62,33 @@ export function createInitialSimState(): SimState {
       vy: 0,
       offX: 0,
       offY: 0,
+      downAt: 0,
     },
+    squishCharge: 0,
+    squishTickCd: 0,
+    ballistic: false,
+    ballisticTimer: 0,
     pet: { lastX: 0, lastDir: 0, strokes: 0, decay: 0, fxCd: 0 },
-    tickle: { lastX: 0, lastDir: 0, strokes: 0, decay: 0, cd: 0 },
+    tickle: { lastX: 0, lastY: 0, lastDirX: 0, lastDirY: 0, strokes: 0, decay: 0, cd: 0 },
     snacks: [],
     portals: { cyan: null, orange: null, nextColor: "cyan" },
     charPortalCd: 0,
     tramp: { x: 500, comp: 0, vComp: 0, combo: 0 },
     clone: { active: false, x: 300, y: 380, vx: 0, vy: 0, rot: 0 },
+    laserTrail: Array.from({ length: 12 }, () => ({ x: 500, y: 320 })),
+    laserPounceCd: 0,
+    magnetAngle: 0,
+    ball: null,
+    rally: 0,
+    bugs: [],
+    lasers: [],
+    zapCooldown: 0,
+    strokes: [],
+    activeStroke: null,
+    criticScanY: -1,
+    miniClones: [],
+    soundRings: [],
+    beatEnergy: 0,
     particles: [],
     rainDrops: INITIAL_RAIN_DROPS.map((d) => ({ ...d })),
     time: 0,
@@ -102,6 +122,7 @@ export function createEmptyElements(): CompanionElements {
     flame: null,
     boosterL: null,
     boosterR: null,
+    propBlade: null,
   };
 }
 
@@ -126,12 +147,15 @@ export function createEmptyTimers(): CompanionTimers {
     clone3: null,
     cloneEnd: null,
     snatchEnd: null,
+    critique: null,
+    autoJam: null,
   };
 }
 
 export function clearAllCompanionTimers(timers: CompanionTimers): void {
   if (timers.speechType) clearInterval(timers.speechType);
-  const timeoutKeys: Array<Exclude<keyof CompanionTimers, "speechType">> = [
+  if (timers.autoJam) clearInterval(timers.autoJam);
+  const timeoutKeys: Array<Exclude<keyof CompanionTimers, "speechType" | "autoJam">> = [
     "speechClear",
     "spicy",
     "sour",
@@ -150,6 +174,7 @@ export function clearAllCompanionTimers(timers: CompanionTimers): void {
     "clone3",
     "cloneEnd",
     "snatchEnd",
+    "critique",
   ];
   timeoutKeys.forEach((key) => {
     const id = timers[key];

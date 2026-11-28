@@ -7,14 +7,26 @@ import {
   type PointerEvent as ReactPointerEvent,
   type RefObject,
 } from "react";
-import { CHARACTER_STYLES, MOODS, type CharacterStyleId, type MoodId } from "@/lib/data";
+import {
+  AURA_FINISHES,
+  CHARACTER_STYLES,
+  MOODS,
+  SYNTH_PADS,
+  type AccessoryId,
+  type AuraFinishId,
+  type CharacterStyleId,
+  type MoodId,
+  type PlayModeId,
+} from "@/lib/data";
 import { useTheme } from "@/components/theme/ThemeContext";
 import type {
+  ArtVerdictState,
   CompanionElements,
   CompanionThemeTokens,
   CompanionTimers,
   DockTab,
   LiveSnapshot,
+  MicMode,
   PolaroidCard,
   PortfolioHoverTarget,
   SimState,
@@ -40,9 +52,12 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
   const { theme, toggleTheme } = useTheme();
   const [viewMode, setViewMode] = useState<ViewMode>(options.initialViewMode ?? "stage");
   const [charStyle, setCharStyle] = useState<CharacterStyleId>(options.initialStyle ?? "vinyl");
+  const [auraFinish, setAuraFinish] = useState<AuraFinishId>("pearl");
+  const [accessory, setAccessory] = useState<AccessoryId>("none");
+  const [playMode, setPlayMode] = useState<PlayModeId>("interact");
   const [mood, setMood] = useState<MoodId>("playful");
   const [soundOn, setSoundOn] = useState<boolean>(false);
-  const [dockTab, setDockTab] = useState<DockTab>("moods");
+  const [dockTab, setDockTab] = useState<DockTab>("modes");
 
   // Playable Tools & Interactive States
   const [portalTool, setPortalTool] = useState<boolean>(false);
@@ -52,6 +67,14 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
   const [shakingStage, setShakingStage] = useState<boolean>(false);
   const [cameraFlash, setCameraFlash] = useState<boolean>(false);
   const [photoPosing, setPhotoPosing] = useState<boolean>(false);
+
+  // Mode Sub-states
+  const [rallyCount, setRallyCount] = useState<number>(0);
+  const [bugsLeft, setBugsLeft] = useState<number>(0);
+  const [artVerdict, setArtVerdict] = useState<ArtVerdictState | null>(null);
+  const [autoJam, setAutoJam] = useState<boolean>(false);
+  const [activePad, setActivePad] = useState<string | null>(null);
+  const [micMode, setMicMode] = useState<MicMode>("off");
 
   // Slapstick Reaction Overrides
   const [spicyActive, setSpicyActive] = useState<boolean>(false);
@@ -87,6 +110,9 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
   const polaroidSeqRef = useRef(1);
   const snackSeqRef = useRef(1);
   const simRef = useRef<SimState>(createInitialSimState());
+  const micStreamRef = useRef<MediaStream | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const analyserDataRef = useRef<Uint8Array<ArrayBuffer> | null>(null);
 
   const displayMood = useMemo<MoodId>(() => {
     if (portfolioHover === "hire") return "lovestruck";
@@ -101,10 +127,13 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
     [displayMood]
   );
 
-  const styleMeta = useMemo(
-    () => CHARACTER_STYLES.find((c) => c.id === charStyle) || CHARACTER_STYLES[0],
-    [charStyle]
-  );
+  const styleMeta = useMemo(() => {
+    const base = CHARACTER_STYLES.find((c) => c.id === charStyle) || CHARACTER_STYLES[0];
+    if (charStyle === "aura") {
+      return { ...base, accent: AURA_FINISHES[auraFinish].eyeBright };
+    }
+    return base;
+  }, [auraFinish, charStyle]);
 
   const isDark = theme === "dark";
 
@@ -112,7 +141,7 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
     () => ({
       bg: isDark ? "#060b13" : "#F6F4EF",
       surface: isDark ? "#0c1524" : "#FFFFFF",
-      glass: isDark ? "rgba(12, 21, 36, 0.84)" : "rgba(255, 255, 255, 0.86)",
+      glass: isDark ? "rgba(12, 21, 36, 0.86)" : "rgba(255, 255, 255, 0.88)",
       recessed: isDark ? "#111d30" : "#ECE9E1",
       ink: isDark ? "#f0f6fc" : "#161618",
       muted: isDark ? "#94a3b8" : "#6A6760",
@@ -127,6 +156,9 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
     theme,
     viewMode,
     charStyle,
+    auraFinish,
+    accessory,
+    playMode,
     displayMood,
     pitch: activeMoodMeta.pitch,
     soundOn,
@@ -150,6 +182,7 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
     chatFocused,
     chatLen: chatText.length,
     portfolioHover,
+    micMode,
   });
 
   useEffect(() => {
@@ -157,6 +190,9 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
       theme,
       viewMode,
       charStyle,
+      auraFinish,
+      accessory,
+      playMode,
       displayMood,
       pitch: activeMoodMeta.pitch,
       soundOn,
@@ -180,11 +216,15 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
       chatFocused,
       chatLen: chatText.length,
       portfolioHover,
+      micMode,
     };
   }, [
     theme,
     viewMode,
     charStyle,
+    auraFinish,
+    accessory,
+    playMode,
     displayMood,
     activeMoodMeta.pitch,
     soundOn,
@@ -208,13 +248,27 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
     chatFocused,
     chatText.length,
     portfolioHover,
+    micMode,
   ]);
 
   const actions = useCompanionActions(
-    { simRef, liveRef, timersRef, pokeRef, polaroidSeqRef, snackSeqRef },
+    {
+      simRef,
+      liveRef,
+      timersRef,
+      pokeRef,
+      polaroidSeqRef,
+      snackSeqRef,
+      micStreamRef,
+      analyserRef,
+      analyserDataRef,
+    },
     {
       setCharStyle,
+      setAccessory,
+      setPlayMode,
       setMood,
+      setSoundOn,
       setPortalTool,
       setTrampolineOn,
       setFeatherTool,
@@ -234,6 +288,12 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
       setPolaroids,
       setStickyNote,
       setSpeechShown,
+      setRallyCount,
+      setBugsLeft,
+      setArtVerdict,
+      setAutoJam,
+      setActivePad,
+      setMicMode,
       chatText,
       setChatText,
     }
@@ -246,16 +306,69 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
     simRef,
     liveRef,
     timersRef,
+    analyserRef,
+    analyserDataRef,
     viewMode,
     consumeSnack: actions.consumeSnack,
     say: actions.say,
     spawnParticles: actions.spawnParticles,
     handleBodyPoke: actions.handleBodyPoke,
+    stopMic: actions.stopMic,
     setIsHeld,
     setDizzyActive,
+    setTickledActive,
     setCursorSnatched,
     setWidgetOpen,
+    setRallyCount,
+    setBugsLeft,
   });
+
+  // Auto-Jam interval for DJ mode
+  const { hitSynthPad } = actions;
+  useEffect(() => {
+    const timers = timersRef.current;
+    if (!autoJam || playMode !== "dj") {
+      if (timers.autoJam) clearInterval(timers.autoJam);
+      return;
+    }
+    const seq = [0, 2, 4, 6, 4, 3, 2, 1];
+    let idx = 0;
+    hitSynthPad(SYNTH_PADS[seq[0]]);
+    timers.autoJam = setInterval(() => {
+      idx = (idx + 1) % seq.length;
+      hitSynthPad(SYNTH_PADS[seq[idx]]);
+    }, 280);
+    return () => {
+      if (timers.autoJam) clearInterval(timers.autoJam);
+    };
+  }, [autoJam, hitSynthPad, playMode]);
+
+  // Keyboard shortcuts for DJ Jam (A S D F G H J) & Escape to exit Laser/Paint/Feather/Portal
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.altKey || e.repeat) return;
+      const tag = document.activeElement?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA") return;
+
+      if (e.key === "Escape") {
+        setPortalTool(false);
+        setFeatherTool(false);
+        setAutoJam(false);
+        if (liveRef.current.playMode !== "interact") setPlayMode("interact");
+        return;
+      }
+
+      if (liveRef.current.playMode === "dj") {
+        const hit = SYNTH_PADS.find((p) => p.key === e.key.toLowerCase());
+        if (hit) {
+          e.preventDefault();
+          hitSynthPad(hit);
+        }
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [hitSynthPad]);
 
   const triggerHireHearts = useCallback(() => {
     const sim = simRef.current;
@@ -289,58 +402,56 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
     [actions]
   );
 
-  const handleFeatherWiggle = useCallback(
-    (e: ReactPointerEvent<SVGSVGElement>) => {
-      if (!featherTool) return;
-      const sim = simRef.current;
-      const dx = e.clientX - sim.tickle.lastX;
-      sim.tickle.lastX = e.clientX;
-      const dir = dx > 2 ? 1 : dx < -2 ? -1 : 0;
-      if (dir !== 0 && sim.tickle.lastDir !== 0 && dir !== sim.tickle.lastDir) {
-        sim.tickle.strokes += 1;
-        sim.tickle.decay = 0.85;
-        if (sim.tickle.strokes >= 2) {
-          if (timersRef.current.tickle) clearTimeout(timersRef.current.tickle);
-          setTickledActive(true);
-          playComedySound("giggle", liveRef.current.soundOn, 1.32);
-          if (sim.tickle.cd <= 0) {
-            sim.tickle.cd = 0.42;
-            actions.spawnParticles("confetti", sim.x, sim.y - 30, 4);
-            if (sim.tickle.strokes === 2 || sim.tickle.strokes === 6) {
-              actions.say("STOP HAHAHAHA MY RIBS ARE SVG PATHS!!", 2200, true);
-            }
-          }
-          timersRef.current.tickle = setTimeout(() => setTickledActive(false), 1100);
-        }
-      }
-      if (dir !== 0) sim.tickle.lastDir = dir;
-    },
-    [actions, featherTool]
-  );
-
   const handleStageDown = useCallback(
     (e: ReactPointerEvent<HTMLElement>) => {
       const target = e.target as HTMLElement | null;
-      if (target?.closest("button, input, form, [data-mochi-rig], [data-polaroid], [data-sticky]")) return;
-      if (!portalTool) return;
+      if (target?.closest("button, input, form, a, [data-mochi-rig], [data-polaroid], [data-sticky], [data-dock]")) return;
       const r = stageRef.current?.getBoundingClientRect();
       if (!r) return;
+      const px = e.clientX - r.left;
+      const py = e.clientY - r.top;
 
-      const px = clamp(e.clientX - r.left, 56, r.width - 56);
-      const py = clamp(e.clientY - r.top, 96, simRef.current.floorY + 12);
+      if (playMode === "paint") {
+        setArtVerdict(null);
+        simRef.current.activeStroke = {
+          pts: [{ x: px, y: py }],
+          color: styleMeta.accent,
+        };
+        return;
+      }
+
+      if (playMode === "magnet") {
+        const sim = simRef.current;
+        const dx = sim.x - px;
+        const dy = sim.y - py;
+        const dist = Math.hypot(dx, dy) || 1;
+        sim.vx += (dx / dist) * 620;
+        sim.vy += (dy / dist) * 520 - 160;
+        sim.ballistic = true;
+        sim.ballisticTimer = 0.78;
+        sim.soundRings.push({ x: px, y: py, r: 14, maxR: 230, age: 0, color: styleMeta.accent });
+        playComedySound("pulse", soundOn);
+        actions.spawnParticles("star", px, py, 6, styleMeta.accent);
+        actions.say("Magnetic repel! Whoosh!", 1800, true);
+        return;
+      }
+
+      if (!portalTool) return;
+      const clampedX = clamp(px, 56, r.width - 56);
+      const clampedY = clamp(py, 96, simRef.current.floorY + 12);
       const p = simRef.current.portals;
       if (p.nextColor === "cyan") {
-        p.cyan = { x: px, y: py };
+        p.cyan = { x: clampedX, y: clampedY };
         p.nextColor = "orange";
         actions.say("Cyan Entry Portal placed! Click again for Orange Exit.", 2200, true);
       } else {
-        p.orange = { x: px, y: py };
+        p.orange = { x: clampedX, y: clampedY };
         p.nextColor = "cyan";
         actions.say("Orange Exit Portal ready! Fling me or a snack inside!", 2500, true);
       }
       playComedySound("portal", soundOn, 1.15);
     },
-    [actions, portalTool, soundOn, stageRef]
+    [actions, playMode, portalTool, soundOn, stageRef, styleMeta.accent]
   );
 
   const startRigDrag = useCallback(
@@ -361,6 +472,7 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
         vy: 0,
         offX: sim.x - px,
         offY: sim.y - py,
+        downAt: performance.now(),
       };
     },
     [stageRef]
@@ -398,6 +510,10 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
     viewMode,
     setViewMode,
     charStyle,
+    auraFinish,
+    setAuraFinish,
+    accessory,
+    playMode,
     styleMeta,
     mood,
     displayMood,
@@ -416,6 +532,14 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
     shakingStage,
     cameraFlash,
     photoPosing,
+    rallyCount,
+    bugsLeft,
+    artVerdict,
+    setArtVerdict,
+    autoJam,
+    setAutoJam,
+    activePad,
+    micMode,
     spicyActive,
     sourActive,
     spinTopActive,
@@ -445,7 +569,6 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
     ...actions,
     triggerHireHearts,
     handleHeadPet,
-    handleFeatherWiggle,
     handleStageDown,
     startRigDrag,
     startPolaroidDrag,

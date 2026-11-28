@@ -1,8 +1,9 @@
-import type { CharacterStyleId, MoodId, SnackId } from "@/lib/data";
+import type { AccessoryId, AuraFinishId, CharacterStyleId, MoodId, PlayModeId, SnackId } from "@/lib/data";
 
 export type ViewMode = "stage" | "portfolio" | "home";
-export type DockTab = "moods" | "toys" | "pranks";
+export type DockTab = "styles" | "modes" | "moods" | "toys" | "pranks";
 export type PortfolioHoverTarget = "hire" | "projects" | "resume" | null;
+export type MicMode = "off" | "live" | "fallback";
 
 export type SoundKind =
   | "boing"
@@ -17,9 +18,17 @@ export type SoundKind =
   | "poof"
   | "portal"
   | "chime"
-  | "pop";
+  | "pop"
+  | "marimba"
+  | "zap"
+  | "volley"
+  | "squish"
+  | "twang"
+  | "pulse"
+  | "sneeze"
+  | "tick";
 
-export type ParticleKind = "poof" | "dust" | "confetti" | "heart" | "burp" | "zzz";
+export type ParticleKind = "poof" | "dust" | "confetti" | "heart" | "burp" | "zzz" | "star" | "tissue";
 
 export interface SnackEntity {
   id: number;
@@ -84,6 +93,65 @@ export interface RainDropState {
   spd: number;
 }
 
+export interface BallEntity {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  r: number;
+  angle: number;
+  spin: number;
+  lastHit: "none" | "user" | "bot";
+  trail: PortalPoint[];
+}
+
+export interface BugEntity {
+  id: number;
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  tag: string;
+  legPhase: number;
+}
+
+export interface LaserBeamEntity {
+  x0: number;
+  y0: number;
+  x1: number;
+  y1: number;
+  age: number;
+}
+
+export interface InkStroke {
+  pts: PortalPoint[];
+  color: string;
+}
+
+export interface MiniCloneEntity {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  ttl: number;
+  phase: number;
+}
+
+export interface SoundRingEntity {
+  x: number;
+  y: number;
+  r: number;
+  maxR: number;
+  age: number;
+  color: string;
+}
+
+export interface ArtVerdictState {
+  title: string;
+  score: string;
+  note: string;
+}
+
 export interface DragState {
   active: boolean;
   moved: boolean;
@@ -95,6 +163,7 @@ export interface DragState {
   vy: number;
   offX: number;
   offY: number;
+  downAt: number;
 }
 
 export interface StrokeTracker {
@@ -107,7 +176,9 @@ export interface StrokeTracker {
 
 export interface TickleTracker {
   lastX: number;
-  lastDir: number;
+  lastY: number;
+  lastDirX: number;
+  lastDirY: number;
   strokes: number;
   decay: number;
   cd: number;
@@ -170,6 +241,7 @@ export interface SimState {
   walkPhase: number;
   crouchY: number;
   vCrouchY: number;
+  propellerDeg: number;
   ptrX: number;
   ptrY: number;
   ptrVx: number;
@@ -178,6 +250,10 @@ export interface SimState {
   ptrLastY: number;
   ptrActive: boolean;
   drag: DragState;
+  squishCharge: number;
+  squishTickCd: number;
+  ballistic: boolean;
+  ballisticTimer: number;
   pet: StrokeTracker;
   tickle: TickleTracker;
   snacks: SnackEntity[];
@@ -185,6 +261,20 @@ export interface SimState {
   charPortalCd: number;
   tramp: TrampolineState;
   clone: CloneState;
+  laserTrail: PortalPoint[];
+  laserPounceCd: number;
+  magnetAngle: number;
+  ball: BallEntity | null;
+  rally: number;
+  bugs: BugEntity[];
+  lasers: LaserBeamEntity[];
+  zapCooldown: number;
+  strokes: InkStroke[];
+  activeStroke: InkStroke | null;
+  criticScanY: number;
+  miniClones: MiniCloneEntity[];
+  soundRings: SoundRingEntity[];
+  beatEnergy: number;
   particles: ParticleEntity[];
   rainDrops: RainDropState[];
   time: number;
@@ -194,6 +284,9 @@ export interface LiveSnapshot {
   theme: "dark" | "light";
   viewMode: ViewMode;
   charStyle: CharacterStyleId;
+  auraFinish: AuraFinishId;
+  accessory: AccessoryId;
+  playMode: PlayModeId;
   displayMood: MoodId;
   pitch: number;
   soundOn: boolean;
@@ -217,6 +310,7 @@ export interface LiveSnapshot {
   chatFocused: boolean;
   chatLen: number;
   portfolioHover: PortfolioHoverTarget;
+  micMode: MicMode;
 }
 
 export interface CompanionTimers {
@@ -239,6 +333,8 @@ export interface CompanionTimers {
   clone3: ReturnType<typeof setTimeout> | null;
   cloneEnd: ReturnType<typeof setTimeout> | null;
   snatchEnd: ReturnType<typeof setTimeout> | null;
+  critique: ReturnType<typeof setTimeout> | null;
+  autoJam: ReturnType<typeof setInterval> | null;
 }
 
 export interface CompanionElements {
@@ -267,6 +363,7 @@ export interface CompanionElements {
   flame: SVGGElement | null;
   boosterL: SVGPathElement | null;
   boosterR: SVGPathElement | null;
+  propBlade: SVGGElement | null;
 }
 
 export interface CompanionThemeTokens {

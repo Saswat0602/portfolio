@@ -12,6 +12,7 @@ import { clamp } from "../utils/physics";
 import { closeSharedAudioContext, playComedySound } from "../utils/audio";
 import { renderCompanionStageCanvas } from "../utils/canvasRenderer";
 import { clearAllCompanionTimers } from "../utils/simInitial";
+import { stepBugsAndLasers, stepCatchBall, stepMiniClonesAndRings } from "../utils/modeStep";
 import {
   stepCharacterKinematics,
   stepCloneDuel,
@@ -27,15 +28,21 @@ export interface UseCompanionLoopParams {
   simRef: MutableRefObject<SimState>;
   liveRef: MutableRefObject<LiveSnapshot>;
   timersRef: MutableRefObject<CompanionTimers>;
+  analyserRef: MutableRefObject<AnalyserNode | null>;
+  analyserDataRef: MutableRefObject<Uint8Array<ArrayBuffer> | null>;
   viewMode: ViewMode;
   consumeSnack: (snack: SnackEntity) => void;
   say: (text: string, holdMs?: number, silent?: boolean) => void;
   spawnParticles: (kind: ParticleKind, x: number, y: number, count?: number, customColor?: string | null) => void;
   handleBodyPoke: () => void;
+  stopMic: () => void;
   setIsHeld: Dispatch<SetStateAction<boolean>>;
   setDizzyActive: Dispatch<SetStateAction<boolean>>;
+  setTickledActive: Dispatch<SetStateAction<boolean>>;
   setCursorSnatched: Dispatch<SetStateAction<boolean>>;
   setWidgetOpen: Dispatch<SetStateAction<boolean>>;
+  setRallyCount: Dispatch<SetStateAction<number>>;
+  setBugsLeft: Dispatch<SetStateAction<number>>;
 }
 
 export function useCompanionLoop({
@@ -45,15 +52,21 @@ export function useCompanionLoop({
   simRef,
   liveRef,
   timersRef,
+  analyserRef,
+  analyserDataRef,
   viewMode,
   consumeSnack,
   say,
   spawnParticles,
   handleBodyPoke,
+  stopMic,
   setIsHeld,
   setDizzyActive,
+  setTickledActive,
   setCursorSnatched,
   setWidgetOpen,
+  setRallyCount,
+  setBugsLeft,
 }: UseCompanionLoopParams): void {
   // Natural blinking
   useEffect(() => {
@@ -102,11 +115,15 @@ export function useCompanionLoop({
       sim.h = r.height;
       if (viewMode === "home") {
         const isDesktop = r.width >= 768;
-        sim.floorY = r.height - 96;
+        sim.floorY = isDesktop ? r.height - 175 : r.height - 165;
         sim.ceilY = 86;
-        sim.homeX = isDesktop ? Math.min(r.width - 135, r.width * 0.83) : Math.max(82, r.width - 84);
-        sim.homeY = isDesktop ? clamp(r.height * 0.44, 150, r.height - 210) : Math.max(150, r.height - 175);
-        sim.tramp.x = isDesktop ? Math.min(r.width - 140, r.width * 0.74) : r.width * 0.5;
+        sim.homeX = isDesktop
+          ? clamp(r.width * 0.88, r.width * 0.78, r.width - 108)
+          : Math.max(82, r.width - 78);
+        sim.homeY = isDesktop
+          ? clamp(r.height * 0.44, 130, r.height - 235)
+          : clamp(r.height * 0.36, 125, r.height - 210);
+        sim.tramp.x = isDesktop ? Math.min(r.width - 140, r.width * 0.78) : r.width * 0.5;
       } else {
         sim.floorY = viewMode === "portfolio" ? r.height - 62 : r.height - 178;
         sim.ceilY = 86;
@@ -135,14 +152,15 @@ export function useCompanionLoop({
     return () => ro.disconnect();
   }, [fxCanvasRef, simRef, stageRef, viewMode]);
 
-  // Cleanup Timers & AudioContext on Unmount
+  // Cleanup Timers, Mic & AudioContext on Unmount
   useEffect(() => {
     const timers = timersRef.current;
     return () => {
       clearAllCompanionTimers(timers);
+      stopMic();
       closeSharedAudioContext();
     };
-  }, [timersRef]);
+  }, [stopMic, timersRef]);
 
   // Single 60 FPS Simulation & Canvas FX Loop
   useEffect(() => {
@@ -156,6 +174,12 @@ export function useCompanionLoop({
     };
 
     const callbacks = { consumeSnack, say, spawnParticles, onPortalDizzy };
+    const modeCallbacks = {
+      say,
+      spawnParticles,
+      onRallyChange: setRallyCount,
+      onBugsCountChange: setBugsLeft,
+    };
 
     const tick = (now: number) => {
       const dt = Math.min(0.032, Math.max(0.001, (now - last) / 1000));
@@ -170,6 +194,8 @@ export function useCompanionLoop({
       sim.time += dt;
       sim.ptrVx *= Math.exp(-dt * 12);
       sim.ptrVy *= Math.exp(-dt * 12);
+      sim.beatEnergy = Math.max(0, sim.beatEnergy - dt * 3.2);
+      sim.laserPounceCd = Math.max(0, sim.laserPounceCd - dt);
       sim.charPortalCd = Math.max(0, sim.charPortalCd - dt);
       sim.pet.decay = Math.max(0, sim.pet.decay - dt);
       if (sim.pet.decay <= 0) sim.pet.strokes = 0;
@@ -178,23 +204,45 @@ export function useCompanionLoop({
       if (sim.tickle.decay <= 0) sim.tickle.strokes = 0;
       sim.tickle.cd = Math.max(0, sim.tickle.cd - dt);
 
+      // Live Web Audio Microphone sampling
+      if (live.micMode === "live" && analyserRef.current && analyserDataRef.current) {
+        analyserRef.current.getByteFrequencyData(analyserDataRef.current);
+        let sum = 0;
+        const bins = Math.min(24, analyserDataRef.current.length);
+        for (let i = 0; i < bins; i++) sum += analyserDataRef.current[i];
+        const level = clamp((sum / (bins * 255)) * 2.4, 0, 1);
+        if (level > sim.beatEnergy) sim.beatEnergy = level;
+        if (level > 0.52 && sim.soundRings.length < 4) {
+          sim.soundRings.push({ x: sim.x, y: sim.y + 34, r: 24, maxR: 220, age: 0, color: "#38BDF8" });
+        }
+      }
+
+      // Squish-Charge Jump (> 0.35s press & hold without dragging)
+      if (sim.drag.active && !sim.drag.moved) {
+        const heldSec = (now - sim.drag.downAt) / 1000;
+        if (heldSec > 0.35) {
+          sim.squishCharge = clamp((heldSec - 0.35) / 1.0, 0, 1);
+          sim.squishTickCd -= dt;
+          if (sim.squishTickCd <= 0) {
+            sim.squishTickCd = 0.11;
+            playComedySound("squish", live.soundOn, sim.squishCharge);
+          }
+        }
+      } else {
+        sim.squishCharge = Math.max(0, sim.squishCharge - dt * 8);
+      }
+
       const chaseSnack = stepSnacks(sim, live, dt, callbacks);
       stepCharacterKinematics(sim, live, chaseSnack, dt, callbacks);
+      stepCatchBall(sim, live, dt, modeCallbacks);
+      stepBugsAndLasers(sim, live, dt, modeCallbacks);
+      stepMiniClonesAndRings(sim, live, dt, spawnParticles);
       stepCloneDuel(sim, live, elements, dt);
       const { drawX, drawY } = stepRigAndCommitDom(sim, live, chaseSnack, elements, dt);
 
       const ctx = fxCanvasRef.current?.getContext("2d");
       if (ctx) {
-        renderCompanionStageCanvas(
-          ctx,
-          sim,
-          live.displayMood,
-          drawX,
-          drawY,
-          live.theme === "dark",
-          live.trampolineOn,
-          dt
-        );
+        renderCompanionStageCanvas(ctx, sim, live, drawX, drawY, dt);
       }
 
       rafId = requestAnimationFrame(tick);
@@ -202,9 +250,24 @@ export function useCompanionLoop({
 
     rafId = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafId);
-  }, [consumeSnack, elementsRef, fxCanvasRef, liveRef, say, setDizzyActive, simRef, spawnParticles, stageRef, timersRef]);
+  }, [
+    analyserDataRef,
+    analyserRef,
+    consumeSnack,
+    elementsRef,
+    fxCanvasRef,
+    liveRef,
+    say,
+    setBugsLeft,
+    setDizzyActive,
+    setRallyCount,
+    simRef,
+    spawnParticles,
+    stageRef,
+    timersRef,
+  ]);
 
-  // Global Pointer Tracking, Drag & Fling Release
+  // Global Pointer Tracking, Feather Tickle Detection, Paint Strokes, Drag & Squish Launch
   useEffect(() => {
     const onMove = (e: PointerEvent) => {
       const stage = stageRef.current;
@@ -213,6 +276,7 @@ export function useCompanionLoop({
       const px = e.clientX - r.left;
       const py = e.clientY - r.top;
       const sim = simRef.current;
+      const live = liveRef.current;
 
       sim.ptrVx = (px - sim.ptrLastX) * 28;
       sim.ptrVy = (py - sim.ptrLastY) * 28;
@@ -222,13 +286,56 @@ export function useCompanionLoop({
       sim.ptrY = py;
       sim.ptrActive = true;
 
+      // Global Tickle Feather Detection (works anywhere near Mochi!)
+      if (live.featherTool && Math.hypot(px - sim.x, py - sim.y) < 115) {
+        const dx = px - sim.tickle.lastX;
+        const dy = py - sim.tickle.lastY;
+        sim.tickle.lastX = px;
+        sim.tickle.lastY = py;
+        const dirX = dx > 2 ? 1 : dx < -2 ? -1 : 0;
+        const dirY = dy > 2 ? 1 : dy < -2 ? -1 : 0;
+        const flippedX = dirX !== 0 && sim.tickle.lastDirX !== 0 && dirX !== sim.tickle.lastDirX;
+        const flippedY = dirY !== 0 && sim.tickle.lastDirY !== 0 && dirY !== sim.tickle.lastDirY;
+        const fastRub = Math.hypot(dx, dy) > 8;
+
+        if (flippedX || flippedY || fastRub) {
+          sim.tickle.strokes += 1;
+          sim.tickle.decay = 0.9;
+          if (sim.tickle.strokes >= 2) {
+            if (timersRef.current.tickle) clearTimeout(timersRef.current.tickle);
+            setTickledActive(true);
+            playComedySound("giggle", live.soundOn, 1.32);
+            if (sim.tickle.cd <= 0) {
+              sim.tickle.cd = 0.42;
+              spawnParticles("confetti", sim.x, sim.y - 30, 5);
+              if (sim.tickle.strokes === 2 || sim.tickle.strokes % 6 === 0) {
+                say("STOP HAHAHAHA MY RIBS ARE SVG PATHS!!", 2200, true);
+              }
+            }
+            timersRef.current.tickle = setTimeout(() => setTickledActive(false), 1100);
+          }
+        }
+        if (dirX !== 0) sim.tickle.lastDirX = dirX;
+        if (dirY !== 0) sim.tickle.lastDirY = dirY;
+      }
+
+      if (sim.activeStroke) {
+        const pts = sim.activeStroke.pts;
+        const lastPt = pts[pts.length - 1];
+        if (!lastPt || Math.hypot(px - lastPt.x, py - lastPt.y) > 8) {
+          pts.push({ x: px, y: py });
+        }
+        return;
+      }
+
       if (sim.drag.active) {
         const dx = e.clientX - sim.drag.lastX;
         const dy = e.clientY - sim.drag.lastY;
         if (!sim.drag.moved && Math.hypot(e.clientX - sim.drag.startX, e.clientY - sim.drag.startY) > 7) {
           sim.drag.moved = true;
+          sim.squishCharge = 0;
           setIsHeld(true);
-          playComedySound("pop", liveRef.current.soundOn, 1.3);
+          playComedySound("pop", live.soundOn, 1.3);
         }
         sim.drag.lastX = e.clientX;
         sim.drag.lastY = e.clientY;
@@ -239,19 +346,45 @@ export function useCompanionLoop({
 
     const onUp = () => {
       const sim = simRef.current;
+
+      if (sim.activeStroke) {
+        if (sim.activeStroke.pts.length >= 2) {
+          sim.strokes.push(sim.activeStroke);
+          if (sim.strokes.length > 16) sim.strokes.shift();
+        }
+        sim.activeStroke = null;
+      }
+
       if (!sim.drag.active) return;
       const wasMoved = sim.drag.moved;
+      const charge = sim.squishCharge;
       sim.drag.active = false;
       sim.drag.moved = false;
+      sim.squishCharge = 0;
       setIsHeld(false);
 
       if (wasMoved) {
+        const flingSpeed = Math.hypot(sim.drag.vx, sim.drag.vy);
         sim.vx = clamp(sim.drag.vx * 1.18, -980, 980);
         sim.vy = clamp(sim.drag.vy * 1.18, -920, 920);
-        if (Math.hypot(sim.vx, sim.vy) > 420) {
+        sim.ballistic = true;
+        sim.ballisticTimer = flingSpeed > 260 ? 1.65 : 0.72;
+        if (flingSpeed > 420) {
           playComedySound("slideUp", liveRef.current.soundOn, 1.15);
           say("WEEEE!! AERODYNAMIC MOCHI!!", 2000, true);
         }
+      } else if (charge > 0.16) {
+        sim.flipping = true;
+        sim.flipDeg = 0;
+        sim.vy = -(490 + charge * 420);
+        sim.vx = (Math.random() - 0.5) * 180;
+        sim.sx = 0.72;
+        sim.sy = 1.36;
+        sim.ballistic = true;
+        sim.ballisticTimer = 1.2;
+        playComedySound("chime", liveRef.current.soundOn);
+        spawnParticles("star", sim.x, sim.y + 32, 9);
+        say("BOING!! Squish-charge launch!!", 2200, true);
       } else if (liveRef.current.cursorSnatched) {
         setCursorSnatched(false);
         sim.vy = -240;
@@ -273,5 +406,17 @@ export function useCompanionLoop({
       window.removeEventListener("pointerup", onUp);
       window.removeEventListener("pointercancel", onUp);
     };
-  }, [handleBodyPoke, liveRef, say, setCursorSnatched, setIsHeld, setWidgetOpen, simRef, stageRef]);
+  }, [
+    handleBodyPoke,
+    liveRef,
+    say,
+    setCursorSnatched,
+    setIsHeld,
+    setTickledActive,
+    setWidgetOpen,
+    simRef,
+    spawnParticles,
+    stageRef,
+    timersRef,
+  ]);
 }

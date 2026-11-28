@@ -40,3 +40,29 @@ export function stepRK4(
     v: v + ((a1 + 2 * a2 + 2 * a3 + a4) * h) / 6,
   };
 }
+
+export function closestPointOnSegment(
+  px: number,
+  py: number,
+  ax: number,
+  ay: number,
+  bx: number,
+  by: number
+): { x: number; y: number } {
+  const vx = bx - ax;
+  const vy = by - ay;
+  const l2 = vx * vx + vy * vy;
+  if (l2 < 1e-5) return { x: ax, y: ay };
+  const t = clamp(((px - ax) * vx + (py - ay) * vy) / l2, 0, 1);
+  return { x: ax + t * vx, y: ay + t * vy };
+}
+
+export function hexToRgb(hex: string): [number, number, number] {
+  const clean = hex.replace("#", "");
+  const n = parseInt(clean, 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+
+export function rgbaStr(rgb: [number, number, number], a: number): string {
+  return `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${clamp(a, 0, 1).toFixed(3)})`;
+}
