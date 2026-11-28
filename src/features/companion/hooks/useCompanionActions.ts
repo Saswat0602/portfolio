@@ -67,6 +67,7 @@ export interface CompanionActionSetters {
   setPolaroids: Dispatch<SetStateAction<PolaroidCard[]>>;
   setStickyNote: Dispatch<SetStateAction<StickyNoteState | null>>;
   setSpeechShown: Dispatch<SetStateAction<string>>;
+  setDevJoke: Dispatch<SetStateAction<string | null>>;
   setRallyCount: Dispatch<SetStateAction<number>>;
   setBugsLeft: Dispatch<SetStateAction<number>>;
   setArtVerdict: Dispatch<SetStateAction<ArtVerdictState | null>>;
@@ -118,6 +119,7 @@ export function useCompanionActions(
     setPolaroids,
     setStickyNote,
     setSpeechShown,
+    setDevJoke,
     setRallyCount,
     setBugsLeft,
     setArtVerdict,
@@ -166,18 +168,8 @@ export function useCompanionActions(
       if (timersRef.current.speechClear) clearTimeout(timersRef.current.speechClear);
       if (!silent) playComedySound("pop", liveRef.current.soundOn, liveRef.current.pitch);
 
-      let i = 0;
-      setSpeechShown("");
-      timersRef.current.speechType = setInterval(() => {
-        i += 2;
-        if (i >= text.length) {
-          setSpeechShown(text);
-          if (timersRef.current.speechType) clearInterval(timersRef.current.speechType);
-          timersRef.current.speechClear = setTimeout(() => setSpeechShown(""), holdMs);
-        } else {
-          setSpeechShown(text.slice(0, i));
-        }
-      }, 16);
+      setSpeechShown(text);
+      timersRef.current.speechClear = setTimeout(() => setSpeechShown(""), holdMs);
     },
     [liveRef, setSpeechShown, timersRef]
   );
@@ -663,12 +655,15 @@ export function useCompanionActions(
     if (timersRef.current.cloneEnd) clearTimeout(timersRef.current.cloneEnd);
 
     const sim = simRef.current;
+    sim.vy = -340;
+    sim.ballistic = true;
+    sim.ballisticTimer = 1.0;
     sim.clone = {
       active: true,
-      x: clamp(sim.x + (sim.x > sim.w * 0.5 ? -180 : 180), 80, Math.max(100, sim.w - 80)),
-      y: 120,
-      vx: (sim.x > sim.w * 0.5 ? 1 : -1) * 140,
-      vy: -120,
+      x: clamp(sim.x + (sim.x > sim.w * 0.5 ? -200 : 200), 90, Math.max(120, sim.w - 90)),
+      y: Math.max(120, sim.floorY - 220),
+      vx: (sim.x > sim.w * 0.5 ? 1 : -1) * 180,
+      vy: -360,
       rot: 0,
     };
     setCloneDuelActive(true);
@@ -751,10 +746,21 @@ export function useCompanionActions(
   }, [liveRef, say, setMood]);
 
   const triggerDevJoke = useCallback(() => {
+    const sim = simRef.current;
+    const joke = pickRandom(DEV_JOKES);
+    if (timersRef.current.joke) clearTimeout(timersRef.current.joke);
     setMood("hype");
+    setDevJoke(joke);
+    sim.vy = liveRef.current.gravityFlipped ? 260 : -280;
+    sim.sx = 1.26;
+    sim.sy = 0.76;
+    sim.vAntBend = (Math.random() > 0.5 ? 1 : -1) * 320;
     playComedySound("giggle", liveRef.current.soundOn, 1.15);
-    say(pickRandom(DEV_JOKES), 4000, true);
-  }, [liveRef, say, setMood]);
+    spawnParticles("confetti", sim.x, sim.y - 30, 14);
+    spawnParticles("star", sim.x, sim.y - 54, 5, "#F59E0B");
+    say(joke, 4600, true);
+    timersRef.current.joke = setTimeout(() => setDevJoke(null), 6500);
+  }, [liveRef, say, setDevJoke, setMood, simRef, spawnParticles, timersRef]);
 
   const triggerStickyPrank = useCallback(() => {
     const sim = simRef.current;
@@ -857,6 +863,7 @@ export function useCompanionActions(
     setCloneSpeech("");
     setFridayDeployActive(false);
     setFakeCrashActive(false);
+    setDevJoke(null);
     setPolaroids([]);
     setStickyNote(null);
     setMood("playful");
@@ -879,6 +886,7 @@ export function useCompanionActions(
     setFridayDeployActive,
     setGravityFlipped,
     setMood,
+    setDevJoke,
     setPizzaActive,
     setPlayMode,
     setPolaroids,

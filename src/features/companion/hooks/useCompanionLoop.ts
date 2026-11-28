@@ -268,37 +268,31 @@ export function useCompanionLoop({
       sim.ptrY = py;
       sim.ptrActive = true;
 
-      // Global Tickle Feather Detection (works anywhere near Mochi!)
-      if (live.featherTool && Math.hypot(px - sim.x, py - sim.y) < 115) {
+      // Global Tickle Feather Detection (responsive anywhere near Mochi)
+      if (live.featherTool && Math.hypot(px - sim.x, py - sim.y) < 125) {
         const dx = px - sim.tickle.lastX;
         const dy = py - sim.tickle.lastY;
         sim.tickle.lastX = px;
         sim.tickle.lastY = py;
-        const dirX = dx > 2 ? 1 : dx < -2 ? -1 : 0;
-        const dirY = dy > 2 ? 1 : dy < -2 ? -1 : 0;
-        const flippedX = dirX !== 0 && sim.tickle.lastDirX !== 0 && dirX !== sim.tickle.lastDirX;
-        const flippedY = dirY !== 0 && sim.tickle.lastDirY !== 0 && dirY !== sim.tickle.lastDirY;
-        const fastRub = Math.hypot(dx, dy) > 8;
+        const movedDist = Math.hypot(dx, dy);
 
-        if (flippedX || flippedY || fastRub) {
+        if (movedDist > 1.8) {
           sim.tickle.strokes += 1;
-          sim.tickle.decay = 0.9;
-          if (sim.tickle.strokes >= 2) {
-            if (timersRef.current.tickle) clearTimeout(timersRef.current.tickle);
-            setTickledActive(true);
-            playComedySound("giggle", live.soundOn, 1.32);
-            if (sim.tickle.cd <= 0) {
-              sim.tickle.cd = 0.42;
-              spawnParticles("confetti", sim.x, sim.y - 30, 5);
-              if (sim.tickle.strokes === 2 || sim.tickle.strokes % 6 === 0) {
-                say("STOP HAHAHAHA MY RIBS ARE SVG PATHS!!", 2200, true);
-              }
+          sim.tickle.decay = 0.95;
+          if (timersRef.current.tickle) clearTimeout(timersRef.current.tickle);
+          setTickledActive(true);
+          playComedySound("giggle", live.soundOn, 1.32);
+          if (sim.tickle.cd <= 0) {
+            sim.tickle.cd = 0.36;
+            sim.sx = 1.14;
+            sim.sy = 0.88;
+            spawnParticles("confetti", sim.x, sim.y - 30, 6);
+            if (sim.tickle.strokes === 1 || sim.tickle.strokes % 8 === 0) {
+              say("STOP HAHAHAHA MY RIBS ARE SVG PATHS!!", 2400, true);
             }
-            timersRef.current.tickle = setTimeout(() => setTickledActive(false), 1100);
           }
+          timersRef.current.tickle = setTimeout(() => setTickledActive(false), 1150);
         }
-        if (dirX !== 0) sim.tickle.lastDirX = dirX;
-        if (dirY !== 0) sim.tickle.lastDirY = dirY;
       }
 
       if (sim.activeStroke) {

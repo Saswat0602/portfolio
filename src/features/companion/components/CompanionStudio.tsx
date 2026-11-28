@@ -72,6 +72,8 @@ export function CompanionStudio({ defaultFullscreen = false }: CompanionStudioPr
     setFridayDeployActive,
     fakeCrashActive,
     setFakeCrashActive,
+    devJoke,
+    setDevJoke,
     polaroids,
     setPolaroids,
     stickyNote,
@@ -81,9 +83,6 @@ export function CompanionStudio({ defaultFullscreen = false }: CompanionStudioPr
     setChatText,
     setChatFocused,
     secretMode,
-    setSecretMode,
-    peeking,
-    setPeeking,
     widgetOpen,
     setWidgetOpen,
     portfolioHover,
@@ -102,7 +101,6 @@ export function CompanionStudio({ defaultFullscreen = false }: CompanionStudioPr
     triggerFridayDeploy,
     triggerFakeCrash,
     triggerDiscoRave,
-    triggerDevRoast,
     triggerDevJoke,
     triggerStickyPrank,
     triggerChaosPrank,
@@ -223,6 +221,9 @@ export function CompanionStudio({ defaultFullscreen = false }: CompanionStudioPr
           onDismissFridayDeploy={() => setFridayDeployActive(false)}
           fakeCrashActive={fakeCrashActive}
           onDismissFakeCrash={() => setFakeCrashActive(false)}
+          devJoke={devJoke}
+          onDismissDevJoke={() => setDevJoke(null)}
+          onNextDevJoke={triggerDevJoke}
         />
 
         <CompanionRigSvg
@@ -307,20 +308,11 @@ export function CompanionStudio({ defaultFullscreen = false }: CompanionStudioPr
             onFridayDeploy={triggerFridayDeploy}
             onFakeCrash={triggerFakeCrash}
             onDiscoRave={triggerDiscoRave}
-            onDevRoast={triggerDevRoast}
             onDevJoke={triggerDevJoke}
             onStickyPrank={triggerStickyPrank}
             onGravityFlip={triggerGravityFlip}
             onCloneDuel={triggerCloneDuel}
             onBackflip={triggerBackflip}
-            secretMode={secretMode}
-            setSecretMode={setSecretMode}
-            peeking={peeking}
-            setPeeking={setPeeking}
-            chatText={chatText}
-            setChatText={setChatText}
-            setChatFocused={setChatFocused}
-            onChatSubmit={handleChatSubmit}
             say={say}
           />
         )}

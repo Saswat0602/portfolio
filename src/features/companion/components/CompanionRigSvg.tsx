@@ -146,19 +146,9 @@ export function CompanionRigSvg({
             <stop offset="58%" stopColor="#EFF6FF" />
             <stop offset="100%" stopColor="#CBD5E1" />
           </radialGradient>
-
-          <filter id="mochi-shadow" x="-20%" y="-20%" width="140%" height="145%">
-            <feDropShadow
-              dx="0"
-              dy="8"
-              stdDeviation="7"
-              floodColor={isDark ? "#000000" : "#18181B"}
-              floodOpacity={isDark ? "0.52" : "0.12"}
-            />
-          </filter>
         </defs>
 
-        <g data-mochi-el="rigTransform" filter="url(#mochi-shadow)">
+        <g data-mochi-el="rigTransform">
           <g data-mochi-el="footL">
             <rect x="130" y="246" width="30" height="19" rx="9.5" fill={footFill} stroke="#FFFFFF" strokeWidth="1.2" />
           </g>

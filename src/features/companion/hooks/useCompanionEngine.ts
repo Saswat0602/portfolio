@@ -86,6 +86,7 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
   const [cloneSpeech, setCloneSpeech] = useState<string>("");
   const [fridayDeployActive, setFridayDeployActive] = useState<boolean>(false);
   const [fakeCrashActive, setFakeCrashActive] = useState<boolean>(false);
+  const [devJoke, setDevJoke] = useState<string | null>(null);
 
   // Draggable Polaroids & Sticky Note
   const [polaroids, setPolaroids] = useState<PolaroidCard[]>([]);
@@ -285,6 +286,7 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
       setPolaroids,
       setStickyNote,
       setSpeechShown,
+      setDevJoke,
       setRallyCount,
       setBugsLeft,
       setArtVerdict,
@@ -349,6 +351,7 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
         setAutoJam(false);
         setFakeCrashActive(false);
         setFridayDeployActive(false);
+        setDevJoke(null);
         if (liveRef.current.playMode !== "interact") setPlayMode("interact");
         return;
       }
@@ -547,6 +550,8 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
     setFridayDeployActive,
     fakeCrashActive,
     setFakeCrashActive,
+    devJoke,
+    setDevJoke,
     polaroids,
     setPolaroids,
     stickyNote,

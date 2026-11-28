@@ -394,6 +394,7 @@ function updateAndDrawParticles(
   isDark: boolean,
   dt: number
 ): void {
+  const dprScale = ctx.getTransform().a || 1;
   for (let i = sim.particles.length - 1; i >= 0; i--) {
     const pt = sim.particles[i];
     pt.age += dt;
@@ -408,10 +409,10 @@ function updateAndDrawParticles(
     pt.rot += pt.vRot * dt;
 
     const alpha = clamp(1 - pt.age / pt.life, 0, 1);
-    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.setTransform(dprScale, 0, 0, dprScale, 0, 0);
     ctx.translate(pt.x, pt.y);
     ctx.rotate(pt.rot);
-    ctx.globalAlpha = alpha;
 
     if (pt.kind === "poof") {
       ctx.fillStyle = isDark ? "#E5E7EB" : "#FFFFFF";
@@ -456,8 +457,9 @@ function updateAndDrawParticles(
       ctx.closePath();
       ctx.fill();
     }
-    ctx.restore();
   }
+  ctx.setTransform(dprScale, 0, 0, dprScale, 0, 0);
+  ctx.globalAlpha = 1;
 }
 
 export function renderCompanionStageCanvas(

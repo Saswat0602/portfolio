@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type Dispatch, type FormEvent, type SetStateAction } from "react";
+import { useState, type Dispatch, type SetStateAction } from "react";
 import Link from "next/link";
 import { Sparkles, X } from "lucide-react";
 import {
@@ -20,7 +20,7 @@ import {
 } from "@/lib/data";
 import type { CompanionThemeTokens } from "../types";
 import { playComedySound } from "../utils/audio";
-import { IconLock, IconSend, IconSound } from "./CompanionIcons";
+import { IconSound } from "./CompanionIcons";
 import { CompanionModeSubbar } from "./CompanionModeSubbar";
 
 type HomeDrawerTab = "styles" | "modes" | "moods" | "toys" | "pranks" | null;
@@ -63,20 +63,11 @@ export interface CompanionHomeDockProps {
   onFridayDeploy: () => void;
   onFakeCrash: () => void;
   onDiscoRave: () => void;
-  onDevRoast: () => void;
   onDevJoke: () => void;
   onStickyPrank: () => void;
   onGravityFlip: () => void;
   onCloneDuel: () => void;
   onBackflip: () => void;
-  secretMode: boolean;
-  setSecretMode: Dispatch<SetStateAction<boolean>>;
-  peeking: boolean;
-  setPeeking: Dispatch<SetStateAction<boolean>>;
-  chatText: string;
-  setChatText: Dispatch<SetStateAction<string>>;
-  setChatFocused: Dispatch<SetStateAction<boolean>>;
-  onChatSubmit: (e: FormEvent<HTMLFormElement>) => void;
   soundOn: boolean;
   setSoundOn: Dispatch<SetStateAction<boolean>>;
   onResetStage: () => void;
@@ -121,20 +112,11 @@ export function CompanionHomeDock({
   onFridayDeploy,
   onFakeCrash,
   onDiscoRave,
-  onDevRoast,
   onDevJoke,
   onStickyPrank,
   onGravityFlip,
   onCloneDuel,
   onBackflip,
-  secretMode,
-  setSecretMode,
-  peeking,
-  setPeeking,
-  chatText,
-  setChatText,
-  setChatFocused,
-  onChatSubmit,
   soundOn,
   setSoundOn,
   onResetStage,
@@ -432,168 +414,87 @@ export function CompanionHomeDock({
           )}
 
           {openDrawer === "pranks" && (
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar sm:flex-wrap sm:justify-center">
-                <button
-                  type="button"
-                  onClick={onChaosPrank}
-                  className="m4-focus whitespace-nowrap rounded-full px-2.5 py-1 font-mono text-[10px] font-semibold cursor-pointer"
-                  style={{ backgroundColor: "#E03E2D", color: "#FFFFFF" }}
-                >
-                  🎲 Random Chaos
-                </button>
-                <button
-                  type="button"
-                  onClick={onFridayDeploy}
-                  className="m4-focus whitespace-nowrap rounded-full px-2.5 py-1 font-mono text-[10px] font-semibold cursor-pointer"
-                  style={{ backgroundColor: "#F59E0B", color: "#111827" }}
-                >
-                  🚨 Friday Deploy
-                </button>
-                <button
-                  type="button"
-                  onClick={onFakeCrash}
-                  className="m4-focus whitespace-nowrap rounded-full px-2.5 py-1 font-mono text-[10px] font-semibold cursor-pointer"
-                  style={{ backgroundColor: "#1D4ED8", color: "#FFFFFF" }}
-                >
-                  💙 Fake BSOD
-                </button>
-                <button
-                  type="button"
-                  onClick={onDevRoast}
-                  className="m4-focus whitespace-nowrap rounded-full px-2.5 py-1 font-mono text-[10px] cursor-pointer"
-                  style={{ backgroundColor: ui.recessed, color: ui.ink, border: `1px solid ${ui.border}` }}
-                >
-                  🔥 Roast Me
-                </button>
-                <button
-                  type="button"
-                  onClick={onDevJoke}
-                  className="m4-focus whitespace-nowrap rounded-full px-2.5 py-1 font-mono text-[10px] cursor-pointer"
-                  style={{ backgroundColor: ui.recessed, color: ui.ink, border: `1px solid ${ui.border}` }}
-                >
-                  🤣 Dev Joke
-                </button>
-                <button
-                  type="button"
-                  onClick={onStickyPrank}
-                  className="m4-focus whitespace-nowrap rounded-full px-2.5 py-1 font-mono text-[10px] cursor-pointer"
-                  style={{ backgroundColor: ui.recessed, color: ui.ink, border: `1px solid ${ui.border}` }}
-                >
-                  📌 Sticky Note
-                </button>
-                <button
-                  type="button"
-                  onClick={onDiscoRave}
-                  className="m4-focus whitespace-nowrap rounded-full px-2.5 py-1 font-mono text-[10px] cursor-pointer"
-                  style={{ backgroundColor: ui.recessed, color: ui.ink, border: `1px solid ${ui.border}` }}
-                >
-                  🪩 Disco Rave
-                </button>
-                <button
-                  type="button"
-                  onClick={onGravityFlip}
-                  className="m4-focus whitespace-nowrap rounded-full px-2.5 py-1 font-mono text-[10px] cursor-pointer"
-                  style={{
-                    backgroundColor: gravityFlipped ? "#F59E0B" : ui.recessed,
-                    color: gravityFlipped ? "#161618" : ui.ink,
-                    border: `1px solid ${ui.border}`,
-                  }}
-                >
-                  🙃 Gravity Flip
-                </button>
-                <button
-                  type="button"
-                  onClick={onCloneDuel}
-                  className="m4-focus whitespace-nowrap rounded-full px-2.5 py-1 font-mono text-[10px] cursor-pointer"
-                  style={{
-                    backgroundColor: cloneDuelActive ? styleMeta.accent : ui.recessed,
-                    color: cloneDuelActive ? "#FFFFFF" : ui.ink,
-                    border: `1px solid ${ui.border}`,
-                  }}
-                >
-                  🤺 Clone Duel
-                </button>
-                <button
-                  type="button"
-                  onClick={onBackflip}
-                  className="m4-focus whitespace-nowrap rounded-full px-2.5 py-1 font-mono text-[10px] cursor-pointer"
-                  style={{ backgroundColor: ui.recessed, color: ui.ink, border: `1px solid ${ui.border}` }}
-                >
-                  🌀 Backflip
-                </button>
-              </div>
-
-              <form
-                onSubmit={onChatSubmit}
-                onPointerDown={(e) => e.stopPropagation()}
-                onMouseDown={(e) => e.stopPropagation()}
-                onKeyDown={(e) => e.stopPropagation()}
-                className="w-[min(86vw,560px)] mx-auto flex items-center gap-1.5 select-text"
+            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar sm:flex-wrap sm:justify-center">
+              <button
+                type="button"
+                onClick={onChaosPrank}
+                className="m4-focus whitespace-nowrap rounded-full px-2.5 py-1 font-mono text-[10px] font-semibold cursor-pointer"
+                style={{ backgroundColor: "#E03E2D", color: "#FFFFFF" }}
               >
-                <button
-                  type="button"
-                  aria-pressed={secretMode}
-                  title={secretMode ? "Disable Secret Mode" : "Secret Mode (Covers eyes)"}
-                  onClick={() => {
-                    const next = !secretMode;
-                    setSecretMode(next);
-                    if (!next) setPeeking(false);
-                    else say("Hands over my eyes! I promise I am not peeking.", 2400);
-                  }}
-                  className="m4-focus inline-flex items-center justify-center rounded-full w-7 h-7 cursor-pointer shrink-0"
-                  style={{
-                    backgroundColor: secretMode ? "#EC489922" : ui.recessed,
-                    color: secretMode ? "#EC4899" : ui.muted,
-                    border: secretMode ? "1px solid #EC489955" : `1px solid ${ui.border}`,
-                  }}
-                >
-                  <IconLock locked={secretMode} />
-                </button>
-
-                <input
-                  type={secretMode && !peeking ? "password" : "text"}
-                  value={chatText}
-                  onFocus={() => setChatFocused(true)}
-                  onBlur={() => setChatFocused(false)}
-                  onChange={(e) => setChatText(e.target.value)}
-                  onPointerDown={(e) => e.stopPropagation()}
-                  onKeyDown={(e) => e.stopPropagation()}
-                  placeholder="Type: friday, crash, roast, joke, pizza, flip, laser..."
-                  aria-label="Chat with MOCHI-04"
-                  className="flex-1 min-w-[200px] select-text pointer-events-auto rounded-full px-3 py-1.5 text-xs outline-none focus:ring-2 focus:ring-sky-400/50"
-                  style={{
-                    backgroundColor: ui.recessed,
-                    color: ui.ink,
-                    border: `1px solid ${ui.borderStrong}`,
-                  }}
-                />
-
-                {secretMode && (
-                  <button
-                    type="button"
-                    onMouseDown={(e) => e.preventDefault()}
-                    onClick={() => setPeeking((v) => !v)}
-                    className="m4-focus rounded-full px-2.5 py-1 font-mono text-[10px] font-medium cursor-pointer shrink-0"
-                    style={{
-                      backgroundColor: "#EC489922",
-                      color: "#EC4899",
-                      border: "1px solid #EC489955",
-                    }}
-                  >
-                    {peeking ? "Hide" : "Peek"}
-                  </button>
-                )}
-
-                <button
-                  type="submit"
-                  aria-label="Send message"
-                  className="m4-focus inline-flex items-center justify-center rounded-full w-7 h-7 cursor-pointer shrink-0"
-                  style={{ backgroundColor: styleMeta.accent, color: "#FFFFFF" }}
-                >
-                  <IconSend />
-                </button>
-              </form>
+                🎲 Random Chaos
+              </button>
+              <button
+                type="button"
+                onClick={onFridayDeploy}
+                className="m4-focus whitespace-nowrap rounded-full px-2.5 py-1 font-mono text-[10px] font-semibold cursor-pointer"
+                style={{ backgroundColor: "#F59E0B", color: "#111827" }}
+              >
+                🚨 Friday Deploy
+              </button>
+              <button
+                type="button"
+                onClick={onFakeCrash}
+                className="m4-focus whitespace-nowrap rounded-full px-2.5 py-1 font-mono text-[10px] font-semibold cursor-pointer"
+                style={{ backgroundColor: "#1D4ED8", color: "#FFFFFF" }}
+              >
+                💙 Fake BSOD
+              </button>
+              <button
+                type="button"
+                onClick={onDevJoke}
+                className="m4-focus whitespace-nowrap rounded-full px-2.5 py-1 font-mono text-[10px] cursor-pointer"
+                style={{ backgroundColor: ui.recessed, color: ui.ink, border: `1px solid ${ui.border}` }}
+              >
+                🤣 Dev Joke
+              </button>
+              <button
+                type="button"
+                onClick={onStickyPrank}
+                className="m4-focus whitespace-nowrap rounded-full px-2.5 py-1 font-mono text-[10px] cursor-pointer"
+                style={{ backgroundColor: ui.recessed, color: ui.ink, border: `1px solid ${ui.border}` }}
+              >
+                📌 Sticky Note
+              </button>
+              <button
+                type="button"
+                onClick={onDiscoRave}
+                className="m4-focus whitespace-nowrap rounded-full px-2.5 py-1 font-mono text-[10px] cursor-pointer"
+                style={{ backgroundColor: ui.recessed, color: ui.ink, border: `1px solid ${ui.border}` }}
+              >
+                🪩 Disco Rave
+              </button>
+              <button
+                type="button"
+                onClick={onGravityFlip}
+                className="m4-focus whitespace-nowrap rounded-full px-2.5 py-1 font-mono text-[10px] cursor-pointer"
+                style={{
+                  backgroundColor: gravityFlipped ? "#F59E0B" : ui.recessed,
+                  color: gravityFlipped ? "#161618" : ui.ink,
+                  border: `1px solid ${ui.border}`,
+                }}
+              >
+                🙃 Gravity Flip
+              </button>
+              <button
+                type="button"
+                onClick={onCloneDuel}
+                className="m4-focus whitespace-nowrap rounded-full px-2.5 py-1 font-mono text-[10px] cursor-pointer"
+                style={{
+                  backgroundColor: cloneDuelActive ? styleMeta.accent : ui.recessed,
+                  color: cloneDuelActive ? "#FFFFFF" : ui.ink,
+                  border: `1px solid ${ui.border}`,
+                }}
+              >
+                🤺 Clone Duel
+              </button>
+              <button
+                type="button"
+                onClick={onBackflip}
+                className="m4-focus whitespace-nowrap rounded-full px-2.5 py-1 font-mono text-[10px] cursor-pointer"
+                style={{ backgroundColor: ui.recessed, color: ui.ink, border: `1px solid ${ui.border}` }}
+              >
+                🌀 Backflip
+              </button>
             </div>
           )}
         </div>
@@ -620,7 +521,7 @@ export function CompanionHomeDock({
             { id: "modes", label: `Modes (${PLAY_MODES.length})` },
             { id: "moods", label: "Moods (12)" },
             { id: "toys", label: "Snacks & Toys" },
-            { id: "pranks", label: "Pranks & Chat" },
+            { id: "pranks", label: "Pranks" },
           ] as const
         ).map((tab) => {
           const active = openDrawer === tab.id;

@@ -151,6 +151,7 @@ export function createEmptyTimers(): CompanionTimers {
     cloneEnd: null,
     snatchEnd: null,
     critique: null,
+    joke: null,
     autoJam: null,
   };
 }
@@ -181,6 +182,7 @@ export function clearAllCompanionTimers(timers: CompanionTimers): void {
     "cloneEnd",
     "snatchEnd",
     "critique",
+    "joke",
   ];
   timeoutKeys.forEach((key) => {
     const id = timers[key];

@@ -473,29 +473,33 @@ export function stepCloneDuel(
   if (!sim.clone.active) return;
   const gravDir = live.gravityFlipped ? -1 : 1;
   const cl = sim.clone;
-  cl.vy += 1020 * gravDir * dt;
-  const targetCloneX = clamp(sim.x + (cl.x >= sim.x ? 135 : -135), 76, sim.w - 76);
-  cl.vx += clamp((targetCloneX - cl.x) * 3.5, -240, 240) * dt;
-  cl.vx *= Math.exp(-dt * 2.5);
+  cl.vy += 980 * gravDir * dt;
+  const offset = cl.x >= sim.x ? 190 : -190;
+  const targetCloneX = clamp(sim.x + offset, 84, sim.w - 84);
+  cl.vx += clamp((targetCloneX - cl.x) * 4.2, -320, 320) * dt;
+  cl.vx *= Math.exp(-dt * 2.2);
   cl.x += cl.vx * dt;
   cl.y += cl.vy * dt;
+  cl.rot = clamp(cl.vx * 0.045, -18, 18);
 
-  if (cl.y > sim.floorY + 12) {
-    cl.y = sim.floorY + 12;
-    cl.vy = -250 - Math.random() * 80;
-  } else if (cl.y < sim.ceilY) {
-    cl.y = sim.ceilY;
-    cl.vy = 180;
+  const cloneFloor = sim.floorY - 14;
+  if (cl.y > cloneFloor) {
+    cl.y = cloneFloor;
+    cl.vy = -(440 + Math.random() * 140);
+  } else if (cl.y < sim.ceilY + 12) {
+    cl.y = sim.ceilY + 12;
+    cl.vy = 220;
   }
-  cl.x = clamp(cl.x, 64, sim.w - 64);
+  cl.x = clamp(cl.x, 76, sim.w - 76);
 
   if (elements.cloneWrap) {
-    elements.cloneWrap.style.transform = `translate3d(${cl.x.toFixed(1)}px, ${cl.y.toFixed(1)}px, 0) translate(-50%, -50%) scale(0.56)`;
+    elements.cloneWrap.style.transform = `translate3d(${cl.x.toFixed(1)}px, ${cl.y.toFixed(1)}px, 0) translate(-50%, -50%) scale(0.66) rotate(${cl.rot.toFixed(1)}deg)`;
   }
   if (elements.cloneBubble) {
     const cbx = clamp(cl.x, 120, sim.w - 120);
-    const cby = clamp(cl.y - 76, 68, sim.h - 140);
-    elements.cloneBubble.style.transform = `translate3d(${cbx.toFixed(1)}px, ${cby.toFixed(1)}px, 0) translate(-50%, -100%)`;
+    const placeBelow = live.gravityFlipped || cl.y < 185;
+    const cby = placeBelow ? clamp(cl.y + 76, 130, sim.h - 140) : clamp(cl.y - 78, 118, sim.h - 150);
+    elements.cloneBubble.style.transform = `translate3d(${cbx.toFixed(1)}px, ${cby.toFixed(1)}px, 0) translate(-50%, ${placeBelow ? "0%" : "-100%"})`;
   }
 }
 
@@ -746,12 +750,14 @@ export function stepRigAndCommitDom(
   }
 
   if (elements.speech) {
-    const maxBW = Math.min(295, sim.w - 32);
+    const maxBW = Math.min(280, sim.w - 32);
     const bx = clamp(drawX, maxBW * 0.5 + 16, sim.w - maxBW * 0.5 - 16);
-    const by = live.gravityFlipped
-      ? clamp(drawY + 114, 150, sim.h - 140)
-      : clamp(drawY - (live.viewMode === "portfolio" ? 78 : live.viewMode === "home" ? 96 : 124), 72, sim.h - 150);
-    elements.speech.style.transform = `translate3d(${bx.toFixed(1)}px, ${by.toFixed(1)}px, 0) translate(-50%, ${live.gravityFlipped ? "0%" : "-100%"})`;
+    const topOffset = (live.accessory !== "none" ? 114 : 96) * sc;
+    const placeBelow = live.gravityFlipped || drawY < 185;
+    const by = placeBelow
+      ? clamp(drawY + 94 * sc, 120, sim.h - 145)
+      : clamp(drawY - topOffset, 125, sim.h - 155);
+    elements.speech.style.transform = `translate3d(${bx.toFixed(1)}px, ${by.toFixed(1)}px, 0) translate(-50%, ${placeBelow ? "0%" : "-100%"})`;
   }
 
   if (live.featherTool && elements.featherDom) {

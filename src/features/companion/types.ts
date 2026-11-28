@@ -339,6 +339,7 @@ export interface CompanionTimers {
   cloneEnd: ReturnType<typeof setTimeout> | null;
   snatchEnd: ReturnType<typeof setTimeout> | null;
   critique: ReturnType<typeof setTimeout> | null;
+  joke: ReturnType<typeof setTimeout> | null;
   autoJam: ReturnType<typeof setInterval> | null;
 }
 
