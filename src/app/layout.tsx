@@ -11,6 +11,8 @@ const outfit = Outfit({
   subsets: ["latin"],
   weight: ["500", "600", "700", "800"],
   display: "swap",
+  preload: false,
+  fallback: ["system-ui", "sans-serif"],
 });
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -18,6 +20,8 @@ const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   display: "swap",
+  preload: false,
+  fallback: ["system-ui", "sans-serif"],
 });
 
 const jetbrainsMono = JetBrains_Mono({
@@ -25,6 +29,8 @@ const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   display: "swap",
+  preload: false,
+  fallback: ["Courier New", "monospace"],
 });
 
 export const metadata: Metadata = {
