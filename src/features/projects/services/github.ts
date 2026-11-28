@@ -469,13 +469,21 @@ export async function getGitHubContributions(
 
 /**
  * Compute language distribution statistics from repository map
+ * Only counts repos updated within the last 365 days (matches heatmap range)
  * Falls back to curated distribution if reposMap is empty (e.g. rate limit)
  */
 export function computeLanguageDistribution(reposMap: Record<string, GitHubRepoStats>): LanguageStat[] {
+  const oneYearAgo = new Date();
+  oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+
   const counts: Record<string, number> = {};
   let totalWithLanguage = 0;
 
   for (const repo of Object.values(reposMap)) {
+    // Only include repos pushed/updated within the last 365 days
+    const updatedAt = new Date(repo.updatedAt);
+    if (updatedAt < oneYearAgo) continue;
+
     if (repo.language) {
       counts[repo.language] = (counts[repo.language] || 0) + 1;
       totalWithLanguage++;

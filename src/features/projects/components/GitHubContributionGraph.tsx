@@ -462,7 +462,7 @@ export function GitHubContributionGraph() {
                   {hoveredLang.language} • {hoveredLang.percentage}% ({hoveredLang.count} repos)
                 </span>
               ) : (
-                `Across ${data?.publicRepos || 55} Public Repositories`
+                `Last 12 months • ${data?.publicRepos || 55} active repos`
               )}
             </span>
           </div>
