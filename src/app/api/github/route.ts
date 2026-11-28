@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { getGitHubReposMap } from "@/features/projects/services/github";
 
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -18,14 +19,14 @@ export async function GET(request: Request) {
       const single = reposMap[cleanName] || null;
       return NextResponse.json(single, {
         headers: {
-          "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
+          "Cache-Control": "public, s-maxage=300, stale-while-revalidate=900",
         },
       });
     }
 
     return NextResponse.json(reposMap, {
       headers: {
-        "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
+        "Cache-Control": "public, s-maxage=300, stale-while-revalidate=900",
       },
     });
   } catch (err) {

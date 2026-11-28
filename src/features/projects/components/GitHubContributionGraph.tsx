@@ -16,28 +16,28 @@ import {
 
 type PaletteMode = "slate" | "emerald" | "graphite";
 
-// In-memory module cache to eliminate duplicate network calls across page transitions
-let cachedContributionsData: GitHubContributionsData | null = null;
-
 export function GitHubContributionGraph() {
-  const [data, setData] = useState<GitHubContributionsData | null>(cachedContributionsData);
-  const [loading, setLoading] = useState(!cachedContributionsData);
+  const [data, setData] = useState<GitHubContributionsData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [palette, setPalette] = useState<PaletteMode>("slate");
   const [hoveredDay, setHoveredDay] = useState<{ date: string; count: number } | null>(null);
+  const [hoveredLang, setHoveredLang] = useState<{
+    language: string;
+    percentage: number;
+    count: number;
+    color: string;
+    leftPercent: number;
+  } | null>(null);
 
   useEffect(() => {
-    if (cachedContributionsData) {
-      return;
-    }
-
     let isMounted = true;
-    fetch("/api/github/contributions")
+    fetch(`/api/github/contributions?t=${Date.now()}`, { cache: "no-store" })
       .then((res) => {
         if (!res.ok) throw new Error("Network error");
         return res.json();
       })
       .then((resData: GitHubContributionsData) => {
-        cachedContributionsData = resData;
         if (isMounted) {
           setData(resData);
           setLoading(false);
@@ -54,7 +54,41 @@ export function GitHubContributionGraph() {
     };
   }, []);
 
-  const languages = data?.languages || [];
+  const handleManualRefresh = async () => {
+    setRefreshing(true);
+    try {
+      const res = await fetch(`/api/github/contributions?refresh=true&t=${Date.now()}`, {
+        cache: "no-store",
+      });
+      if (res.ok) {
+        const resData: GitHubContributionsData = await res.json();
+        setData(resData);
+      }
+    } catch {
+      // Keep existing telemetry
+    } finally {
+      setRefreshing(false);
+    }
+  };
+
+  // Pre-calculate language segments with cumulative positions for pixel-accurate tooltips
+  const languageSegments = useMemo(() => {
+    const list = data?.languages || [];
+    let runningTotal = 0;
+    const result = [];
+    for (let i = 0; i < list.length; i++) {
+      const item = list[i];
+      const start = runningTotal;
+      const mid = start + item.percentage / 2;
+      runningTotal += item.percentage;
+      result.push({
+        ...item,
+        startPercent: start,
+        midPercent: mid,
+      });
+    }
+    return result;
+  }, [data?.languages]);
 
   // Group contributions into 7-day columns (weeks)
   const { weeks, monthLabels } = useMemo(() => {
@@ -114,7 +148,6 @@ export function GitHubContributionGraph() {
   // Pure Matte Architectural Color Combos (Flat, non-reflective, anodized finish)
   const getCellColor = (level: number) => {
     if (palette === "slate") {
-      // Matte Architectural Slate & Cyan (Subdued, sophisticated, blueprint-integrated)
       switch (level) {
         case 1:
           return "bg-[#142838] border-[#1e3b52] hover:bg-[#183247]";
@@ -128,7 +161,6 @@ export function GitHubContributionGraph() {
           return "bg-[#0f141d] border-[#18202e] hover:border-[#2e3b52]";
       }
     } else if (palette === "emerald") {
-      // Matte Forest & Sage (Natural matte greenery)
       switch (level) {
         case 1:
           return "bg-[#102e21] border-[#174532] hover:bg-[#143b2a]";
@@ -142,7 +174,6 @@ export function GitHubContributionGraph() {
           return "bg-[#0f141d] border-[#18202e] hover:border-[#20352a]";
       }
     } else {
-      // Matte Graphite & Platinum (Monochrome minimalist)
       switch (level) {
         case 1:
           return "bg-[#202736] border-[#2d374a] hover:bg-[#283144]";
@@ -172,8 +203,19 @@ export function GitHubContributionGraph() {
           </h3>
         </div>
 
-        {/* Controls: Time Range + 3-Way Matte Switcher */}
+        {/* Controls: Live Refresh + Time Range + 3-Way Matte Switcher */}
         <div className="flex items-center gap-2.5 self-start sm:self-auto flex-wrap">
+          {/* Live Sync Trigger */}
+          <button
+            onClick={handleManualRefresh}
+            disabled={refreshing}
+            title="Refetch live telemetry directly from GitHub"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-[#1b2333] bg-[#0e131d] text-xs font-mono text-slate-400 hover:text-sky-300 hover:border-sky-500/30 transition-all disabled:opacity-50"
+          >
+            <RefreshCw size={12} className={refreshing ? "animate-spin text-sky-400" : "text-slate-400"} />
+            <span>{refreshing ? "Syncing..." : "Sync Live"}</span>
+          </button>
+
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg border border-[#1b2333] bg-[#0e131d] text-xs font-mono text-slate-400">
             <Calendar size={12} className="text-slate-400" />
             <span>Last 365 Days</span>
@@ -226,7 +268,7 @@ export function GitHubContributionGraph() {
             </div>
           </div>
           <div className="text-2xl sm:text-3xl font-bold font-sans text-slate-100 tracking-tight">
-            {data ? data.totalContributions.toLocaleString() : "1,118"}
+            {data ? data.totalContributions.toLocaleString() : "1,189"}
           </div>
           <p className="text-[11px] font-mono text-slate-500 mt-1">Commits &amp; PRs past year</p>
         </div>
@@ -274,7 +316,7 @@ export function GitHubContributionGraph() {
         </div>
       </div>
 
-      {/* Heatmap Calendar: 100% Full-Width (Zero Dead Space on Right) */}
+      {/* Heatmap Calendar: 100% Full-Width */}
       <div className="relative mb-6">
         {loading && (
           <div className="py-12 flex flex-col items-center justify-center gap-2 text-slate-400">
@@ -409,41 +451,157 @@ export function GitHubContributionGraph() {
         </div>
       </div>
 
-      {/* Matte Language & Architecture Distribution Analysis */}
-      {languages.length > 0 && (
+      {/* Matte Language & Architecture Distribution Analysis with Interactive Tooltip */}
+      {languageSegments.length > 0 && (
         <div className="pt-5 border-t border-[#1b2333]">
           <div className="flex items-center justify-between mb-3 text-xs font-mono">
             <span className="font-semibold text-slate-200">Codebase Language Distribution</span>
-            <span className="text-slate-500">Across 55 Public Repositories</span>
+            <span className="text-slate-500">
+              {hoveredLang ? (
+                <span className="text-sky-300 font-medium transition-colors">
+                  {hoveredLang.language} • {hoveredLang.percentage}% ({hoveredLang.count} repos)
+                </span>
+              ) : (
+                `Across ${data?.publicRepos || 55} Public Repositories`
+              )}
+            </span>
           </div>
 
-          {/* Slim Matte Stacked Distribution Bar */}
-          <div className="w-full h-1.5 rounded-full overflow-hidden flex bg-[#0e131d] border border-[#1b2333] mb-3.5">
-            {languages.map((item) => (
+          {/* Interactive Stacked Distribution Bar with Floating Tooltip */}
+          <div className="relative mb-3.5 group/langbar">
+            {/* Floating Tooltip */}
+            {hoveredLang && (
               <div
-                key={item.language}
+                className="absolute -top-11 z-30 pointer-events-none transition-all duration-150 ease-out"
                 style={{
-                  width: `${item.percentage}%`,
-                  backgroundColor: item.color,
+                  left: `${Math.max(12, Math.min(88, hoveredLang.leftPercent))}%`,
+                  transform: "translateX(-50%)",
                 }}
-                className="h-full transition-all duration-300"
-                title={`${item.language}: ${item.count} repos (${item.percentage}%)`}
-              />
-            ))}
+              >
+                <div className="relative flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-[#0c121e]/95 border border-[#232f48] shadow-2xl backdrop-blur-md whitespace-nowrap text-xs font-mono">
+                  <span
+                    className="w-2.5 h-2.5 rounded-full flex-shrink-0 ring-2 ring-white/10"
+                    style={{ backgroundColor: hoveredLang.color }}
+                  />
+                  <span className="font-bold text-slate-100 font-sans">{hoveredLang.language}</span>
+                  <span
+                    className="px-1.5 py-0.5 rounded text-[11px] font-bold"
+                    style={{
+                      color: hoveredLang.color,
+                      backgroundColor: `${hoveredLang.color}20`,
+                    }}
+                  >
+                    {hoveredLang.percentage}%
+                  </span>
+                  <span className="text-slate-400 text-[10px]">
+                    ({hoveredLang.count} {hoveredLang.count === 1 ? "repo" : "repos"})
+                  </span>
+                  {/* Downward Caret Arrow */}
+                  <div className="absolute left-1/2 -bottom-[5px] -translate-x-1/2 w-2 h-2 bg-[#0c121e] border-r border-b border-[#232f48] rotate-45" />
+                </div>
+              </div>
+            )}
+
+            {/* The Stacked Bar */}
+            <div className="w-full h-2.5 sm:h-3 rounded-full overflow-hidden flex bg-[#0e131d] border border-[#1b2333] p-[1px] relative cursor-pointer">
+              {languageSegments.map((item) => {
+                const isHovered = hoveredLang?.language === item.language;
+                const isOtherHovered = hoveredLang && hoveredLang.language !== item.language;
+
+                return (
+                  <div
+                    key={item.language}
+                    onMouseEnter={() =>
+                      setHoveredLang({
+                        language: item.language,
+                        percentage: item.percentage,
+                        count: item.count,
+                        color: item.color,
+                        leftPercent: item.midPercent,
+                      })
+                    }
+                    onMouseLeave={() => setHoveredLang(null)}
+                    onClick={() =>
+                      setHoveredLang((curr) =>
+                        curr?.language === item.language
+                          ? null
+                          : {
+                              language: item.language,
+                              percentage: item.percentage,
+                              count: item.count,
+                              color: item.color,
+                              leftPercent: item.midPercent,
+                            }
+                      )
+                    }
+                    style={{
+                      width: `${item.percentage}%`,
+                      backgroundColor: item.color,
+                    }}
+                    className={`h-full transition-all duration-200 ${
+                      isHovered
+                        ? "brightness-125 scale-y-110 z-10 shadow-xs"
+                        : isOtherHovered
+                        ? "opacity-35"
+                        : "opacity-90 hover:opacity-100"
+                    }`}
+                  />
+                );
+              })}
+            </div>
           </div>
 
-          {/* Curated Matte Language Pills */}
+          {/* Curated Interactive Language Pills */}
           <div className="flex flex-wrap gap-2 text-[11px] font-mono text-slate-400">
-            {languages.slice(0, 6).map((item) => (
-              <span
-                key={item.language}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#0e131d] border border-[#1b2333]"
-              >
-                <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: item.color }} />
-                <span className="font-medium text-slate-300">{item.language}</span>
-                <span className="text-slate-500 font-light">({item.percentage}%)</span>
-              </span>
-            ))}
+            {languageSegments.slice(0, 6).map((item) => {
+              const isHovered = hoveredLang?.language === item.language;
+              return (
+                <button
+                  key={item.language}
+                  type="button"
+                  onMouseEnter={() =>
+                    setHoveredLang({
+                      language: item.language,
+                      percentage: item.percentage,
+                      count: item.count,
+                      color: item.color,
+                      leftPercent: item.midPercent,
+                    })
+                  }
+                  onMouseLeave={() => setHoveredLang(null)}
+                  onClick={() =>
+                    setHoveredLang((curr) =>
+                      curr?.language === item.language
+                        ? null
+                        : {
+                            language: item.language,
+                            percentage: item.percentage,
+                            count: item.count,
+                            color: item.color,
+                            leftPercent: item.midPercent,
+                          }
+                    )
+                  }
+                  className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border transition-all text-left ${
+                    isHovered
+                      ? "bg-[#161f30] border-[#38bdf8]/50 text-slate-100 shadow-xs scale-102"
+                      : "bg-[#0e131d] border-[#1b2333] hover:border-slate-700 text-slate-300"
+                  }`}
+                >
+                  <span
+                    className="w-2 h-2 rounded-full flex-shrink-0"
+                    style={{ backgroundColor: item.color }}
+                  />
+                  <span className="font-medium">{item.language}</span>
+                  <span
+                    className="font-semibold text-[10px]"
+                    style={{ color: item.color }}
+                  >
+                    {item.percentage}%
+                  </span>
+                </button>
+              );
+            })}
           </div>
         </div>
       )}
