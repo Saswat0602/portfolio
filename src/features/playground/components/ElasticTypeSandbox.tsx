@@ -120,16 +120,6 @@ export function ElasticTypeSandbox() {
       startLoop();
     };
 
-    resize();
-    if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(() => {
-        measureGlyphTable();
-        startLoop();
-      });
-    }
-    const ro = new ResizeObserver(resize);
-    if (canvas.parentElement) ro.observe(canvas.parentElement);
-
     const tick = (now: number) => {
       rafId = 0;
       if (document.hidden || !inView) return;
@@ -280,6 +270,16 @@ export function ElasticTypeSandbox() {
         rafId = requestAnimationFrame(tick);
       }
     };
+
+    resize();
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => {
+        measureGlyphTable();
+        startLoop();
+      });
+    }
+    const ro = new ResizeObserver(resize);
+    if (canvas.parentElement) ro.observe(canvas.parentElement);
 
     const onVis = () => {
       if (!document.hidden) startLoop();

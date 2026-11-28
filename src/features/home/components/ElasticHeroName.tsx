@@ -6,6 +6,7 @@ import { useTheme } from "@/components/theme/ThemeContext";
 interface GlyphMetric {
   w: number;
   h: number;
+  advance: number;
   left: number;
   ascent: number;
 }
@@ -31,16 +32,22 @@ export function ElasticHeroName({ name, onRippleClick }: ElasticHeroNameProps) {
   const simRef = useRef({
     w: 0,
     h: 0,
-    rowWeights: [1, 1],
+    rowOffsets: [0, 0],
     rowVels: [0, 0],
-    charWeights: LINES.map((line) => new Array<number>(line.length).fill(1)),
+    charScales: LINES.map((line) => new Array<number>(line.length).fill(1)),
     charVels: LINES.map((line) => new Array<number>(line.length).fill(0)),
     pointer: { x: 0, y: 0, active: false },
     shocks: [{ r: 0, c: 6, age: 0 }] as ShockWave[],
     glyphMetrics: {} as Record<string, GlyphMetric>,
   });
 
-  const themeColorsRef = useRef({ ink: "#F0F6FC", accent: "#38BDF8" });
+  const themeColorsRef = useRef({
+    isDark: true,
+    inkTop: "#FFFFFF",
+    inkBottom: "#CBD5E1",
+    accentStart: "#38BDF8",
+    accentEnd: "#818CF8",
+  });
   const wakeRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
@@ -54,10 +61,18 @@ export function ElasticHeroName({ name, onRippleClick }: ElasticHeroNameProps) {
 
   useEffect(() => {
     if (typeof document === "undefined") return;
+    const isDark = theme === "dark";
     const styles = getComputedStyle(document.documentElement);
-    const ink = styles.getPropertyValue("--color-text-primary").trim() || (theme === "dark" ? "#F0F6FC" : "#111827");
-    const accent = styles.getPropertyValue("--color-accent-primary").trim() || (theme === "dark" ? "#38BDF8" : "#2563EB");
-    themeColorsRef.current = { ink, accent };
+    const inkTop = styles.getPropertyValue("--color-text-primary").trim() || (isDark ? "#F8FAFC" : "#0B1727");
+    const accentStart = styles.getPropertyValue("--color-accent").trim() || (isDark ? "#38BDF8" : "#0284C7");
+
+    themeColorsRef.current = {
+      isDark,
+      inkTop,
+      inkBottom: isDark ? "#94A3B8" : "#334155",
+      accentStart,
+      accentEnd: isDark ? "#818CF8" : "#4F46E5",
+    };
     wakeRef.current?.();
   }, [theme]);
 
@@ -68,8 +83,8 @@ export function ElasticHeroName({ name, onRippleClick }: ElasticHeroNameProps) {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const REF_SIZE = 140;
-    const FONT_SPEC = `900 ${REF_SIZE}px "Outfit", "Inter", -apple-system, BlinkMacSystemFont, sans-serif`;
+    const REF_SIZE = 120;
+    const FONT_SPEC = `900 ${REF_SIZE}px "Outfit", "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, sans-serif`;
 
     const measureGlyphTable = () => {
       const table: Record<string, GlyphMetric> = {};
@@ -81,31 +96,40 @@ export function ElasticHeroName({ name, onRippleClick }: ElasticHeroNameProps) {
         const m = ctx.measureText(ch);
         const left = m.actualBoundingBoxLeft ?? 0;
         const right = m.actualBoundingBoxRight ?? m.width;
-        const ascent = m.actualBoundingBoxAscent ?? REF_SIZE * 0.72;
+        const ascent = m.actualBoundingBoxAscent ?? REF_SIZE * 0.74;
         const descent = m.actualBoundingBoxDescent ?? 0;
         table[ch] = {
           w: Math.max(10, left + right),
           h: Math.max(10, ascent + descent),
+          advance: Math.max(12, m.width),
           left,
           ascent,
         };
       }
-      table[" "] = { w: REF_SIZE * 0.36, h: REF_SIZE * 0.72, left: 0, ascent: REF_SIZE * 0.72 };
+      table[" "] = {
+        w: REF_SIZE * 0.34,
+        h: REF_SIZE * 0.74,
+        advance: REF_SIZE * 0.34,
+        left: 0,
+        ascent: REF_SIZE * 0.74,
+      };
       ctx.restore();
       simRef.current.glyphMetrics = table;
     };
 
     let rafId = 0;
     let last = performance.now();
+    let disposed = false;
 
     const startLoop = () => {
-      if (rafId || document.hidden) return;
+      if (disposed || rafId || document.hidden) return;
       last = performance.now();
       rafId = requestAnimationFrame(tick);
     };
     wakeRef.current = startLoop;
 
     const resize = () => {
+      if (disposed) return;
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const w = canvas.parentElement?.clientWidth || 720;
       const h = canvas.parentElement?.clientHeight || 190;
@@ -118,57 +142,36 @@ export function ElasticHeroName({ name, onRippleClick }: ElasticHeroNameProps) {
       startLoop();
     };
 
-    resize();
-    if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(() => {
-        measureGlyphTable();
-        startLoop();
-      });
-    }
-    const ro = new ResizeObserver(resize);
-    if (canvas.parentElement) ro.observe(canvas.parentElement);
-
     const tick = (now: number) => {
       rafId = 0;
-      if (document.hidden) return;
+      if (disposed || document.hidden) return;
       const dt = Math.min(0.032, Math.max(0.001, (now - last) / 1000));
       last = now;
 
       const sim = simRef.current;
-      const { w, h, rowWeights, rowVels, charWeights, charVels, pointer, shocks } = sim;
+      const { w, h, rowOffsets, rowVels, charScales, charVels, pointer, shocks, glyphMetrics } = sim;
       if (w <= 0 || h <= 0) return;
 
       for (let i = shocks.length - 1; i >= 0; i--) {
-        shocks[i].age += dt * 2.25;
-        if (shocks[i].age > 2.4) shocks.splice(i, 1);
+        shocks[i].age += dt * 2.2;
+        if (shocks[i].age > 2.3) shocks.splice(i, 1);
       }
 
       const nRows = LINES.length;
       const ptrRowFloat = pointer.active ? (pointer.y / h) * nRows - 0.5 : -99;
-      const ptrNormX = pointer.active ? pointer.x / w : -99;
-
-      let rowSum = 0;
       let maxMotion = shocks.length > 0 || pointer.active ? 1 : 0;
 
+      // Subtle vertical breathing on row hover/shock
       for (let r = 0; r < nRows; r++) {
-        let targetW = 1.0;
+        let targetY = 0;
         if (pointer.active) {
-          const distR = Math.abs(r - ptrRowFloat);
-          targetW = 0.82 + Math.exp(-(distR * distR) * 1.4) * 0.48;
+          const distR = r - ptrRowFloat;
+          targetY = Math.exp(-(distR * distR) * 1.8) * (r === 0 ? -2.5 : 2.5);
         }
-        for (let s = 0; s < shocks.length; s++) {
-          const sh = shocks[s];
-          const dR = Math.abs(r - sh.r);
-          const front = sh.age * 3.0;
-          const env = Math.exp(-Math.pow(dR - front, 2) * 1.8) * Math.exp(-sh.age * 1.35);
-          targetW += Math.cos((dR - front) * 4.5) * env * 0.34;
-        }
-        targetW = Math.max(0.55, targetW);
-        const acc = (targetW - rowWeights[r]) * 125 - rowVels[r] * 18;
+        const acc = (targetY - rowOffsets[r]) * 140 - rowVels[r] * 18;
         rowVels[r] += acc * dt;
-        rowWeights[r] = Math.max(0.5, rowWeights[r] + rowVels[r] * dt);
-        rowSum += rowWeights[r];
-        maxMotion = Math.max(maxMotion, Math.abs(rowVels[r]), Math.abs(targetW - rowWeights[r]));
+        rowOffsets[r] += rowVels[r] * dt;
+        maxMotion = Math.max(maxMotion, Math.abs(rowVels[r]), Math.abs(targetY - rowOffsets[r]));
       }
 
       ctx.clearRect(0, 0, w, h);
@@ -176,79 +179,145 @@ export function ElasticHeroName({ name, onRippleClick }: ElasticHeroNameProps) {
       ctx.textAlign = "left";
       ctx.textBaseline = "alphabetic";
 
-      const { ink, accent } = themeColorsRef.current;
-      let curY = 0;
+      const { isDark, inkTop, inkBottom, accentStart, accentEnd } = themeColorsRef.current;
+      const letterGapRef = REF_SIZE * 0.055;
+
+      // Compute natural reference widths for each line to preserve authentic typography proportions
+      const lineRefWidths = LINES.map((word) => {
+        let sum = 0;
+        for (let c = 0; c < word.length; c++) {
+          const gm = glyphMetrics[word[c]] || { advance: REF_SIZE * 0.65 };
+          sum += gm.advance + (c < word.length - 1 ? letterGapRef : 0);
+        }
+        return sum;
+      });
+
+      const maxLineRefW = Math.max(...lineRefWidths, 1);
+      const rowHeight = h / nRows;
+      // Fit both lines comfortably with breathing room for elastic pop
+      const baseScale = Math.min((w * 0.92) / maxLineRefW, (rowHeight * 0.72) / REF_SIZE);
 
       for (let r = 0; r < nRows; r++) {
-        const rowH = (rowWeights[r] / rowSum) * h;
         const word = LINES[r];
         const nChars = word.length;
-        const cWeights = charWeights[r];
+        const cScales = charScales[r];
         const cVels = charVels[r];
-        const rowProx = pointer.active ? Math.exp(-Math.pow(r - ptrRowFloat, 2) * 1.25) : 0;
+        const rowProx = pointer.active ? Math.exp(-Math.pow(r - ptrRowFloat, 2) * 1.6) : 0;
 
-        let charSum = 0;
+        const rowScale = r === 1 ? baseScale * 1.08 : baseScale * 0.96;
+        const rowCenterY = (r + 0.5) * rowHeight + rowOffsets[r];
+
+        // 1. Update elastic spring weights per character (accordion squash & stretch)
+        let dynamicLineRefW = 0;
         let peakIdx = -1;
         let peakWeight = 0;
+        const baseLineW = lineRefWidths[r] * rowScale;
+        const baseStartX = (w - baseLineW) * 0.5;
 
+        let probeX = baseStartX;
         for (let c = 0; c < nChars; c++) {
-          const baseWeight = word[c] === " " ? 0.52 : 1.0;
-          const charCenterU = (c + 0.5) / nChars;
-          let targetCW = baseWeight;
+          const ch = word[c];
+          const gm = glyphMetrics[ch] || { advance: 78 };
+          const advPx = gm.advance * rowScale;
+          const restCenterX = probeX + advPx * 0.5;
+          probeX += advPx + letterGapRef * rowScale;
 
+          let targetW = 1.0;
           if (pointer.active) {
-            const dX = Math.abs(charCenterU - ptrNormX) * nChars;
-            const boost = Math.exp(-(dX * dX) * 0.65) * (0.28 + rowProx * 0.95);
-            targetCW = baseWeight * 0.8 + boost;
+            const distPx = Math.abs(pointer.x - restCenterX);
+            const sigma = Math.max(44, w * 0.075);
+            const u = distPx / sigma;
+            // Mexican-hat / elastic ripple: hovered letter swells, adjacent letters compress slightly
+            const boost = Math.exp(-u * u * 0.85) * (0.22 + rowProx * 0.58);
+            const pinch = Math.exp(-Math.pow(u - 1.55, 2) * 1.4) * (0.06 + rowProx * 0.14);
+            targetW = 1.0 + boost - pinch;
           }
 
           for (let s = 0; s < shocks.length; s++) {
             const sh = shocks[s];
             const d = Math.hypot(c - sh.c, (r - sh.r) * 2.1);
-            const front = sh.age * 5.6;
-            const env = Math.exp(-Math.pow(d - front, 2) * 1.1) * Math.exp(-sh.age * 1.35);
-            targetCW += Math.sin((d - front) * 3.8) * env * 0.65;
+            const front = sh.age * 5.8;
+            const env = Math.exp(-Math.pow(d - front, 2) * 1.0) * Math.exp(-sh.age * 1.25);
+            targetW += Math.sin((d - front) * 4.0) * env * 0.52;
           }
 
-          targetCW = Math.max(baseWeight * 0.35, targetCW);
-          const acc = (targetCW - cWeights[c]) * 140 - cVels[c] * 19;
+          targetW = Math.max(0.58, Math.min(1.85, targetW));
+          const acc = (targetW - cScales[c]) * 165 - cVels[c] * 12.5;
           cVels[c] += acc * dt;
-          cWeights[c] = Math.max(baseWeight * 0.32, cWeights[c] + cVels[c] * dt);
-          charSum += cWeights[c];
-          maxMotion = Math.max(maxMotion, Math.abs(cVels[c]), Math.abs(targetCW - cWeights[c]));
+          cScales[c] = Math.max(0.52, cScales[c] + cVels[c] * dt);
+          maxMotion = Math.max(maxMotion, Math.abs(cVels[c]), Math.abs(targetW - cScales[c]));
 
-          if (word[c] !== " " && cWeights[c] > peakWeight) {
-            peakWeight = cWeights[c];
+          dynamicLineRefW += gm.advance * cScales[c] + (c < nChars - 1 ? letterGapRef : 0);
+
+          if (ch !== " " && cScales[c] > peakWeight) {
+            peakWeight = cScales[c];
             peakIdx = c;
           }
         }
 
-        let curX = 0;
-        for (let c = 0; c < nChars; c++) {
-          const cellW = (cWeights[c] / charSum) * w;
-          const ch = word[c];
-          if (ch !== " ") {
-            const gm = sim.glyphMetrics[ch] || { w: 96, h: 105, left: 0, ascent: 102 };
-            const isHeroLetter = pointer.active && rowProx > 0.68 && c === peakIdx && peakWeight > 1.18;
+        // Clamp total line expansion softly so it never overflows the canvas edges
+        const dynamicLineW = dynamicLineRefW * rowScale;
+        const fitClamp = dynamicLineW > w * 0.96 ? (w * 0.96) / dynamicLineW : 1;
+        const effectiveRowScale = rowScale * fitClamp;
+        const clampedLineW = dynamicLineRefW * effectiveRowScale;
+        const startX = (w - clampedLineW) * 0.5;
 
-            const padX = Math.max(1.5, cellW * 0.055);
-            const padY = Math.max(3, rowH * 0.11);
-            const innerW = Math.max(2, cellW - padX * 2);
-            const innerH = Math.max(2, rowH - padY * 2);
+        // 2. Render each glyph with elastic squash/stretch & neighbor displacement
+        let curX = startX;
+        for (let c = 0; c < nChars; c++) {
+          const ch = word[c];
+          const gm = glyphMetrics[ch] || {
+            w: 75,
+            h: 88,
+            advance: 78,
+            left: 0,
+            ascent: 88,
+          };
+
+          const wMul = cScales[c];
+          const advPx = gm.advance * wMul * effectiveRowScale;
+          const charCenterX = curX + advPx * 0.5;
+
+          if (ch !== " ") {
+            const stretchX = wMul;
+            const stretchY = 1 + (wMul - 1) * 0.42;
+            const liftY = -(wMul - 1) * 14;
+            const isHeroLetter = pointer.active && rowProx > 0.55 && c === peakIdx && peakWeight > 1.15;
+            const isHighlighted = pointer.active && wMul > 1.12;
 
             ctx.save();
-            ctx.beginPath();
-            ctx.rect(curX, curY, cellW, rowH);
-            ctx.clip();
-            ctx.translate(curX + padX, curY + padY);
-            ctx.scale(innerW / gm.w, innerH / gm.h);
-            ctx.fillStyle = isHeroLetter ? accent : ink;
-            ctx.fillText(ch, gm.left, gm.ascent);
+            ctx.translate(charCenterX, rowCenterY + liftY);
+            ctx.scale(effectiveRowScale * stretchX, effectiveRowScale * stretchY);
+
+            if (r === 1 || isHeroLetter || isHighlighted) {
+              ctx.shadowColor = isDark ? "rgba(56, 189, 248, 0.48)" : "rgba(2, 132, 199, 0.3)";
+              ctx.shadowBlur = isHeroLetter ? 22 : isHighlighted ? 16 : 10;
+            }
+
+            if (isHeroLetter && r === 0) {
+              ctx.fillStyle = accentStart;
+            } else {
+              const localStartX = (startX - charCenterX) / (effectiveRowScale * stretchX);
+              const localEndX = (startX + clampedLineW - charCenterX) / (effectiveRowScale * stretchX);
+              const grad = ctx.createLinearGradient(localStartX, -gm.ascent * 0.5, localEndX, gm.ascent * 0.5);
+              if (r === 0) {
+                grad.addColorStop(0, inkTop);
+                grad.addColorStop(0.55, inkTop);
+                grad.addColorStop(1, inkBottom);
+              } else {
+                grad.addColorStop(0, accentStart);
+                grad.addColorStop(0.55, isDark ? "#7DD3FC" : "#0EA5E9");
+                grad.addColorStop(1, accentEnd);
+              }
+              ctx.fillStyle = grad;
+            }
+
+            ctx.fillText(ch, -gm.advance * 0.5, gm.ascent * 0.48);
             ctx.restore();
           }
-          curX += cellW;
+
+          curX += advPx + letterGapRef * effectiveRowScale;
         }
-        curY += rowH;
       }
 
       if (maxMotion > 0.002) {
@@ -256,12 +325,26 @@ export function ElasticHeroName({ name, onRippleClick }: ElasticHeroNameProps) {
       }
     };
 
+    resize();
+    tick(performance.now());
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => {
+        if (disposed) return;
+        measureGlyphTable();
+        tick(performance.now());
+        startLoop();
+      });
+    }
+    const ro = new ResizeObserver(resize);
+    if (canvas.parentElement) ro.observe(canvas.parentElement);
+
     const onVis = () => {
       if (!document.hidden) startLoop();
     };
     document.addEventListener("visibilitychange", onVis);
 
     return () => {
+      disposed = true;
       if (rafId) cancelAnimationFrame(rafId);
       ro.disconnect();
       document.removeEventListener("visibilitychange", onVis);
