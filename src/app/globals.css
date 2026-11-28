@@ -141,10 +141,10 @@ html[data-theme="light"] {
   --color-theme-accent-hover: var(--color-accent-hover);
   --color-theme-accent-subtle: var(--color-accent-subtle);
 
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-mono);
+  --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-heading-sans: "Outfit", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "Courier New", monospace;
 }
-
 /* ==========================================================================
    Core Semantic Utility Classes
    ========================================================================== */

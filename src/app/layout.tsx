@@ -1,37 +1,9 @@
 import type { Metadata } from "next";
-import { Outfit, Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { siteConfig } from "@/config/site";
 import { ThemeProvider } from "@/components/theme/ThemeContext";
-
-const outfit = Outfit({
-  variable: "--font-heading-sans",
-  subsets: ["latin"],
-  weight: ["500", "600", "700", "800"],
-  display: "swap",
-  preload: false,
-  fallback: ["system-ui", "sans-serif"],
-});
-
-const plusJakartaSans = Plus_Jakarta_Sans({
-  variable: "--font-sans",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  display: "swap",
-  preload: false,
-  fallback: ["system-ui", "sans-serif"],
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-mono",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  display: "swap",
-  preload: false,
-  fallback: ["Courier New", "monospace"],
-});
 
 export const metadata: Metadata = {
   title: siteConfig.title,
@@ -100,9 +72,16 @@ export default function RootLayout({
       suppressHydrationWarning
       data-theme="dark"
       data-scroll-behavior="smooth"
-      className={`${outfit.variable} ${plusJakartaSans.variable} ${jetbrainsMono.variable} dark antialiased`}
+      className="dark antialiased"
     >
       <head>
+        {/* Google Fonts — bypasses next/font/google build-time metadata fetch (broken in Next 16.3.4 on Vercel) */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body className="min-h-screen flex flex-col bg-theme-base text-theme-primary">
