@@ -84,7 +84,7 @@ export function ElasticHeroName({ name, onRippleClick }: ElasticHeroNameProps) {
     if (!ctx) return;
 
     const REF_SIZE = 120;
-    const FONT_SPEC = `900 ${REF_SIZE}px "Outfit", "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, sans-serif`;
+    const FONT_SPEC = `800 ${REF_SIZE}px "Outfit", "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, sans-serif`;
 
     const measureGlyphTable = () => {
       const table: Record<string, GlyphMetric> = {};
@@ -354,14 +354,14 @@ export function ElasticHeroName({ name, onRippleClick }: ElasticHeroNameProps) {
 
   if (reducedMotion) {
     return (
-      <h1 className="text-4xl xs:text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black font-sans tracking-tight text-theme-primary mb-3 sm:mb-4 break-words">
+      <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black font-sans tracking-tight text-theme-primary mb-3 sm:mb-4 break-words">
         {name}
       </h1>
     );
   }
 
   return (
-    <div className="relative w-full max-w-[920px] mx-auto h-[108px] xs:h-[128px] sm:h-[164px] md:h-[196px] mb-3 sm:mb-4">
+    <div className="relative w-full max-w-[920px] mx-auto h-[128px] sm:h-[164px] md:h-[196px] mb-3 sm:mb-4">
       <h1 className="sr-only">{name}</h1>
       <canvas
         ref={canvasRef}
