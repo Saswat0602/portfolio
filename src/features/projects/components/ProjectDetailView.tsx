@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { GitHubRepoBadge } from "./GitHubRepoBadge";
 import { ProjectComparisonScrubber } from "./ProjectComparisonScrubber";
+import { CoordinateInkButton } from "@/components/ui/CoordinateInkButton";
 
 interface ProjectDetailViewProps {
   project: ProjectData;
@@ -75,15 +76,18 @@ export function ProjectDetailView({ project, allProjects }: ProjectDetailViewPro
           {/* Action CTAs */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 pt-3 sm:pt-4">
             {project.demo_link && (
-              <a
+              <CoordinateInkButton
                 href={project.demo_link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-sheen inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-theme-accent text-white dark:text-zinc-950 text-xs font-bold shadow-sm hover:brightness-110 transition-all w-full sm:w-auto"
-              >
-                <ExternalLink size={14} />
-                <span>Explore Live System</span>
-              </a>
+                label="Explore Live System"
+                variant="primary"
+                size="md"
+                rounded="xl"
+                icon={<ExternalLink size={14} />}
+                iconPosition="left"
+                className="w-full sm:w-auto"
+              />
             )}
 
             {project.npm_link && (

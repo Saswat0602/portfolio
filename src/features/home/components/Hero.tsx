@@ -2,8 +2,8 @@
 
 import { motion } from "framer-motion";
 import { ArrowRight, MapPin, Layers, Cpu, Mail, Compass, Workflow, Smartphone, FileText } from "lucide-react";
-import Link from "next/link";
 import { userData } from "@/lib/data";
+import { CoordinateInkButton } from "@/components/ui/CoordinateInkButton";
 
 import { useRef, useCallback } from "react";
 import { useCompanionReaction } from "@/features/companion/context/CompanionReactionContext";
@@ -133,41 +133,46 @@ export function Hero() {
           transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
           className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4 mb-12 sm:mb-16 w-full max-w-md sm:max-w-none"
         >
-          <Link
+          <CoordinateInkButton
             href="/projects"
             onMouseEnter={() => notifyHover("projects", "Let's inspect the shipped systems!")}
             onMouseLeave={() => notifyHover(null)}
-            className="btn-sheen group flex items-center justify-center gap-2 px-6 sm:px-7 py-3 sm:py-3.5 rounded-xl bg-theme-accent text-white dark:text-zinc-950 font-semibold text-sm transition-all hover:brightness-110 shadow-md hover:shadow-lg active:scale-[0.98] w-full sm:w-auto"
-          >
-            <span>Explore Shipped Projects</span>
-            <ArrowRight
-              size={16}
-              className="transition-transform duration-200 group-hover:translate-x-1"
-            />
-          </Link>
+            label="Explore Shipped Projects"
+            variant="primary"
+            size="md"
+            rounded="xl"
+            icon={<ArrowRight size={16} className="transition-transform duration-200 group-hover:translate-x-1" />}
+            className="w-full sm:w-auto"
+          />
 
-          <a
+          <CoordinateInkButton
             href="/saswat_ranjan_mohanty.pdf"
             target="_blank"
             rel="noopener noreferrer"
             onMouseEnter={() => notifyHover("resume", "Clean engineering track record. Zero fluff.")}
             onMouseLeave={() => notifyHover(null)}
-            className="flex items-center justify-center gap-2 px-6 sm:px-7 py-3 sm:py-3.5 rounded-xl border border-theme-border bg-theme-surface/70 backdrop-blur-md text-theme-secondary font-medium text-sm transition-all hover:bg-theme-hover hover:border-theme-accent hover:text-theme-primary w-full sm:w-auto font-mono"
-          >
-            <FileText size={15} className="text-theme-accent" />
-            <span>Resume (PDF)</span>
-          </a>
+            label="Resume (PDF)"
+            variant="accent"
+            size="md"
+            rounded="xl"
+            icon={<FileText size={15} className="text-theme-accent" />}
+            iconPosition="left"
+            className="w-full sm:w-auto font-mono"
+          />
 
-          <a
+          <CoordinateInkButton
             href="#contact"
             onMouseEnter={() => notifyHover("hire", "YES! Let's build something awesome together!")}
             onMouseLeave={() => notifyHover(null)}
             onClick={() => notifyAction("backflip", "Incoming message! Doing a celebratory flip!")}
-            className="flex items-center justify-center gap-2 px-6 sm:px-7 py-3 sm:py-3.5 rounded-xl border border-theme-border bg-theme-surface/70 backdrop-blur-md text-theme-secondary font-medium text-sm transition-all hover:bg-theme-hover hover:border-theme-border-strong hover:text-theme-primary w-full sm:w-auto"
-          >
-            <Mail size={15} />
-            <span>Direct Contact</span>
-          </a>
+            label="Direct Contact"
+            variant="secondary"
+            size="md"
+            rounded="xl"
+            icon={<Mail size={15} />}
+            iconPosition="left"
+            className="w-full sm:w-auto"
+          />
         </motion.div>
       </div>
     </section>

@@ -15,6 +15,7 @@ import {
   MessageSquare,
 } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/icons";
+import { CoordinateInkButton } from "@/components/ui/CoordinateInkButton";
 
 export interface ContactSectionProps {
   isStandalone?: boolean;
@@ -346,14 +347,16 @@ export function ContactSection({ isStandalone = false }: ContactSectionProps) {
 
         {/* Action Row */}
         <div className="flex flex-wrap items-center gap-3">
-          <a
+          <CoordinateInkButton
             href={mailtoUrl}
-            className="btn-sheen inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-theme-accent text-white dark:text-zinc-950 text-xs font-mono font-bold hover:brightness-110 active:scale-[0.99] transition-all shadow-sm"
-          >
-            <Mail size={15} />
-            <span>Open in Email App</span>
-            <ArrowUpRight size={13} />
-          </a>
+            label="Open in Email App"
+            variant="primary"
+            size="md"
+            rounded="xl"
+            icon={<Mail size={15} />}
+            iconPosition="left"
+            className="font-mono text-xs font-bold"
+          />
 
           <button
             type="button"

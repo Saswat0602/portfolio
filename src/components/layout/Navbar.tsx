@@ -8,6 +8,7 @@ import { Menu, X, ArrowUpRight, FileText } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/icons";
 import { ThemeToggle } from "./ThemeToggle";
 import { GooeyNav } from "./GooeyNav";
+import { CoordinateInkButton } from "@/components/ui/CoordinateInkButton";
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -199,14 +200,16 @@ export function Navbar() {
             <LinkedinIcon size={16} />
           </a>
 
-          <Link
+          <CoordinateInkButton
             href="/#contact"
             onClick={(e) => handleNavClick(e, "/#contact")}
-            className="btn-sheen group flex items-center gap-1.5 px-4 py-2 rounded-lg bg-theme-accent text-white dark:text-zinc-950 text-xs font-semibold hover:brightness-110 shadow-sm hover:shadow-md transition-all flex-shrink-0"
-          >
-            <span>Let&apos;s Connect</span>
-            <ArrowUpRight size={14} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-          </Link>
+            label="Let's Connect"
+            variant="primary"
+            size="sm"
+            rounded="lg"
+            icon={<ArrowUpRight size={14} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />}
+            className="flex-shrink-0"
+          />
         </div>
 
         {/* Mobile Right Bar: Theme Toggle + Hamburger Button */}
@@ -292,14 +295,16 @@ export function Navbar() {
               </a>
             </div>
 
-            <Link
+            <CoordinateInkButton
               href="/#contact"
               onClick={(e) => handleNavClick(e, "/#contact")}
-              className="flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-xl bg-theme-accent text-white dark:text-zinc-950 text-xs font-semibold shadow-sm min-h-[44px]"
-            >
-              <span>Let&apos;s Connect</span>
-              <ArrowUpRight size={14} />
-            </Link>
+              label="Let's Connect"
+              variant="primary"
+              size="sm"
+              rounded="xl"
+              icon={<ArrowUpRight size={14} />}
+              className="flex-1 xs:flex-none min-h-[44px]"
+            />
           </div>
         </div>
       )}

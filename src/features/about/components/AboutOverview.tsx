@@ -15,7 +15,6 @@ import {
   Compass,
   FileText,
   Download,
-  ExternalLink,
   CheckCircle2,
   Code2,
   Server,
@@ -24,6 +23,7 @@ import {
   Smartphone,
 } from "lucide-react";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import { CoordinateInkButton } from "@/components/ui/CoordinateInkButton";
 
 export function AboutOverview() {
   const principles = [
@@ -126,16 +126,18 @@ export function AboutOverview() {
           </div>
 
           <div className="flex flex-wrap items-center gap-3 sm:gap-4 pt-2">
-            <a
+            <CoordinateInkButton
               href="/saswat_ranjan_mohanty.pdf"
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-sheen inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-theme-accent text-white dark:text-zinc-950 text-xs font-bold hover:brightness-110 transition-all shadow-sm w-full sm:w-auto font-mono"
-            >
-              <FileText size={15} />
-              <span>View Official Resume (PDF)</span>
-              <ExternalLink size={13} className="opacity-75" />
-            </a>
+              label="View Official Resume (PDF)"
+              variant="primary"
+              size="md"
+              rounded="xl"
+              icon={<FileText size={15} />}
+              iconPosition="left"
+              className="w-full sm:w-auto font-mono text-xs font-bold"
+            />
 
             <a
               href="/saswat_ranjan_mohanty.pdf"
@@ -182,16 +184,18 @@ export function AboutOverview() {
           </div>
 
           <div className="flex flex-wrap items-center gap-3 flex-shrink-0">
-            <a
+            <CoordinateInkButton
               href="/saswat_ranjan_mohanty.pdf"
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-sheen flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-theme-accent text-white dark:text-zinc-950 text-xs font-semibold hover:brightness-110 shadow-sm transition-all font-mono"
-            >
-              <FileText size={14} />
-              <span>Open PDF Fullscreen</span>
-              <ExternalLink size={12} />
-            </a>
+              label="Open PDF Fullscreen"
+              variant="primary"
+              size="sm"
+              rounded="xl"
+              icon={<FileText size={14} />}
+              iconPosition="left"
+              className="font-mono text-xs font-semibold"
+            />
 
             <a
               href="/saswat_ranjan_mohanty.pdf"

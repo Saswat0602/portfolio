@@ -10,6 +10,7 @@ import { userData } from "@/lib/data";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { GitHubRepoBadge } from "./GitHubRepoBadge";
 import { useCompanionReaction } from "@/features/companion/context/CompanionReactionContext";
+import { CoordinateInkButton } from "@/components/ui/CoordinateInkButton";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -246,13 +247,14 @@ export function WorkSection() {
               </p>
             </div>
 
-            <Link
+            <CoordinateInkButton
               href="/projects"
-              className="btn-sheen inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-theme-accent text-white dark:text-zinc-950 text-xs font-semibold hover:brightness-110 transition-all shadow-sm"
-            >
-              <span>View All ({userData.Projects.length})</span>
-              <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-            </Link>
+              label={`View All (${userData.Projects.length})`}
+              variant="primary"
+              size="sm"
+              rounded="xl"
+              icon={<ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />}
+            />
           </div>
         </div>
       </div>

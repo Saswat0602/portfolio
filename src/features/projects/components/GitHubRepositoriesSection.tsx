@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { GithubIcon } from "@/components/ui/icons";
 import { getLanguageColor } from "../services/github";
+import { CoordinateInkButton } from "@/components/ui/CoordinateInkButton";
 
 interface GitHubRepositoriesSectionProps {
   preview?: boolean;
@@ -149,16 +150,18 @@ export function GitHubRepositoriesSection({ preview = false }: GitHubRepositorie
 
         {/* Clean Bottom Action CTA */}
         <div className="flex items-center justify-center pt-2">
-          <a
+          <CoordinateInkButton
             href="https://github.com/Saswat0602?tab=repositories"
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-sheen inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-theme-border bg-theme-surface hover:bg-theme-hover hover:border-theme-accent text-xs font-mono text-theme-primary transition-all shadow-xs group"
-          >
-            <GithubIcon size={14} className="text-theme-accent" />
-            <span>Explore All 55+ Public Repositories on GitHub</span>
-            <ArrowRight size={13} className="group-hover:translate-x-1 transition-transform text-theme-accent" />
-          </a>
+            label="Explore All 55+ Public Repositories on GitHub"
+            variant="accent"
+            size="md"
+            rounded="xl"
+            icon={<GithubIcon size={14} className="text-theme-accent" />}
+            iconPosition="left"
+            className="font-mono text-xs shadow-xs"
+          />
         </div>
       </div>
     </section>

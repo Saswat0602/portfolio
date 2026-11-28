@@ -3,3 +3,5 @@ export * from "./ScrollReveal";
 export * from "./SpotlightCard";
 export * from "./TechMarquee";
 export * from "./icons";
+export * from "./CoordinateInkButton";
+export * from "./Button";
