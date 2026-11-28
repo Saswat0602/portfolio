@@ -175,6 +175,9 @@ export function useCompanionLoop({
       onBugsCountChange: setBugsLeft,
     };
 
+    const canvas = fxCanvasRef.current;
+    const cachedCtx = canvas?.getContext("2d") ?? null;
+
     const tick = (now: number) => {
       const dt = Math.min(0.032, Math.max(0.001, (now - last) / 1000));
       last = now;
@@ -225,9 +228,8 @@ export function useCompanionLoop({
       stepCloneDuel(sim, live, elements, dt);
       const { drawX, drawY } = stepRigAndCommitDom(sim, live, chaseSnack, elements, dt);
 
-      const ctx = fxCanvasRef.current?.getContext("2d");
-      if (ctx) {
-        renderCompanionStageCanvas(ctx, sim, live, drawX, drawY, dt);
+      if (cachedCtx) {
+        renderCompanionStageCanvas(cachedCtx, sim, live, drawX, drawY, dt);
       }
 
       rafId = requestAnimationFrame(tick);

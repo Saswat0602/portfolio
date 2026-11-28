@@ -70,13 +70,14 @@ function drawMoodBackdropFx(
     ctx.strokeStyle = isDark ? "rgba(147, 197, 253, 0.55)" : "rgba(59, 130, 246, 0.55)";
     ctx.lineWidth = 1.5;
     ctx.lineCap = "round";
-    sim.rainDrops.forEach((rd) => {
+    for (let i = 0; i < sim.rainDrops.length; i++) {
+      const rd = sim.rainDrops[i];
       rd.y = (rd.y + rd.spd * dt) % 92;
       ctx.beginPath();
       ctx.moveTo(cloudX + rd.x, cloudY + 12 + rd.y);
       ctx.lineTo(cloudX + rd.x - 2, cloudY + 20 + rd.y);
       ctx.stroke();
-    });
+    }
   }
 }
 
@@ -131,7 +132,9 @@ function drawInteractiveModesFx(
     ctx.lineWidth = 1.5;
     ctx.stroke();
   };
-  sim.strokes.forEach((st) => drawRibbon(st.pts, st.color));
+  for (let i = 0; i < sim.strokes.length; i++) {
+    drawRibbon(sim.strokes[i].pts, sim.strokes[i].color);
+  }
   if (sim.activeStroke) drawRibbon(sim.activeStroke.pts, sim.activeStroke.color);
 
   if (sim.criticScanY >= 0) {
@@ -365,7 +368,8 @@ function drawTrampoline(
 }
 
 function drawSnacks(ctx: CanvasRenderingContext2D, sim: SimState, isDark: boolean): void {
-  sim.snacks.forEach((sn) => {
+  for (let i = 0; i < sim.snacks.length; i++) {
+    const sn = sim.snacks[i];
     ctx.save();
     ctx.translate(sn.x, sn.y);
     ctx.rotate(sn.rot);
@@ -385,7 +389,7 @@ function drawSnacks(ctx: CanvasRenderingContext2D, sim: SimState, isDark: boolea
     ctx.textBaseline = "middle";
     ctx.fillText(sn.emoji, 0, 1);
     ctx.restore();
-  });
+  }
 }
 
 function updateAndDrawParticles(

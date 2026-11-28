@@ -135,7 +135,7 @@ export function CompanionStageOverlays({
       <div
         data-mochi-el="shadow"
         aria-hidden="true"
-        className="pointer-events-none absolute left-0 top-0 z-10 w-[132px] h-[22px] rounded-full will-change-transform"
+        className="pointer-events-none absolute left-0 top-0 z-10 w-[132px] h-[22px] rounded-full"
         style={{
           background: isDark
             ? "radial-gradient(ellipse, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0) 72%)"
@@ -147,7 +147,7 @@ export function CompanionStageOverlays({
         <>
           <div
             data-mochi-el="cloneBubble"
-            className="pointer-events-none absolute left-0 top-0 z-[46] w-max max-w-[210px] will-change-transform"
+            className="pointer-events-none absolute left-0 top-0 z-[46] w-max max-w-[210px]"
           >
             {cloneSpeech && (
               <div
@@ -164,7 +164,7 @@ export function CompanionStageOverlays({
           </div>
           <div
             data-mochi-el="cloneWrap"
-            className="pointer-events-none absolute left-0 top-0 z-[44] w-[160px] h-[160px] will-change-transform"
+            className="pointer-events-none absolute left-0 top-0 z-[44] w-[160px] h-[160px]"
           >
             <svg viewBox="0 0 120 120" className="w-full h-full block drop-shadow-md" aria-hidden="true">
               <path

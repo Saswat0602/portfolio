@@ -1,6 +1,6 @@
 import userData, { type ProjectData } from "./userdata";
 
-export type CharacterStyleId = "vinyl" | "bit" | "crt" | "paper" | "astro";
+export type CharacterStyleId = "vinyl" | "aura" | "bit" | "crt" | "paper" | "astro";
 
 export type AccessoryId =
   | "none"
@@ -95,6 +95,7 @@ export interface RainDropSeed {
 
 export const CHARACTER_STYLES: readonly CharacterStyleMeta[] = [
   { id: "vinyl", label: "Vinyl Mochi", accent: "#FF6B4A", tag: "DESIGNER TOY" },
+  { id: "aura", label: "AURA-03", accent: "#2563EB", tag: "CERAMIC BOT" },
   { id: "bit", label: "BIT-02", accent: "#E03E2D", tag: "DESKTOP MISCHIEF" },
   { id: "crt", label: "Retro CRT", accent: "#10B981", tag: "1984 POCKET TV" },
   { id: "paper", label: "Paper Spirit", accent: "#D4A037", tag: "ORIGAMI MASK" },

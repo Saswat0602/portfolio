@@ -401,8 +401,7 @@ export function stepCharacterKinematics(
     Boolean(chaseSnack) ||
     Boolean(sim.portals.cyan && sim.portals.orange) ||
     sim.ballistic ||
-    sim.flipping ||
-    Math.hypot(sim.vx, sim.vy) > 65;
+    sim.flipping;
 
   const steeredByMode = !chaseSnack && applyPlayModeSteering(sim, live, minX, maxX, dt, callbacks);
 
@@ -566,6 +565,24 @@ function resolveHandTargets(
   return { tHLX, tHLY, tHRX, tHRY, rHL, rHR };
 }
 
+const attrCache = new WeakMap<Element, string>();
+
+function setTransformAttr(el: Element | null, value: string): void {
+  if (!el) return;
+  if (attrCache.get(el) === value) return;
+  attrCache.set(el, value);
+  el.setAttribute("transform", value);
+}
+
+const styleCache = new WeakMap<HTMLElement, string>();
+
+function setStyleTransform(el: HTMLElement | null, value: string): void {
+  if (!el) return;
+  if (styleCache.get(el) === value) return;
+  styleCache.set(el, value);
+  el.style.transform = value;
+}
+
 export function stepRigAndCommitDom(
   sim: SimState,
   live: LiveSnapshot,
@@ -706,46 +723,47 @@ export function stepRigAndCommitDom(
           : 0.58
         : 1.0;
 
-  if (elements.charWrap) {
-    elements.charWrap.style.transform = `translate3d(${Math.round(drawX)}px, ${Math.round(drawY)}px, 0) translate(-50%, -50%) scale(${sc})`;
-  }
-  if (elements.rigTransform) {
-    const totDeg = sim.rot + sim.flipDeg;
-    elements.rigTransform.setAttribute(
-      "transform",
-      `translate(170 250) scale(${sim.sx.toFixed(3)} ${sim.sy.toFixed(3)}) translate(0 -70) rotate(${totDeg.toFixed(2)}) translate(-170 -180)`
-    );
-  }
-  if (elements.faceGroup) {
-    elements.faceGroup.setAttribute(
-      "transform",
-      `translate(${(170 + sim.headX * 10).toFixed(1)} ${(154 + sim.headY * 7).toFixed(1)}) scale(${sim.faceScale.toFixed(3)}) translate(-170 -154)`
-    );
-  }
-  if (elements.pupils) {
-    elements.pupils.setAttribute("transform", `translate(${(sim.headX * 8.5).toFixed(1)} ${(sim.headY * 6).toFixed(1)})`);
-  }
-  if (elements.eyeL) {
-    elements.eyeL.setAttribute("transform", `translate(144 150) scale(1 ${sim.eyelid.toFixed(3)}) translate(-144 -150)`);
-  }
-  if (elements.eyeR) {
-    elements.eyeR.setAttribute("transform", `translate(196 150) scale(1 ${sim.eyelid.toFixed(3)}) translate(-196 -150)`);
-  }
-  if (elements.handL) {
-    elements.handL.setAttribute("transform", `translate(${sim.hlX.toFixed(1)} ${sim.hlY.toFixed(1)}) rotate(${hands.rHL.toFixed(1)})`);
-  }
-  if (elements.handR) {
-    elements.handR.setAttribute("transform", `translate(${sim.hrX.toFixed(1)} ${sim.hrY.toFixed(1)}) rotate(${hands.rHR.toFixed(1)})`);
-  }
-  if (elements.antL) elements.antL.setAttribute("transform", `rotate(${(sim.antBend * 0.7 - 18).toFixed(1)} 144 82)`);
-  if (elements.antR) elements.antR.setAttribute("transform", `rotate(${(sim.antBend * 0.7 + 18).toFixed(1)} 196 82)`);
-  if (elements.halo) elements.halo.setAttribute("transform", `translate(0 ${(Math.sin(t * 3.0) * 4).toFixed(1)})`);
+  setStyleTransform(
+    elements.charWrap,
+    `translate3d(${drawX.toFixed(2)}px, ${drawY.toFixed(2)}px, 0) translate(-50%, -50%) scale(${sc})`
+  );
+  setTransformAttr(
+    elements.rigTransform,
+    `translate(170 250) scale(${sim.sx.toFixed(2)} ${sim.sy.toFixed(2)}) translate(0 -70) rotate(${(sim.rot + sim.flipDeg).toFixed(1)}) translate(-170 -180)`
+  );
+  setTransformAttr(
+    elements.faceGroup,
+    `translate(${(170 + sim.headX * 10).toFixed(1)} ${(154 + sim.headY * 7).toFixed(1)}) scale(${sim.faceScale.toFixed(2)}) translate(-170 -154)`
+  );
+  setTransformAttr(
+    elements.pupils,
+    `translate(${(sim.headX * 8.5).toFixed(1)} ${(sim.headY * 6).toFixed(1)})`
+  );
+  setTransformAttr(
+    elements.eyeL,
+    `translate(144 150) scale(1 ${sim.eyelid.toFixed(2)}) translate(-144 -150)`
+  );
+  setTransformAttr(
+    elements.eyeR,
+    `translate(196 150) scale(1 ${sim.eyelid.toFixed(2)}) translate(-196 -150)`
+  );
+  setTransformAttr(
+    elements.handL,
+    `translate(${sim.hlX.toFixed(1)} ${sim.hlY.toFixed(1)}) rotate(${hands.rHL.toFixed(1)})`
+  );
+  setTransformAttr(
+    elements.handR,
+    `translate(${sim.hrX.toFixed(1)} ${sim.hrY.toFixed(1)}) rotate(${hands.rHR.toFixed(1)})`
+  );
+  setTransformAttr(elements.antL, `rotate(${(sim.antBend * 0.7 - 18).toFixed(1)} 144 82)`);
+  setTransformAttr(elements.antR, `rotate(${(sim.antBend * 0.7 + 18).toFixed(1)} 196 82)`);
+  setTransformAttr(elements.halo, `translate(0 ${(Math.sin(t * 3.0) * 4).toFixed(1)})`);
   if (elements.snotBubble) {
     elements.snotBubble.setAttribute("r", (5 + Math.abs(Math.sin(t * 1.45)) * 12).toFixed(1));
   }
   if (elements.flame) {
     const flScale = 0.85 + Math.abs(Math.sin(t * 26)) * 0.35;
-    elements.flame.setAttribute("transform", `translate(170 176) scale(${flScale.toFixed(2)}) translate(-170 -176)`);
+    setTransformAttr(elements.flame, `translate(170 176) scale(${flScale.toFixed(2)}) translate(-170 -176)`);
   }
 
   const jetOp = Math.abs(sim.vy) > 60 || dm === "zen" ? (0.7 + Math.sin(t * 28) * 0.28).toFixed(2) : "0";
@@ -756,8 +774,11 @@ export function stepRigAndCommitDom(
     const refY = live.gravityFlipped ? sim.ceilY - 40 : sim.floorY + 58;
     const alt = Math.abs(refY - drawY);
     const f = clamp(1 - alt / 400, 0.22, 1.06);
-    elements.shadow.style.transform = `translate3d(${drawX.toFixed(1)}px, ${refY.toFixed(1)}px, 0) translate(-50%, -50%) scale(${(f * sc).toFixed(3)})`;
-    elements.shadow.style.opacity = (0.2 * f * f).toFixed(3);
+    setStyleTransform(
+      elements.shadow,
+      `translate3d(${drawX.toFixed(1)}px, ${refY.toFixed(1)}px, 0) translate(-50%, -50%) scale(${(f * sc).toFixed(2)})`
+    );
+    elements.shadow.style.opacity = (0.2 * f * f).toFixed(2);
   }
 
   if (elements.speech) {
@@ -770,12 +791,18 @@ export function stepRigAndCommitDom(
         ? clamp(sim.y + 94 * sc, 120, sim.h - 145)
         : clamp(sim.y - topOffset, 125, sim.h - 155)
     );
-    elements.speech.style.transform = `translate3d(${bx}px, ${by}px, 0) translate(-50%, ${placeBelow ? "0%" : "-100%"})`;
+    setStyleTransform(
+      elements.speech,
+      `translate3d(${bx}px, ${by}px, 0) translate(-50%, ${placeBelow ? "0%" : "-100%"})`
+    );
   }
 
   if (live.featherTool && elements.featherDom) {
     const wig = Math.sin(t * 14) * 6;
-    elements.featherDom.style.transform = `translate3d(${sim.ptrX.toFixed(1)}px, ${sim.ptrY.toFixed(1)}px, 0) rotate(${(-24 + wig).toFixed(1)}deg)`;
+    setStyleTransform(
+      elements.featherDom,
+      `translate3d(${sim.ptrX.toFixed(1)}px, ${sim.ptrY.toFixed(1)}px, 0) rotate(${(-24 + wig).toFixed(1)}deg)`
+    );
   }
 
   return { drawX, drawY };

@@ -107,6 +107,14 @@ export function PolaroidMiniPortrait({
           <rect x="38" y="38" width="44" height="28" rx="14" fill="#111827" />
         </g>
       )}
+      {styleId === "aura" && (
+        <g>
+          <line x1="60" y1="22" x2="60" y2="10" stroke="#94A3B8" strokeWidth="2" />
+          <circle cx="60" cy="9" r="3" fill="#2563EB" />
+          <rect x="28" y="22" width="64" height="58" rx="22" fill="#F8F6F1" stroke="#CBD5E1" strokeWidth="1.8" />
+          <rect x="36" y="34" width="48" height="32" rx="14" fill="#0D121D" />
+        </g>
+      )}
       {styleId === "bit" && (
         <g>
           <line x1="60" y1="24" x2="60" y2="10" stroke="#1A1918" strokeWidth="2.2" />
