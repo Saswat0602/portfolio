@@ -1,22 +1,33 @@
 "use client";
 
-import type { AccessoryId } from "@/lib/data";
+import type { AccessoryId, CharacterStyleId } from "@/lib/data";
 
 export interface CompanionAccessoriesSvgProps {
   accessory: AccessoryId;
+  charStyle: CharacterStyleId;
   accentColor: string;
   trimColor: string;
 }
 
+const CHASSIS_ACCESSORY_TRANSFORMS: Record<CharacterStyleId, string | undefined> = {
+  vinyl: undefined,
+  aura: "translate(0 2)",
+  bit: "translate(0 4) scale(0.98)",
+  crt: "translate(-10 4) scale(0.96)",
+  paper: "translate(0 -6) scale(0.96)",
+  astro: "translate(0 2) scale(1.03)",
+};
+
 export function CompanionAccessoriesSvg({
   accessory,
+  charStyle,
   accentColor,
   trimColor,
 }: CompanionAccessoriesSvgProps) {
   if (accessory === "none") return null;
 
   return (
-    <g className="pointer-events-none">
+    <g className="pointer-events-none" transform={CHASSIS_ACCESSORY_TRANSFORMS[charStyle]}>
       {accessory === "halo" && (
         <g>
           <ellipse

@@ -1,13 +1,11 @@
-import { useCallback, useRef, type Dispatch, type FormEvent, type MutableRefObject, type SetStateAction } from "react";
+import { useCallback, useRef, type Dispatch, type MutableRefObject, type SetStateAction } from "react";
 import {
   ART_RATINGS,
   BSOD_QUIPS,
   BUG_TAGS,
   CHARACTER_STYLES,
-  CHAT_FALLBACK_QUIPS,
   CLONE_DUEL_SCRIPTS,
   DEV_JOKES,
-  DEV_ROASTS,
   DISCO_QUIPS,
   FRIDAY_DEPLOY_QUIPS,
   MOODS,
@@ -37,7 +35,6 @@ import type {
 } from "../types";
 import { clamp } from "../utils/physics";
 import { getAudioContext, playComedySound } from "../utils/audio";
-import { resolveChatCommand } from "../utils/chatCommands";
 
 function pickRandom<T>(items: readonly T[]): T {
   return items[Math.floor(Math.random() * items.length)];
@@ -77,8 +74,6 @@ export interface CompanionActionSetters {
   setArtVerdict: Dispatch<SetStateAction<ArtVerdictState | null>>;
   setAutoJam: Dispatch<SetStateAction<boolean>>;
   setActivePad: Dispatch<SetStateAction<string | null>>;
-  chatText: string;
-  setChatText: Dispatch<SetStateAction<string>>;
 }
 
 export interface CompanionActionRefs {
@@ -129,8 +124,6 @@ export function useCompanionActions(
     setArtVerdict,
     setAutoJam,
     setActivePad,
-    chatText,
-    setChatText,
   } = setters;
 
   const lastPrankIdxRef = useRef(-1);
@@ -746,12 +739,6 @@ export function useCompanionActions(
     say(pickRandom(DISCO_QUIPS), 2800, true);
   }, [liveRef, say, setMood, simRef, spawnParticles]);
 
-  const triggerDevRoast = useCallback(() => {
-    setMood("smug");
-    playComedySound("pop", liveRef.current.soundOn, 0.9);
-    say(pickRandom(DEV_ROASTS), 4000, true);
-  }, [liveRef, say, setMood]);
-
   const triggerDevJoke = useCallback(() => {
     const sim = simRef.current;
     const joke = pickRandom(DEV_JOKES);
@@ -909,103 +896,6 @@ export function useCompanionActions(
     simRef,
   ]);
 
-  const handleChatSubmit = useCallback(
-    (e: FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-      const raw = chatText.trim();
-      if (!raw) return;
-      setChatText("");
-      const intent = resolveChatCommand(raw);
-
-      switch (intent.type) {
-        case "friday":
-          triggerFridayDeploy();
-          break;
-        case "crash":
-          triggerFakeCrash();
-          break;
-        case "disco":
-          triggerDiscoRave();
-          break;
-        case "sneeze":
-          triggerSneeze();
-          break;
-        case "roast":
-          triggerDevRoast();
-          break;
-        case "joke":
-          triggerDevJoke();
-          break;
-        case "backflip":
-          triggerBackflip();
-          break;
-        case "snack":
-          throwSnack(intent.snack);
-          break;
-        case "mode":
-          selectPlayMode(intent.mode);
-          break;
-        case "portal":
-          setPortalTool(true);
-          setFeatherTool(false);
-          say("Portal Gun armed! Click two spots on stage!", 2800);
-          break;
-        case "trampoline":
-          setTrampolineOn(true);
-          say("Trampoline deployed! Drop me on it!", 2600);
-          break;
-        case "photo":
-          triggerPhotoBooth();
-          break;
-        case "gravity":
-          triggerGravityFlip();
-          break;
-        case "clone":
-          triggerMiniClones();
-          break;
-        case "prank":
-          triggerChaosPrank();
-          break;
-        case "hire":
-          setMood("lovestruck");
-          spawnParticles("heart", simRef.current.x, simRef.current.y - 48, 8, "#FB7185");
-          say("Saswat builds production Next.js, AI Agents, RAG & native apps. 10/10 hire!", 3600);
-          break;
-        case "greeting":
-          setMood("playful");
-          say("Hey!! Try typing roast, joke, friday, crash, pizza, or pick a mode!", 3000);
-          break;
-        case "fallback":
-          say(`"${intent.raw}" — ${pickRandom(CHAT_FALLBACK_QUIPS)}`, 3200);
-          break;
-      }
-    },
-    [
-      chatText,
-      say,
-      selectPlayMode,
-      setChatText,
-      setFeatherTool,
-      setMood,
-      setPortalTool,
-      setTrampolineOn,
-      simRef,
-      spawnParticles,
-      throwSnack,
-      triggerBackflip,
-      triggerChaosPrank,
-      triggerDevJoke,
-      triggerDevRoast,
-      triggerDiscoRave,
-      triggerFakeCrash,
-      triggerFridayDeploy,
-      triggerGravityFlip,
-      triggerMiniClones,
-      triggerPhotoBooth,
-      triggerSneeze,
-    ]
-  );
-
   return {
     spawnParticles,
     say,
@@ -1030,11 +920,9 @@ export function useCompanionActions(
     triggerFridayDeploy,
     triggerFakeCrash,
     triggerDiscoRave,
-    triggerDevRoast,
     triggerDevJoke,
     triggerStickyPrank,
     triggerChaosPrank,
     handleResetStage,
-    handleChatSubmit,
   };
 }

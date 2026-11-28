@@ -1,6 +1,6 @@
 "use client";
 
-import type { Dispatch, FormEvent, SetStateAction } from "react";
+import type { Dispatch, SetStateAction } from "react";
 import Link from "next/link";
 import {
   CHARACTER_STYLES,
@@ -11,7 +11,6 @@ import {
   type SnackId,
 } from "@/lib/data";
 import type { CompanionThemeTokens, PortfolioHoverTarget } from "../types";
-import { IconSend } from "./CompanionIcons";
 
 export interface CompanionQuickPopoverProps {
   ui: CompanionThemeTokens;
@@ -23,11 +22,9 @@ export interface CompanionQuickPopoverProps {
   onThrowSnack: (kind: SnackId) => void;
   onPhotoBooth: () => void;
   onChaosPrank: () => void;
+  onDevJoke: () => void;
+  onBackflip: () => void;
   onClose: () => void;
-  chatText: string;
-  setChatText: Dispatch<SetStateAction<string>>;
-  setChatFocused: Dispatch<SetStateAction<boolean>>;
-  onChatSubmit: (e: FormEvent<HTMLFormElement>) => void;
   studioHref?: string;
   positionClassName?: string;
 }
@@ -44,11 +41,9 @@ export function CompanionQuickPopover({
   onThrowSnack,
   onPhotoBooth,
   onChaosPrank,
+  onDevJoke,
+  onBackflip,
   onClose,
-  chatText,
-  setChatText,
-  setChatFocused,
-  onChatSubmit,
   studioHref,
   positionClassName = "absolute bottom-6 left-5 sm:left-8 z-40",
 }: CompanionQuickPopoverProps) {
@@ -141,34 +136,24 @@ export function CompanionQuickPopover({
         </button>
       </div>
 
-      <form
-        onSubmit={onChatSubmit}
-        onPointerDown={(e) => e.stopPropagation()}
-        onMouseDown={(e) => e.stopPropagation()}
-        onKeyDown={(e) => e.stopPropagation()}
-        className="flex items-center gap-1.5 select-text"
-      >
-        <input
-          type="text"
-          value={chatText}
-          onFocus={() => setChatFocused(true)}
-          onBlur={() => setChatFocused(false)}
-          onChange={(e) => setChatText(e.target.value)}
-          onPointerDown={(e) => e.stopPropagation()}
-          onKeyDown={(e) => e.stopPropagation()}
-          placeholder="Say hi, roast, joke, friday, flip…"
-          className="flex-1 min-w-0 select-text pointer-events-auto rounded-lg px-2.5 py-1.5 text-xs outline-none"
-          style={{ backgroundColor: ui.recessed, color: ui.ink }}
-        />
+      <div className="flex flex-wrap gap-1.5">
         <button
-          type="submit"
-          aria-label="Send message"
-          className="m4-focus rounded-lg px-2.5 py-1.5 cursor-pointer"
-          style={{ backgroundColor: styleMeta.accent, color: "#FFFFFF" }}
+          type="button"
+          onClick={onDevJoke}
+          className="m4-focus rounded-full px-2.5 py-1 font-mono text-[10px] cursor-pointer"
+          style={{ backgroundColor: ui.recessed, color: ui.ink }}
         >
-          <IconSend />
+          🤣 Dev Joke
         </button>
-      </form>
+        <button
+          type="button"
+          onClick={onBackflip}
+          className="m4-focus rounded-full px-2.5 py-1 font-mono text-[10px] cursor-pointer"
+          style={{ backgroundColor: ui.recessed, color: ui.ink }}
+        >
+          🌀 Backflip
+        </button>
+      </div>
     </div>
   );
 }

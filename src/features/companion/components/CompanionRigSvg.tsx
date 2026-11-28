@@ -22,7 +22,6 @@ export interface CompanionRigSvgProps {
   dizzyActive: boolean;
   tickledActive: boolean;
   pettingActive: boolean;
-  secretMode: boolean;
   photoPosing: boolean;
   isHeld: boolean;
   cursorSnatched: boolean;
@@ -44,7 +43,6 @@ export function CompanionRigSvg({
   dizzyActive,
   tickledActive,
   pettingActive,
-  secretMode,
   photoPosing,
   isHeld,
   cursorSnatched,
@@ -70,7 +68,6 @@ export function CompanionRigSvg({
           dizzyActive={dizzyActive}
           tickledActive={tickledActive}
           pettingActive={pettingActive}
-          secretMode={secretMode}
           photoPosing={photoPosing}
           isHeld={isHeld}
         />
@@ -269,6 +266,7 @@ export function CompanionRigSvg({
 
             <CompanionAccessoriesSvg
               accessory={accessory}
+              charStyle={charStyle}
               accentColor={styleMeta.accent}
               trimColor={styleMeta.accent}
             />

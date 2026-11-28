@@ -41,6 +41,8 @@ export interface UseCompanionLoopParams {
   setWidgetOpen: Dispatch<SetStateAction<boolean>>;
   setRallyCount: Dispatch<SetStateAction<number>>;
   setBugsLeft: Dispatch<SetStateAction<number>>;
+  onHomeTuckChange: (tucked: boolean) => void;
+  onIdleSleep: () => void;
 }
 
 export function useCompanionLoop({
@@ -62,6 +64,8 @@ export function useCompanionLoop({
   setWidgetOpen,
   setRallyCount,
   setBugsLeft,
+  onHomeTuckChange,
+  onIdleSleep,
 }: UseCompanionLoopParams): void {
   // Natural blinking
   useEffect(() => {
@@ -110,14 +114,24 @@ export function useCompanionLoop({
       sim.h = r.height;
       if (viewMode === "home") {
         const isDesktop = r.width >= 768;
+        const isCompact = r.width < 640;
+        const tucked = liveRef.current.homeTucked;
         sim.floorY = isDesktop ? r.height - 175 : r.height - 165;
         sim.ceilY = 86;
-        sim.homeX = isDesktop
-          ? clamp(r.width * 0.88, r.width * 0.78, r.width - 108)
-          : Math.max(82, r.width - 78);
-        sim.homeY = isDesktop
-          ? clamp(r.height * 0.44, 130, r.height - 235)
-          : clamp(r.height * 0.36, 125, r.height - 210);
+        if (isCompact) {
+          sim.homeX = Math.max(70, r.width - 54);
+          sim.homeY = 122;
+        } else if (tucked) {
+          sim.homeX = Math.max(120, r.width - 76);
+          sim.homeY = 122;
+        } else {
+          sim.homeX = isDesktop
+            ? clamp(r.width * 0.88, r.width * 0.78, r.width - 108)
+            : Math.max(82, r.width - 78);
+          sim.homeY = isDesktop
+            ? clamp(r.height * 0.44, 130, r.height - 235)
+            : clamp(r.height * 0.36, 125, r.height - 210);
+        }
         sim.tramp.x = isDesktop ? Math.min(r.width - 140, r.width * 0.78) : r.width * 0.5;
       } else {
         sim.floorY = viewMode === "portfolio" ? r.height - 62 : r.height - 178;
@@ -144,8 +158,33 @@ export function useCompanionLoop({
     sync();
     const ro = new ResizeObserver(sync);
     ro.observe(stage);
-    return () => ro.disconnect();
-  }, [fxCanvasRef, simRef, stageRef, viewMode]);
+
+    const onScroll = () => {
+      if (viewMode !== "home") return;
+      const tucked = window.scrollY > 360;
+      if (tucked !== liveRef.current.homeTucked) {
+        onHomeTuckChange(tucked);
+        const r = stage.getBoundingClientRect();
+        if (r.width >= 640) {
+          simRef.current.homeX = tucked
+            ? Math.max(120, r.width - 76)
+            : r.width >= 768
+              ? clamp(r.width * 0.88, r.width * 0.78, r.width - 108)
+              : Math.max(82, r.width - 78);
+          simRef.current.homeY = tucked
+            ? 122
+            : r.width >= 768
+              ? clamp(r.height * 0.44, 130, r.height - 235)
+              : clamp(r.height * 0.36, 125, r.height - 210);
+        }
+      }
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, [fxCanvasRef, liveRef, onHomeTuckChange, simRef, stageRef, viewMode]);
 
   // Cleanup Timers & AudioContext on Unmount
   useEffect(() => {
@@ -156,10 +195,13 @@ export function useCompanionLoop({
     };
   }, [timersRef]);
 
-  // Single 60 FPS Simulation & Canvas FX Loop
+  // Single 60 FPS Simulation & Canvas FX Loop (pauses on hidden tab or off-screen)
   useEffect(() => {
     let rafId = 0;
     let last = performance.now();
+    let inView = true;
+    let idleSleepFired = false;
+    simRef.current.lastInteractionAt = last;
 
     const onPortalDizzy = () => {
       setDizzyActive(true);
@@ -178,7 +220,23 @@ export function useCompanionLoop({
     const canvas = fxCanvasRef.current;
     const cachedCtx = canvas?.getContext("2d") ?? null;
 
+    const startLoop = () => {
+      if (rafId || document.hidden || !inView) return;
+      last = performance.now();
+      rafId = requestAnimationFrame(tick);
+    };
+
+    const stopLoop = () => {
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+        rafId = 0;
+      }
+    };
+
     const tick = (now: number) => {
+      rafId = 0;
+      if (document.hidden || !inView) return;
+
       const dt = Math.min(0.032, Math.max(0.001, (now - last) / 1000));
       last = now;
 
@@ -187,6 +245,19 @@ export function useCompanionLoop({
       const stage = stageRef.current;
       const elements = elementsRef.current;
       if (stage) syncConnectedElements(stage, elements);
+
+      if (
+        !idleSleepFired &&
+        live.playMode === "interact" &&
+        live.displayMood !== "sleepy" &&
+        !sim.drag.active &&
+        now - sim.lastInteractionAt > 45000
+      ) {
+        idleSleepFired = true;
+        onIdleSleep();
+      } else if (now - sim.lastInteractionAt < 1000) {
+        idleSleepFired = false;
+      }
 
       sim.time += dt;
       sim.ptrVx *= Math.exp(-dt * 12);
@@ -235,13 +306,37 @@ export function useCompanionLoop({
       rafId = requestAnimationFrame(tick);
     };
 
-    rafId = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(rafId);
+    const onVisibilityChange = () => {
+      if (document.hidden) stopLoop();
+      else startLoop();
+    };
+    document.addEventListener("visibilitychange", onVisibilityChange);
+
+    let io: IntersectionObserver | null = null;
+    if (stageRef.current && typeof IntersectionObserver !== "undefined") {
+      io = new IntersectionObserver(
+        (entries) => {
+          inView = entries[0]?.isIntersecting ?? true;
+          if (inView) startLoop();
+          else stopLoop();
+        },
+        { threshold: 0.02 }
+      );
+      io.observe(stageRef.current);
+    }
+
+    startLoop();
+    return () => {
+      stopLoop();
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+      if (io) io.disconnect();
+    };
   }, [
     consumeSnack,
     elementsRef,
     fxCanvasRef,
     liveRef,
+    onIdleSleep,
     say,
     setBugsLeft,
     setDizzyActive,
@@ -270,6 +365,7 @@ export function useCompanionLoop({
       sim.ptrX = px;
       sim.ptrY = py;
       sim.ptrActive = true;
+      sim.lastInteractionAt = performance.now();
 
       // Global Tickle Feather Detection (responsive anywhere near Mochi)
       if (live.featherTool && Math.hypot(px - sim.x, py - sim.y) < 125) {

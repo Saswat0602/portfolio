@@ -3,7 +3,6 @@ import type { AccessoryId, CharacterStyleId, MoodId, PlayModeId, SnackId } from 
 export type ViewMode = "stage" | "portfolio" | "home";
 export type DockTab = "styles" | "modes" | "moods" | "toys" | "pranks";
 export type PortfolioHoverTarget = "hire" | "projects" | "resume" | null;
-export type MicMode = "off" | "live" | "fallback";
 
 export type SoundKind =
   | "boing"
@@ -278,6 +277,7 @@ export interface SimState {
   particles: ParticleEntity[];
   rainDrops: RainDropState[];
   time: number;
+  lastInteractionAt: number;
 }
 
 export interface LiveSnapshot {
@@ -307,12 +307,9 @@ export interface LiveSnapshot {
   cloneDuelActive: boolean;
   fridayDeployActive: boolean;
   fakeCrashActive: boolean;
-  secretMode: boolean;
-  peeking: boolean;
-  chatFocused: boolean;
-  chatLen: number;
+  reducedMotion: boolean;
+  homeTucked: boolean;
   portfolioHover: PortfolioHoverTarget;
-  micMode: MicMode;
 }
 
 export interface CompanionTimers {

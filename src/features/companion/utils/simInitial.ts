@@ -92,6 +92,7 @@ export function createInitialSimState(): SimState {
     particles: [],
     rainDrops: INITIAL_RAIN_DROPS.map((d) => ({ ...d })),
     time: 0,
+    lastInteractionAt: 0,
   };
 }
 

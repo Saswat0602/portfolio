@@ -11,7 +11,6 @@ export interface CompanionFaceExpressionsProps {
   dizzyActive: boolean;
   tickledActive: boolean;
   pettingActive: boolean;
-  secretMode: boolean;
   photoPosing: boolean;
   isHeld: boolean;
 }
@@ -25,7 +24,6 @@ export function CompanionFaceExpressions({
   dizzyActive,
   tickledActive,
   pettingActive,
-  secretMode,
   photoPosing,
   isHeld,
 }: CompanionFaceExpressionsProps) {
@@ -205,7 +203,7 @@ export function CompanionFaceExpressions({
 
   return (
     <g>
-      {(m === "playful" || secretMode || photoPosing) && (
+      {(m === "playful" || photoPosing) && (
         <g fill={cheekCol} opacity="0.42">
           <ellipse cx="124" cy="166" rx="9" ry="5" />
           <ellipse cx="216" cy="166" rx="9" ry="5" />

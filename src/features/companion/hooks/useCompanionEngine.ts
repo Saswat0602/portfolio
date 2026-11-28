@@ -36,6 +36,8 @@ import { createEmptyElements, createEmptyTimers, createInitialSimState } from ".
 import { useCompanionActions } from "./useCompanionActions";
 import { useCompanionLoop } from "./useCompanionLoop";
 
+const PREFS_STORAGE_KEY = "mochi-companion-prefs-v1";
+
 export interface UseCompanionEngineOptions {
   stageRef: RefObject<HTMLDivElement | null>;
   fxCanvasRef: RefObject<HTMLCanvasElement | null>;
@@ -54,6 +56,9 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
   const [mood, setMood] = useState<MoodId>("playful");
   const [soundOn, setSoundOn] = useState<boolean>(false);
   const [dockTab, setDockTab] = useState<DockTab>("modes");
+  const [prefsHydrated, setPrefsHydrated] = useState<boolean>(false);
+  const [reducedMotion, setReducedMotion] = useState<boolean>(false);
+  const [homeTucked, setHomeTucked] = useState<boolean>(false);
 
   // Playable Tools & Interactive States
   const [portalTool, setPortalTool] = useState<boolean>(false);
@@ -92,12 +97,8 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
   const [polaroids, setPolaroids] = useState<PolaroidCard[]>([]);
   const [stickyNote, setStickyNote] = useState<StickyNoteState | null>(null);
 
-  // Chat, Reading & Secret Mode
+  // Speech & Portfolio Hover
   const [speechShown, setSpeechShown] = useState<string>("");
-  const [chatText, setChatText] = useState<string>("");
-  const [chatFocused, setChatFocused] = useState<boolean>(false);
-  const [secretMode, setSecretMode] = useState<boolean>(false);
-  const [peeking, setPeeking] = useState<boolean>(false);
   const [widgetOpen, setWidgetOpen] = useState<boolean>(false);
   const [internalPortfolioHover, setPortfolioHover] = useState<PortfolioHoverTarget>(null);
 
@@ -109,6 +110,59 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
   const polaroidSeqRef = useRef(1);
   const snackSeqRef = useRef(1);
   const simRef = useRef<SimState>(createInitialSimState());
+  const prevThemeRef = useRef(theme);
+
+  // Hydrate persisted style / accessory / sound safely after mount
+  useEffect(() => {
+    let active = true;
+    queueMicrotask(() => {
+      if (!active) return;
+      try {
+        const raw = window.localStorage.getItem(PREFS_STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw) as Partial<{
+            charStyle: CharacterStyleId;
+            accessory: AccessoryId;
+            soundOn: boolean;
+          }>;
+          if (parsed.charStyle && CHARACTER_STYLES.some((s) => s.id === parsed.charStyle)) {
+            setCharStyle(parsed.charStyle);
+          }
+          if (parsed.accessory) setAccessory(parsed.accessory);
+          if (typeof parsed.soundOn === "boolean") setSoundOn(parsed.soundOn);
+        }
+      } catch {
+        // Ignore storage access errors
+      } finally {
+        if (active) setPrefsHydrated(true);
+      }
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!prefsHydrated) return;
+    try {
+      window.localStorage.setItem(
+        PREFS_STORAGE_KEY,
+        JSON.stringify({ charStyle, accessory, soundOn })
+      );
+    } catch {
+      // Ignore storage quota errors
+    }
+  }, [accessory, charStyle, prefsHydrated, soundOn]);
+
+  // Respect prefers-reduced-motion
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return;
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReducedMotion(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
 
   const displayMood = useMemo<MoodId>(() => {
     if (portfolioHover === "hire") return "lovestruck";
@@ -172,12 +226,9 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
     cloneDuelActive,
     fridayDeployActive,
     fakeCrashActive,
-    secretMode,
-    peeking,
-    chatFocused,
-    chatLen: chatText.length,
+    reducedMotion,
+    homeTucked,
     portfolioHover,
-    micMode: "off",
   });
 
   useEffect(() => {
@@ -208,12 +259,9 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
       cloneDuelActive,
       fridayDeployActive,
       fakeCrashActive,
-      secretMode,
-      peeking,
-      chatFocused,
-      chatLen: chatText.length,
+      reducedMotion,
+      homeTucked,
       portfolioHover,
-      micMode: "off",
     };
   }, [
     theme,
@@ -242,10 +290,8 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
     cloneDuelActive,
     fridayDeployActive,
     fakeCrashActive,
-    secretMode,
-    peeking,
-    chatFocused,
-    chatText.length,
+    reducedMotion,
+    homeTucked,
     portfolioHover,
   ]);
 
@@ -292,10 +338,27 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
       setArtVerdict,
       setAutoJam,
       setActivePad,
-      chatText,
-      setChatText,
     }
   );
+
+  // React to theme toggles with a quick quip
+  useEffect(() => {
+    if (prevThemeRef.current === theme) return;
+    prevThemeRef.current = theme;
+    simRef.current.vy = -180;
+    actions.say(
+      theme === "dark"
+        ? "Dark mode engaged! Protecting your retinas at 60 FPS."
+        : "Light mode?! Who turned on the studio floodlights?!",
+      2500,
+      true
+    );
+  }, [actions, theme]);
+
+  const handleIdleSleep = useCallback(() => {
+    setMood("sleepy");
+    actions.say("Entering low-power dream cache... Zzz", 2800, true);
+  }, [actions]);
 
   useCompanionLoop({
     stageRef,
@@ -316,6 +379,8 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
     setWidgetOpen,
     setRallyCount,
     setBugsLeft,
+    onHomeTuckChange: setHomeTucked,
+    onIdleSleep: handleIdleSleep,
   });
 
   // Auto-Jam interval for DJ mode
@@ -338,7 +403,7 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
     };
   }, [autoJam, hitSynthPad, playMode]);
 
-  // Keyboard shortcuts for DJ Jam (A S D F G H J) & Escape to exit Laser/Paint/Feather/Portal/BSOD
+  // Keyboard shortcuts for DJ Jam (A S D F G H J) & Escape to exit active tools/overlays
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey || e.altKey || e.repeat) return;
@@ -376,6 +441,7 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
   const handleHeadPet = useCallback(
     (e: ReactPointerEvent<SVGRectElement>) => {
       const sim = simRef.current;
+      sim.lastInteractionAt = performance.now();
       if (sim.drag.active) return;
       const dx = e.clientX - sim.pet.lastX;
       sim.pet.lastX = e.clientX;
@@ -402,6 +468,7 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
 
   const handleStageDown = useCallback(
     (e: ReactPointerEvent<HTMLElement>) => {
+      simRef.current.lastInteractionAt = performance.now();
       const target = e.target as HTMLElement | null;
       if (target?.closest("button, input, form, a, [data-mochi-rig], [data-polaroid], [data-sticky], [data-dock]")) return;
       const r = stageRef.current?.getBoundingClientRect();
@@ -455,6 +522,9 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
   const startRigDrag = useCallback(
     (e: ReactPointerEvent<SVGSVGElement>) => {
       e.stopPropagation();
+      const now = performance.now();
+      simRef.current.lastInteractionAt = now;
+      if (mood === "sleepy") setMood("playful");
       const r = stageRef.current?.getBoundingClientRect();
       const px = r ? e.clientX - r.left : e.clientX;
       const py = r ? e.clientY - r.top : e.clientY;
@@ -470,10 +540,10 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
         vy: 0,
         offX: sim.x - px,
         offY: sim.y - py,
-        downAt: performance.now(),
+        downAt: now,
       };
     },
-    [stageRef]
+    [mood, stageRef]
   );
 
   const startPolaroidDrag = useCallback(
@@ -557,13 +627,6 @@ export function useCompanionEngine(options: UseCompanionEngineOptions) {
     stickyNote,
     setStickyNote,
     speechShown,
-    chatText,
-    setChatText,
-    setChatFocused,
-    secretMode,
-    setSecretMode,
-    peeking,
-    setPeeking,
     widgetOpen,
     setWidgetOpen,
     portfolioHover,

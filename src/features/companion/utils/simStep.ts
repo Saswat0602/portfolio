@@ -525,9 +525,6 @@ function resolveHandTargets(
   const rHL = -14;
   const rHR = 14;
 
-  if (live.secretMode) {
-    return { tHLX: 142, tHLY: 146, tHRX: 198, tHRY: live.peeking ? 180 : 146, rHL: 18, rHR: live.peeking ? -6 : -18 };
-  }
   if (live.photoPosing) {
     return { tHLX: 88, tHLY: 212, tHRX: 258, tHRY: 142, rHL, rHR: 16 };
   }
@@ -656,12 +653,6 @@ export function stepRigAndCommitDom(
   } else if (dm === "existential") {
     lookX = 0;
     lookY = -0.1;
-  } else if (live.chatFocused && live.chatLen > 0) {
-    lookX = -0.82 + clamp(live.chatLen / 24, 0, 1) * 1.64;
-    lookY = 0.65;
-  } else if (live.secretMode) {
-    lookX = live.peeking ? 0.36 : 0;
-    lookY = 0.25;
   }
 
   const shx = stepRK4(sim.headX, sim.vHeadX, lookX, 115, 16, dt);
@@ -707,11 +698,12 @@ export function stepRigAndCommitDom(
     elements.propBlade.setAttribute("transform", `translate(170 46) scale(${scaleX.toFixed(2)} 1) translate(-170 -46)`);
   }
 
-  const cafVibX = dm === "caffeinated" ? Math.sin(t * 90) * 2.2 : 0;
-  const cafVibY = dm === "caffeinated" ? Math.cos(t * 86) * 1.6 : 0;
-  const squishJitX = sim.squishCharge > 0.25 ? Math.sin(t * 48) * sim.squishCharge * 2.0 : 0;
+  const rm = live.reducedMotion;
+  const cafVibX = !rm && dm === "caffeinated" ? Math.sin(t * 90) * 2.2 : 0;
+  const cafVibY = !rm && dm === "caffeinated" ? Math.cos(t * 86) * 1.6 : 0;
+  const squishJitX = !rm && sim.squishCharge > 0.25 ? Math.sin(t * 48) * sim.squishCharge * 2.0 : 0;
   const isHomeIdle = live.viewMode === "home" && live.playMode === "interact" && !sim.drag.active;
-  const idleBob = isHomeIdle ? 0 : dm === "playful" && !sim.drag.active ? Math.sin(t * 3.8) * 3 : Math.sin(t * 2.0) * 1.8;
+  const idleBob = rm || isHomeIdle ? 0 : dm === "playful" && !sim.drag.active ? Math.sin(t * 3.8) * 3 : Math.sin(t * 2.0) * 1.8;
   const drawX = sim.x + cafVibX + squishJitX;
   const drawY = sim.y + idleBob + cafVibY + sim.crouchY * 18;
   const sc =
@@ -719,8 +711,10 @@ export function stepRigAndCommitDom(
       ? 0.56
       : live.viewMode === "home"
         ? sim.w >= 768
-          ? 0.74
-          : 0.58
+          ? live.homeTucked
+            ? 0.56
+            : 0.74
+          : 0.52
         : 1.0;
 
   setStyleTransform(

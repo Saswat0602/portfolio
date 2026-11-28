@@ -69,7 +69,6 @@ export function CompanionCornerWidget() {
     stickyNote,
     setStickyNote,
     speechShown,
-    secretMode,
     portfolioHover,
     say,
     handleSelectStyle,
@@ -113,6 +112,43 @@ export function CompanionCornerWidget() {
       say(lastCue.quip, 2800, true);
     }
   }, [lastCue, say, triggerBackflip, triggerHireHearts]);
+
+  // Section-aware tour guide quips while scrolling portfolio
+  useEffect(() => {
+    if (typeof IntersectionObserver === "undefined") return;
+    const sectionQuips: Record<string, string> = {
+      work: "Selected builds! Hover any card for behind-the-scenes tech notes.",
+      projects: "Selected builds! Hover any card for behind-the-scenes tech notes.",
+      career: "3+ years shipping production web, mobile, and AI agent pipelines!",
+      contact: "Ready to ship something awesome together? Say hello!",
+    };
+    const seen = new Set<string>();
+    let lastSpokenAt = 0;
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        const now = performance.now();
+        if (now - lastSpokenAt < 16000) return;
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          const id = entry.target.id;
+          if (!seen.has(id) && sectionQuips[id]) {
+            seen.add(id);
+            lastSpokenAt = now;
+            say(sectionQuips[id], 2800, true);
+            break;
+          }
+        }
+      },
+      { threshold: 0.35 }
+    );
+
+    Object.keys(sectionQuips).forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) io.observe(el);
+    });
+    return () => io.disconnect();
+  }, [say]);
 
   const stagePointerActive =
     portalTool || playMode === "paint" || playMode === "magnet";
@@ -203,7 +239,6 @@ export function CompanionCornerWidget() {
         dizzyActive={dizzyActive}
         tickledActive={tickledActive}
         pettingActive={pettingActive}
-        secretMode={secretMode}
         photoPosing={photoPosing}
         isHeld={isHeld}
         cursorSnatched={cursorSnatched}

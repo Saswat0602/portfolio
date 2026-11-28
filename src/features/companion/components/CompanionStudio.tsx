@@ -79,10 +79,6 @@ export function CompanionStudio({ defaultFullscreen = false }: CompanionStudioPr
     stickyNote,
     setStickyNote,
     speechShown,
-    chatText,
-    setChatText,
-    setChatFocused,
-    secretMode,
     widgetOpen,
     setWidgetOpen,
     portfolioHover,
@@ -105,7 +101,6 @@ export function CompanionStudio({ defaultFullscreen = false }: CompanionStudioPr
     triggerStickyPrank,
     triggerChaosPrank,
     handleResetStage,
-    handleChatSubmit,
     triggerHireHearts,
     handleHeadPet,
     handleStageDown,
@@ -237,7 +232,6 @@ export function CompanionStudio({ defaultFullscreen = false }: CompanionStudioPr
           dizzyActive={dizzyActive}
           tickledActive={tickledActive}
           pettingActive={pettingActive}
-          secretMode={secretMode}
           photoPosing={photoPosing}
           isHeld={isHeld}
           cursorSnatched={cursorSnatched}
@@ -259,11 +253,9 @@ export function CompanionStudio({ defaultFullscreen = false }: CompanionStudioPr
             onThrowSnack={throwSnack}
             onPhotoBooth={triggerPhotoBooth}
             onChaosPrank={triggerChaosPrank}
+            onDevJoke={triggerDevJoke}
+            onBackflip={triggerBackflip}
             onClose={() => setWidgetOpen(false)}
-            chatText={chatText}
-            setChatText={setChatText}
-            setChatFocused={setChatFocused}
-            onChatSubmit={handleChatSubmit}
           />
         )}
 
