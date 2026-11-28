@@ -462,6 +462,8 @@ function updateAndDrawParticles(
   ctx.globalAlpha = 1;
 }
 
+let wasCanvasDirty = false;
+
 export function renderCompanionStageCanvas(
   ctx: CanvasRenderingContext2D,
   sim: SimState,
@@ -471,6 +473,39 @@ export function renderCompanionStageCanvas(
   dt: number
 ): void {
   if (sim.w <= 0 || sim.h <= 0) return;
+
+  const hasFx =
+    live.displayMood === "dramatic" ||
+    live.displayMood === "caffeinated" ||
+    live.displayMood === "zen" ||
+    live.displayMood === "existential" ||
+    live.playMode === "laser" ||
+    live.playMode === "magnet" ||
+    live.playMode === "catch" ||
+    live.playMode === "bugs" ||
+    live.trampolineOn ||
+    sim.particles.length > 0 ||
+    sim.snacks.length > 0 ||
+    sim.strokes.length > 0 ||
+    sim.activeStroke !== null ||
+    sim.miniClones.length > 0 ||
+    sim.soundRings.length > 0 ||
+    sim.lasers.length > 0 ||
+    sim.bugs.length > 0 ||
+    sim.ball !== null ||
+    sim.portals.cyan !== null ||
+    sim.portals.orange !== null ||
+    sim.criticScanY >= 0;
+
+  if (!hasFx) {
+    if (wasCanvasDirty) {
+      ctx.clearRect(0, 0, sim.w, sim.h);
+      wasCanvasDirty = false;
+    }
+    return;
+  }
+
+  wasCanvasDirty = true;
   ctx.clearRect(0, 0, sim.w, sim.h);
 
   const isDark = live.theme === "dark";

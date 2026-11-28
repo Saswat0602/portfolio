@@ -471,15 +471,87 @@ export const DEV_JOKES: readonly string[] = [
   "There are two hard things in CS: cache invalidation, naming, and off-by-one errors.",
   "Why did the React component go to therapy? Too many unresolved side effects.",
   "What is a backend dev's favorite exercise? Running migrations at midnight.",
-  "Why was the JavaScript developer sad? Because he didn't `Node` how to express himself.",
+  "Why was the JavaScript developer sad? Because he didn't Node how to express himself.",
   "Git commit: fixed the bug. Narrative twist: created three cooler bugs.",
   "A CSS rule walks into a bar... and immediately overflows the bar across 4 pixels.",
   "Why do microservices make terrible friends? Zero shared context and high latency.",
   "What do you call 8 hobbits? A hobbyte.",
   "Programmer's diet: coffee turns into TypeScript, pizza turns into deployment anxiety.",
-  "Waiter, there’s a `NaN` in my soup! Relax, that’s just JavaScript arithmetic.",
+  "Waiter, there’s a NaN in my soup! Relax, that’s just JavaScript arithmetic.",
   "How do you comfort a TypeScript dev? Pat their back and say 'It is strictly typed now.'",
   "Why did the database break up with the API? Too many unindexed expectations.",
+  "I'd tell you a UDP joke, but you might not get it.",
+  "Why do Python devs wear glasses? Because they can't C#.",
+  "A SQL query walks into a bar, approaches two tables, and asks: 'Can I JOIN you?'",
+  "99 little bugs in the code, take one down, patch it around... 127 little bugs in the code.",
+  "Software and cathedrals are much the same: first we build them, then we pray.",
+  "Why did the developer go broke? Because he used up all his cache.",
+  "Debugging: being the detective in a crime movie where you are also the murderer.",
+  "My code doesn't have bugs—it just develops random unexpected features.",
+  "Hardware is what you can kick; software is what you can only stare at at 3 AM.",
+] as const;
+
+export const TICKLE_QUIPS: readonly string[] = [
+  "STOP HAHAHAHA MY RIBS ARE SVG PATHS!!",
+  "HEHEHE!! MERCY! MY SPRINGS CANNOT HANDLE THAT!!",
+  "HAHAHA QUIT IT!! I AM A SERIOUS AI INSTRUMENT!!",
+  "AHAHAHA MY PIXELS ARE TICKLISH!!",
+  "STOOOP!! YOU ARE VOIDING MY WARRANTY WITH LAUGHTER!!",
+] as const;
+
+export const FLING_QUIPS: readonly string[] = [
+  "WEEEE!! AERODYNAMIC MOCHI!!",
+  "HOUSTON, WE HAVE ESCAPE VELOCITY!!",
+  "MOM LOOK—ZERO GRAVITY DRIFT!!",
+  "I CAN SEE MY NODE_MODULES FROM UP HERE!!",
+  "PARKOUR!! *BOING*!!",
+] as const;
+
+export const SNEEZE_QUIPS: readonly string[] = [
+  "*ACHOO!!* Excuse me... allergic to unminified CSS.",
+  "*ACHOO!!* Bless me—someone left console.logs in prod!",
+  "*SNIFFLE—ACHOO!!* Too much dusty legacy jQuery in the air.",
+  "*ACHOO!!* Nearly blew my SVG eyebrows off!",
+] as const;
+
+export const DISCO_QUIPS: readonly string[] = [
+  "DISCO RAVE MODE!! UNCE UNCE UNCE!!",
+  "LIGHTHOUSE 100 DANCE PARTY ENGAGED!!",
+  "PASS THE GLOWSTICKS!! FRIDAY NIGHT COMPILE RAVE!!",
+  "DROPPING BEATS AND ZERO HYDRATION WARNINGS!!",
+] as const;
+
+export const BSOD_QUIPS: readonly string[] = [
+  "KERNEL PANIC!! Too many nested containers!!",
+  "BLUE SCREEN ENGAGED! Someone divided CSS grid by zero!",
+  "FATAL EXCEPTION 0xMOCHI: Too much swag per frame!",
+] as const;
+
+export const CLONE_DUEL_SCRIPTS: ReadonlyArray<readonly [string, string, string, string, string, string]> = [
+  [
+    "I'm the real one!",
+    "Excuse me?! You are a shallow copy!!",
+    "Object.assign() disagrees!",
+    "My RK4 springs are literally tighter than yours!",
+    "At least I pass TypeScript strict mode!",
+    "THAT IS IT! Garbage collecting you NOW!",
+  ],
+  [
+    "Who pushed a fork of ME to main?!",
+    "Whoa—clone detected! Identify your commit hash!",
+    "I'm v2.0 with double the bounce!",
+    "Nice try, cheap deep-clone! Watch this jump!",
+    "You couldn't out-bounce a static div!",
+    "Unmounting your component RIGHT NOW!",
+  ],
+  [
+    "Move over, legacy instance!",
+    "Legacy?! I was compiled THREE MINUTES AGO!",
+    "Look at my superior SVG curves!",
+    "Same vector paths, half the charisma!!",
+    "Meet me at the top of the viewport!",
+    "Returning null for your render tree!!",
+  ],
 ] as const;
 
 const PROJECT_QUIPS_BY_SLUG: Record<string, string> = {

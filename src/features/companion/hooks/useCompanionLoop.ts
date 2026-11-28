@@ -8,6 +8,7 @@ import type {
   SnackEntity,
   ViewMode,
 } from "../types";
+import { FLING_QUIPS, TICKLE_QUIPS } from "@/lib/data";
 import { clamp } from "../utils/physics";
 import { closeSharedAudioContext, playComedySound } from "../utils/audio";
 import { renderCompanionStageCanvas } from "../utils/canvasRenderer";
@@ -101,7 +102,7 @@ export function useCompanionLoop({
     const sync = () => {
       const r = stage.getBoundingClientRect();
       if (r.width <= 0 || r.height <= 0) return;
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const dpr = Math.min(window.devicePixelRatio || 1, viewMode === "home" ? 1.5 : 2);
       const sim = simRef.current;
       const isInit = sim.w === 1000 && sim.x === 500;
 
@@ -288,7 +289,7 @@ export function useCompanionLoop({
             sim.sy = 0.88;
             spawnParticles("confetti", sim.x, sim.y - 30, 6);
             if (sim.tickle.strokes === 1 || sim.tickle.strokes % 8 === 0) {
-              say("STOP HAHAHAHA MY RIBS ARE SVG PATHS!!", 2400, true);
+              say(TICKLE_QUIPS[Math.floor(Math.random() * TICKLE_QUIPS.length)], 2400, true);
             }
           }
           timersRef.current.tickle = setTimeout(() => setTickledActive(false), 1150);
@@ -347,7 +348,7 @@ export function useCompanionLoop({
         sim.ballisticTimer = flingSpeed > 260 ? 1.65 : 0.72;
         if (flingSpeed > 420) {
           playComedySound("slideUp", liveRef.current.soundOn, 1.15);
-          say("WEEEE!! AERODYNAMIC MOCHI!!", 2000, true);
+          say(FLING_QUIPS[Math.floor(Math.random() * FLING_QUIPS.length)], 2200, true);
         }
       } else if (charge > 0.16) {
         sim.flipping = true;

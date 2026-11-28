@@ -1,11 +1,14 @@
 import { useCallback, useRef, type Dispatch, type FormEvent, type MutableRefObject, type SetStateAction } from "react";
 import {
   ART_RATINGS,
+  BSOD_QUIPS,
   BUG_TAGS,
   CHARACTER_STYLES,
   CHAT_FALLBACK_QUIPS,
+  CLONE_DUEL_SCRIPTS,
   DEV_JOKES,
   DEV_ROASTS,
+  DISCO_QUIPS,
   FRIDAY_DEPLOY_QUIPS,
   MOODS,
   PHOTO_POSE_QUIPS,
@@ -14,6 +17,7 @@ import {
   POKE_QUIPS,
   POLAROID_CAPTIONS,
   SNACKS,
+  SNEEZE_QUIPS,
   type AccessoryId,
   type CharacterStyleId,
   type MoodId,
@@ -166,12 +170,14 @@ export function useCompanionActions(
     (text: string, holdMs = 3100, silent = false) => {
       if (timersRef.current.speechType) clearInterval(timersRef.current.speechType);
       if (timersRef.current.speechClear) clearTimeout(timersRef.current.speechClear);
+      if (timersRef.current.joke) clearTimeout(timersRef.current.joke);
       if (!silent) playComedySound("pop", liveRef.current.soundOn, liveRef.current.pitch);
 
+      setDevJoke(null);
       setSpeechShown(text);
       timersRef.current.speechClear = setTimeout(() => setSpeechShown(""), holdMs);
     },
-    [liveRef, setSpeechShown, timersRef]
+    [liveRef, setDevJoke, setSpeechShown, timersRef]
   );
 
   const handleSelectStyle = useCallback(
@@ -393,7 +399,7 @@ export function useCompanionActions(
     sim.sx = 1.28;
     sim.sy = 0.76;
     spawnParticles("tissue", sim.x, sim.y - 10, 10);
-    say("*ACHOO!!* Excuse me... allergic to unminified CSS.", 2600, true);
+    say(pickRandom(SNEEZE_QUIPS), 2600, true);
   }, [liveRef, say, simRef, spawnParticles]);
 
   const throwSnack = useCallback(
@@ -670,17 +676,18 @@ export function useCompanionActions(
     playComedySound("poof", liveRef.current.soundOn);
     spawnParticles("poof", sim.clone.x, sim.clone.y, 8, "#FFFFFF");
 
-    setCloneSpeech("I'm the real one!");
-    say("Excuse me?! You are a shallow copy!!", 2100, true);
+    const script = pickRandom(CLONE_DUEL_SCRIPTS);
+    setCloneSpeech(script[0]);
+    say(script[1], 2100, true);
 
     timersRef.current.clone1 = setTimeout(() => {
-      setCloneSpeech("Object.assign() disagrees!");
-      say("My RK4 springs are literally tighter than yours!", 2000, true);
+      setCloneSpeech(script[2]);
+      say(script[3], 2000, true);
     }, 2000);
 
     timersRef.current.clone2 = setTimeout(() => {
-      setCloneSpeech("At least I pass TypeScript strict mode!");
-      say("THAT IS IT! Garbage collecting you NOW!", 1900, true);
+      setCloneSpeech(script[4]);
+      say(script[5], 1900, true);
     }, 4000);
 
     timersRef.current.cloneEnd = setTimeout(() => {
@@ -719,7 +726,7 @@ export function useCompanionActions(
     if (timersRef.current.crash) clearTimeout(timersRef.current.crash);
     setFakeCrashActive(true);
     playComedySound("sadTrombone", liveRef.current.soundOn, 1);
-    say("KERNEL PANIC!! Too many nested containers!!", 2600, true);
+    say(pickRandom(BSOD_QUIPS), 2600, true);
     timersRef.current.crash = setTimeout(() => {
       setFakeCrashActive(false);
       playComedySound("chime", liveRef.current.soundOn, 1.2);
@@ -736,7 +743,7 @@ export function useCompanionActions(
     sim.soundRings.push({ x: sim.x, y: sim.y, r: 8, maxR: 220, age: 0, color: "#38BDF8" });
     playComedySound("chime", liveRef.current.soundOn, 1.35);
     spawnParticles("confetti", sim.x, sim.y - 30, 22);
-    say("DISCO RAVE MODE!! UNCE UNCE UNCE!!", 2800, true);
+    say(pickRandom(DISCO_QUIPS), 2800, true);
   }, [liveRef, say, setMood, simRef, spawnParticles]);
 
   const triggerDevRoast = useCallback(() => {
@@ -748,8 +755,10 @@ export function useCompanionActions(
   const triggerDevJoke = useCallback(() => {
     const sim = simRef.current;
     const joke = pickRandom(DEV_JOKES);
+    if (timersRef.current.speechClear) clearTimeout(timersRef.current.speechClear);
     if (timersRef.current.joke) clearTimeout(timersRef.current.joke);
     setMood("hype");
+    setSpeechShown("");
     setDevJoke(joke);
     sim.vy = liveRef.current.gravityFlipped ? 260 : -280;
     sim.sx = 1.26;
@@ -758,9 +767,8 @@ export function useCompanionActions(
     playComedySound("giggle", liveRef.current.soundOn, 1.15);
     spawnParticles("confetti", sim.x, sim.y - 30, 14);
     spawnParticles("star", sim.x, sim.y - 54, 5, "#F59E0B");
-    say(joke, 4600, true);
-    timersRef.current.joke = setTimeout(() => setDevJoke(null), 6500);
-  }, [liveRef, say, setDevJoke, setMood, simRef, spawnParticles, timersRef]);
+    timersRef.current.joke = setTimeout(() => setDevJoke(null), 6800);
+  }, [liveRef, setDevJoke, setMood, setSpeechShown, simRef, spawnParticles, timersRef]);
 
   const triggerStickyPrank = useCallback(() => {
     const sim = simRef.current;

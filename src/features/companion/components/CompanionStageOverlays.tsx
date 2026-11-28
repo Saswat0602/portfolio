@@ -186,12 +186,48 @@ export function CompanionStageOverlays({
       <div
         data-mochi-el="speech"
         aria-live="polite"
-        className="pointer-events-none absolute left-0 top-0 z-[47] w-max max-w-[min(280px,84vw)] will-change-transform transition-opacity duration-150"
-        style={{ opacity: speechShown ? 1 : 0 }}
+        className="pointer-events-none absolute left-0 top-0 z-[47] w-max max-w-[min(320px,86vw)] will-change-transform transition-opacity duration-150"
+        style={{ opacity: devJoke || speechShown ? 1 : 0 }}
       >
-        {speechShown && (
+        {devJoke ? (
           <div
-            className="mochi-pop relative rounded-2xl px-3.5 py-2 text-center text-xs sm:text-[12.5px] font-medium leading-snug backdrop-blur-md"
+            className="mochi-pop pointer-events-auto relative rounded-2xl px-4 py-2.5 text-left text-xs sm:text-[12.5px] font-medium leading-snug"
+            style={{
+              backgroundColor: ui.surface,
+              color: ui.ink,
+              border: "1px solid rgba(245, 158, 11, 0.55)",
+              boxShadow: ui.shadow,
+            }}
+          >
+            <div className="flex items-center justify-between gap-4 font-mono text-[9.5px] uppercase tracking-[0.1em] text-amber-500 mb-1">
+              <span>🤣 DEV JOKE</span>
+              <div className="flex items-center gap-2">
+                {onNextDevJoke && (
+                  <button
+                    type="button"
+                    onClick={onNextDevJoke}
+                    className="cursor-pointer font-semibold hover:opacity-80"
+                  >
+                    Next 🎲
+                  </button>
+                )}
+                {onDismissDevJoke && (
+                  <button
+                    type="button"
+                    aria-label="Dismiss dev joke"
+                    onClick={onDismissDevJoke}
+                    className="cursor-pointer font-bold hover:opacity-75"
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+            </div>
+            <p className="m-0">{devJoke}</p>
+          </div>
+        ) : speechShown ? (
+          <div
+            className="mochi-pop relative rounded-2xl px-3.5 py-2 text-center text-xs sm:text-[12.5px] font-medium leading-snug"
             style={{
               backgroundColor: ui.surface,
               color: ui.ink,
@@ -201,7 +237,7 @@ export function CompanionStageOverlays({
           >
             {speechShown}
           </div>
-        )}
+        ) : null}
       </div>
 
       {fridayDeployActive && (
@@ -270,45 +306,6 @@ export function CompanionStageOverlays({
           <p className="mt-1 text-[11px] leading-relaxed" style={{ color: ui.muted }}>
             {artVerdict.note}
           </p>
-        </div>
-      )}
-
-      {devJoke && (
-        <div
-          className="mochi-pop pointer-events-auto absolute top-24 left-4 sm:left-6 z-40 w-[min(300px,86vw)] rounded-2xl p-3.5 shadow-xl"
-          style={{
-            backgroundColor: ui.glass,
-            color: ui.ink,
-            border: `1px solid ${ui.borderStrong}`,
-            boxShadow: ui.shadow,
-            backdropFilter: "blur(16px)",
-          }}
-        >
-          <div className="flex items-center justify-between font-mono text-[9.5px] uppercase tracking-[0.1em] text-amber-500 mb-1.5">
-            <span>🤣 DEV JOKE</span>
-            <div className="flex items-center gap-2">
-              {onNextDevJoke && (
-                <button
-                  type="button"
-                  onClick={onNextDevJoke}
-                  className="cursor-pointer font-semibold hover:opacity-80"
-                >
-                  Next 🎲
-                </button>
-              )}
-              {onDismissDevJoke && (
-                <button
-                  type="button"
-                  aria-label="Dismiss dev joke"
-                  onClick={onDismissDevJoke}
-                  className="cursor-pointer font-bold hover:opacity-75"
-                >
-                  ×
-                </button>
-              )}
-            </div>
-          </div>
-          <p className="m-0 text-xs font-medium leading-relaxed">{devJoke}</p>
         </div>
       )}
 

@@ -39,14 +39,24 @@ const ELEMENT_SELECTORS: ReadonlyArray<[keyof CompanionElements, string]> = [
   ["propBlade", '[data-mochi-el="propBlade"]'],
 ];
 
+let lastElementScanMs = 0;
+
 export function syncConnectedElements(stage: HTMLDivElement, elements: CompanionElements): void {
+  const now = performance.now();
+  const canQuery = now - lastElementScanMs >= 240;
   const store = elements as unknown as Record<string, Element | null>;
+  let scanned = false;
   for (const [key, selector] of ELEMENT_SELECTORS) {
     const current = store[key];
     if (!current || !current.isConnected) {
-      store[key] = stage.querySelector(selector);
+      if (current && !current.isConnected) store[key] = null;
+      if (canQuery) {
+        store[key] = stage.querySelector(selector);
+        scanned = true;
+      }
     }
   }
+  if (scanned) lastElementScanMs = now;
 }
 
 export interface StepCallbacks {
@@ -493,13 +503,13 @@ export function stepCloneDuel(
   cl.x = clamp(cl.x, 76, sim.w - 76);
 
   if (elements.cloneWrap) {
-    elements.cloneWrap.style.transform = `translate3d(${cl.x.toFixed(1)}px, ${cl.y.toFixed(1)}px, 0) translate(-50%, -50%) scale(0.66) rotate(${cl.rot.toFixed(1)}deg)`;
+    elements.cloneWrap.style.transform = `translate3d(${Math.round(cl.x)}px, ${Math.round(cl.y)}px, 0) translate(-50%, -50%) scale(0.66) rotate(${cl.rot.toFixed(1)}deg)`;
   }
   if (elements.cloneBubble) {
-    const cbx = clamp(cl.x, 120, sim.w - 120);
+    const cbx = Math.round(clamp(cl.x, 120, sim.w - 120));
     const placeBelow = live.gravityFlipped || cl.y < 185;
-    const cby = placeBelow ? clamp(cl.y + 76, 130, sim.h - 140) : clamp(cl.y - 78, 118, sim.h - 150);
-    elements.cloneBubble.style.transform = `translate3d(${cbx.toFixed(1)}px, ${cby.toFixed(1)}px, 0) translate(-50%, ${placeBelow ? "0%" : "-100%"})`;
+    const cby = Math.round(placeBelow ? clamp(cl.y + 76, 130, sim.h - 140) : clamp(cl.y - 78, 118, sim.h - 150));
+    elements.cloneBubble.style.transform = `translate3d(${cbx}px, ${cby}px, 0) translate(-50%, ${placeBelow ? "0%" : "-100%"})`;
   }
 }
 
@@ -680,10 +690,11 @@ export function stepRigAndCommitDom(
     elements.propBlade.setAttribute("transform", `translate(170 46) scale(${scaleX.toFixed(2)} 1) translate(-170 -46)`);
   }
 
-  const cafVibX = dm === "caffeinated" ? Math.sin(t * 188) * 3.2 : 0;
-  const cafVibY = dm === "caffeinated" ? Math.cos(t * 180) * 2.4 : 0;
-  const squishJitX = sim.squishCharge > 0.25 ? Math.sin(t * 58) * sim.squishCharge * 2.6 : 0;
-  const idleBob = dm === "playful" && !sim.drag.active ? Math.sin(t * 4.2) * 4 : Math.sin(t * 2.2) * 2.5;
+  const cafVibX = dm === "caffeinated" ? Math.sin(t * 90) * 2.2 : 0;
+  const cafVibY = dm === "caffeinated" ? Math.cos(t * 86) * 1.6 : 0;
+  const squishJitX = sim.squishCharge > 0.25 ? Math.sin(t * 48) * sim.squishCharge * 2.0 : 0;
+  const isHomeIdle = live.viewMode === "home" && live.playMode === "interact" && !sim.drag.active;
+  const idleBob = isHomeIdle ? 0 : dm === "playful" && !sim.drag.active ? Math.sin(t * 3.8) * 3 : Math.sin(t * 2.0) * 1.8;
   const drawX = sim.x + cafVibX + squishJitX;
   const drawY = sim.y + idleBob + cafVibY + sim.crouchY * 18;
   const sc =
@@ -696,7 +707,7 @@ export function stepRigAndCommitDom(
         : 1.0;
 
   if (elements.charWrap) {
-    elements.charWrap.style.transform = `translate3d(${drawX.toFixed(1)}px, ${drawY.toFixed(1)}px, 0) translate(-50%, -50%) scale(${sc})`;
+    elements.charWrap.style.transform = `translate3d(${Math.round(drawX)}px, ${Math.round(drawY)}px, 0) translate(-50%, -50%) scale(${sc})`;
   }
   if (elements.rigTransform) {
     const totDeg = sim.rot + sim.flipDeg;
@@ -750,14 +761,16 @@ export function stepRigAndCommitDom(
   }
 
   if (elements.speech) {
-    const maxBW = Math.min(280, sim.w - 32);
-    const bx = clamp(drawX, maxBW * 0.5 + 16, sim.w - maxBW * 0.5 - 16);
+    const maxBW = Math.min(320, sim.w - 32);
+    const bx = Math.round(clamp(sim.x, maxBW * 0.5 + 16, sim.w - maxBW * 0.5 - 16));
     const topOffset = (live.accessory !== "none" ? 114 : 96) * sc;
-    const placeBelow = live.gravityFlipped || drawY < 185;
-    const by = placeBelow
-      ? clamp(drawY + 94 * sc, 120, sim.h - 145)
-      : clamp(drawY - topOffset, 125, sim.h - 155);
-    elements.speech.style.transform = `translate3d(${bx.toFixed(1)}px, ${by.toFixed(1)}px, 0) translate(-50%, ${placeBelow ? "0%" : "-100%"})`;
+    const placeBelow = live.gravityFlipped || sim.y < 185;
+    const by = Math.round(
+      placeBelow
+        ? clamp(sim.y + 94 * sc, 120, sim.h - 145)
+        : clamp(sim.y - topOffset, 125, sim.h - 155)
+    );
+    elements.speech.style.transform = `translate3d(${bx}px, ${by}px, 0) translate(-50%, ${placeBelow ? "0%" : "-100%"})`;
   }
 
   if (live.featherTool && elements.featherDom) {

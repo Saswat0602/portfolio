@@ -35,7 +35,6 @@ export interface CompanionRigSvgProps {
 }
 
 export function CompanionRigSvg({
-  isDark,
   styleMeta,
   accessory,
   activeMoodMeta,
